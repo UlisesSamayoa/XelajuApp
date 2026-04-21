@@ -1,0 +1,231 @@
+﻿@{
+    ViewData["Title"] = "Clients";
+}
+
+<link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #4338ca;
+        --bg: #f1f5f9;
+    }
+
+    body {
+        background: var(--bg);
+    }
+
+    .card-custom {
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        border: none;
+    }
+
+    .btn-custom {
+        background: var(--primary);
+        color: white;
+        border-radius: 10px;
+        transition: 0.3s;
+    }
+
+        .btn-custom:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+    .fade-in {
+        animation: fadeIn 0.4s ease-in-out;
+    }
+
+    @@keyframes fadeIn {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+</style>
+
+<div class="container-fluid mt-4 px-4">
+
+    <div class="card card-custom p-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3><i class="bi bi-people-fill"></i> Clients</h3>
+
+            <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalClient">
+                <i class="bi bi-plus"></i> Add Client
+            </button>
+        </div>
+
+        <table id="tblClients" class="table table-hover w-100">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Document</th>
+                    <th>Phone</th>
+                    <th>Country</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+        </table>
+
+    </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal fade" id="modalClient">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content card-custom">
+
+            <div class="modal-header">
+                <h5>New Client</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="formClient">
+                    <label class="form-label">First Name</label>
+                    <input name="FirstName" class="form-control mb-2" placeholder="First Name" required />
+                    <label class="form-label">Last Name</label>
+                    <input name="LastName" class="form-control mb-2" placeholder="Last Name" required />
+                    <label class="form-label">Document</label>
+                    <input name="DocumentNumber" class="form-control mb-2" placeholder="Document" required />
+                    <label class="form-label">Phone</label>
+                    <input name="Phone" class="form-control mb-2" placeholder="Phone" />
+                    <label class="form-label">Country</label>
+                    <select id="Country" class="form-control mb-2"></select>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-custom" id="btnSaveClient"><i class="bi bi-floppy-fill"></i> Save</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <script>
+
+        let clientsData = [
+            { id:1, firstName:"Carlos", lastName:"Perez", documentNumber:"12345678", phone:"7777-8888", country:"El Salvador", isActive:true },
+            { id:2, firstName:"Ana", lastName:"Gomez", documentNumber:"87654321", phone:"9999-0000", country:"Mexico", isActive:true }
+        ];
+        let countries = [
+            { id:1, name:"Mexico" },
+            { id:2, name:"Honduras" },
+            { id:3, name:"El Salvador" }
+        ];
+        let table;
+
+        $(document).ready(function () {
+            table = loadClients();
+            countries.forEach(x =>
+                $('#Country').append(`<option value="${x.id}">${x.name}</option>`)
+            );
+        });
+
+        function loadClients() {
+            return $('#tblClients').DataTable({
+                data: clientsData,
+                columns: [
+                    { data:null, render:x=>`${x.firstName} ${x.lastName}` },
+                    { data:'documentNumber' },
+                    { data:'phone' },
+                    { data:'country' },
+                    {
+                        data:'isActive',
+                        render: d => d
+                            ? '<span class="badge bg-success">Active</span>'
+                            : '<span class="badge bg-secondary">Inactive</span>'
+                    },
+                    {
+                        data:'id',
+                        render: id => `
+                            <div class="d-flex gap-2">
+                                <a href="/Clients/Update/${id}" class="btn btn-warning btn-sm"><i class="bi bi-pencil-fill"></i></a>
+                                <button class="btn btn-danger btn-sm" onclick="deleteClient(${id})"><i class="bi bi-trash-fill"></i></button>
+                            </div>
+                        `
+                    }
+                ],
+                drawCallback: () => $('#tblClients tbody tr').addClass('fade-in')
+            });
+        }
+
+        // 💾 SAVE
+        $('#btnSaveClient').click(function () {
+
+            let firstName = $('input[name="FirstName"]').val().trim();
+            let lastName = $('input[name="LastName"]').val().trim();
+            let document = $('input[name="DocumentNumber"]').val().trim();
+
+            if (!firstName || !lastName || !document) {
+                Swal.fire('Error','Required fields missing','error');
+                return;
+            }
+
+            // 🚫 validar documento duplicado
+            const exists = clientsData.some(x => x.documentNumber === document);
+
+            if (exists) {
+                Swal.fire('Duplicate','Document already exists','warning');
+                return;
+            }
+
+            let newClient = {
+                id: clientsData.length + 1,
+                firstName,
+                lastName,
+                documentNumber: document,
+                phone: $('input[name="Phone"]').val(),
+                country: $('#Country').val(),
+                isActive: true
+            };
+
+            clientsData.push(newClient);
+            table.row.add(newClient).draw();
+
+            Swal.fire('Saved!','','success');
+
+            $('#formClient')[0].reset();
+            $('#modalClient').modal('hide');
+        });
+
+        // 🗑️ DELETE
+        function deleteClient(id) {
+
+            let item = clientsData.find(x => x.id === id);
+
+            Swal.fire({
+                title:'Delete?',
+                html:`<b>${item.firstName} ${item.lastName}</b><br>${item.documentNumber}`,
+                icon:'warning',
+                showCancelButton:true
+            }).then(r=>{
+                if(r.isConfirmed){
+                    clientsData = clientsData.filter(x=>x.id!==id);
+                    table.clear().rows.add(clientsData).draw();
+                    Swal.fire('Deleted!','','success');
+                }
+            });
+        }
+
+    </script>
+
+}

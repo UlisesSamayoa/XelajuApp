@@ -1,0 +1,140 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login - TransferApp</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --bg: #0f172a;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            width: 380px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        .btn-custom {
+            background: var(--primary);
+            color: white;
+            border-radius: 10px;
+        }
+
+            .btn-custom:hover {
+                background: var(--primary-dark);
+            }
+
+        .form-control {
+            border-radius: 10px;
+        }
+
+        .title {
+            font-weight: bold;
+        }
+
+        @@keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-card">
+
+        <h3 class="text-center mb-4 title">💸 Xelaju Water</h3>
+
+        <form id="formLogin">
+
+            <input type="email" id="Email" class="form-control mb-3" placeholder="Email" required />
+
+            <input type="password" id="Password" class="form-control mb-3" placeholder="Password" required />
+
+            <button type="button" class="btn btn-custom w-100" id="btnLogin">
+                <i class="bi bi-unlock-fill"></i> Login
+            </button>
+
+        </form>
+
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+
+        // 🔥 DEMO USERS
+        let users = [
+            { email: "admin@mail.com", password: "1234", name: "Admin" },
+            { email: "user@mail.com", password: "1234", name: "User" }
+        ];
+
+        $('#btnLogin').click(function () {
+
+            let email = $('#Email').val().trim();
+            let password = $('#Password').val().trim();
+
+            if (!email || !password) {
+                Swal.fire('Error', 'Enter email and password', 'error');
+                return;
+            }
+
+            let user = users.find(x =>
+                x.email.toLowerCase() === email.toLowerCase() &&
+                x.password === password
+            );
+
+            if (!user) {
+                Swal.fire('Access denied', 'Invalid credentials', 'error');
+                return;
+            }
+
+            // 🎉 SUCCESS
+            Swal.fire({
+                icon: 'success',
+                title: 'Welcome ' + user.name,
+                timer: 1200,
+                showConfirmButton: false
+            });
+
+            // 🔄 redirect
+            setTimeout(() => {
+                window.location.href = '/Home';
+            }, 1200);
+
+        });
+
+    </script>
+
+</body>
+</html>

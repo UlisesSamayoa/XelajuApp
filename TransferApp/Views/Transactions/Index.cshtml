@@ -1,0 +1,480 @@
+﻿@{
+    ViewData["Title"] = "Transactions";
+}
+
+<link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #4338ca;
+        --bg: #f1f5f9;
+    }
+
+    body {
+        background: var(--bg);
+    }
+
+    .card-custom {
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        border: none;
+    }
+
+    .btn-custom {
+        background: var(--primary);
+        color: white;
+        border-radius: 10px;
+    }
+
+    .img-preview {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-top: 10px;
+    }
+
+    .modal-search {
+        background: #f8fafc; /* gris claro elegante */
+        border-radius: 15px;
+        border: 2px solid #4f46e5;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    }
+
+    /* header con identidad */
+    .modal-search-header {
+        background: linear-gradient(135deg, #4f46e5, #4338ca);
+        color: white;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+
+    /* input más elegante */
+    .search-input {
+        border-radius: 10px;
+        border: 1px solid #cbd5f5;
+    }
+
+    /* hover tabla más pro */
+    #tblSearchClient tbody tr:hover {
+        background-color: #eef2ff;
+        cursor: pointer;
+    }
+</style>
+
+<div class="container-fluid mt-4 px-4">
+
+    <div class="card card-custom p-4">
+
+        <div class="d-flex justify-content-between mb-3">
+            <h3><i class="bi bi-currency-exchange""></i> Transactions</h3>
+
+            <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalTx">
+                <i class="bi bi-plus"></i> New Transaction
+            </button>
+        </div>
+
+        <table id="tblTx" class="table table-hover w-100">
+            <thead class="table-light">
+                <tr>
+                    <th>Reference</th>
+                    <th>Sender</th>
+                    <th>Receiver</th>
+                    <th>Country</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+        </table>
+
+    </div>
+</div>
+<div class="modal fade" id="modalTx">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content card-custom p-3">
+
+            <h5>New Transaction</h5>
+
+            <form id="formTx">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-6">
+                                <input id="Amount" type="number" class="form-control mb-2" placeholder="Amount" required />
+                            </div>
+                            <div class="col-6">           
+                                <select id="IntermediaryId" class="form-control mb-2"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-4">
+                                <input id="Reference" class="form-control mb-2" placeholder="Reference Number" />
+                            </div>
+                            <div class="col-4">
+                                <select id="DestinationCountry" class="form-control mb-2"></select>
+                            </div>
+                            <div class="col-4">
+                                <input id="Currency" class="form-control mb-2" value="USD" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+
+                <div class="row">
+                    <div class="col-6">
+                        <div class="input-group" style="margin-bottom:5px;">
+                            <h6>Sender Info</h6> &nbsp;&nbsp;&nbsp;
+                        <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalSearchClient">
+                            🔍 Search Client
+                            </button>&nbsp;&nbsp;&nbsp;
+                        <button class="btn btn-outline-success">
+                            New Client
+                        </button>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <input id="SenderName" class="form-control mb-2" placeholder="Sender Name" required />
+                            </div>
+                            <div class="col-4">
+                                <input id="SenderDocument" class="form-control mb-2" placeholder="Document" required />
+                            </div>
+                            <div class="col-4">
+                                <input id="SenderPhone" class="form-control mb-2" placeholder="Phone" />
+                            </div>
+                            <div class="col-12">
+                                <input id="SenderAddress" class="form-control mb-2" placeholder="Address" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <h6>Receiver Info</h6>
+                        <div class="row">
+                            <div class="col-4">
+                                <input id="ReceiverName" class="form-control mb-2" placeholder="Receiver Name" required />
+                            </div>
+                            <div class="col-4">
+                                <input id="ReceiverCountry" class="form-control mb-2" placeholder="Country" required />
+                            </div>
+                            <div class="col-4">
+                                <input id="ReceiverPhone" class="form-control mb-2" placeholder="Phone" />
+                            </div>
+                            <div class="col-12">
+                                <input id="ReceiverAddress" class="form-control mb-2" placeholder="Address" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <input type="file" class="form-control" onchange="previewImage(this)" />
+                <img id="imgPreview" class="img-preview" />
+
+            </form>
+            <div class="modal-footer">
+                <button class="btn btn-custom" id="btnSaveTx"><i class="bi bi-floppy-fill"></i> Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalSearchClient">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content card-custom p-0 modal-search">
+
+            <!-- HEADER -->
+            <div class="modal-header modal-search-header">
+                <h5 class="mb-0">🔍 Search Client</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="p-3">
+
+                <input id="searchClientInput"
+                       class="form-control mb-3 search-input"
+                       placeholder="Search by name, document or phone..." />
+
+                <table id="tblSearchClient" class="table table-hover w-100">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Document</th>
+                            <th>Phone</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <script>
+                let transactions = [
+                {
+                    id:1,
+                    reference:"REF-1001",
+                    senderName:"Carlos Perez",
+                    receiverName:"Ana Gomez",
+                    destinationCountry:"Mexico",
+                    amount:250,
+                    status:"Pending",
+                    image:""
+                },
+                {
+                    id:2,
+                    reference:"REF-1002",
+                    senderName:"Luis Martinez",
+                    receiverName:"Maria Lopez",
+                    destinationCountry:"USA",
+                    amount:500,
+                    status:"Approved",
+                    image:""
+                },
+                {
+                    id:3,
+                    reference:"REF-1003",
+                    senderName:"Jose Ramirez",
+                    receiverName:"Pedro Castillo",
+                    destinationCountry:"Colombia",
+                    amount:120,
+                    status:"Rejected",
+                    image:""
+                },
+                {
+                    id:4,
+                    reference:"REF-1004",
+                    senderName:"Ana Torres",
+                    receiverName:"Lucia Perez",
+                    destinationCountry:"Guatemala",
+                    amount:300,
+                    status:"Pending",
+                    image:""
+                },
+                {
+                    id:5,
+                    reference:"REF-1005",
+                    senderName:"Mario Diaz",
+                    receiverName:"Juan Lopez",
+                    destinationCountry:"Honduras",
+                    amount:450,
+                    status:"Approved",
+                    image:""
+                }
+            ];
+        let intermediaries = [
+            { id:1, name:"Bank of America" },
+            { id:2, name:"HSBC" }
+        ];
+        let countries = [
+            { id:1, name:"Mexico" },
+            { id:2, name:"Honduras" },
+            { id:3, name:"El Salvador" }
+        ];
+
+        let table;
+
+        $(document).ready(function(){
+
+            intermediaries.forEach(x =>
+                $('#IntermediaryId').append(`<option value="${x.id}">${x.name}</option>`)
+            );
+            countries.forEach(x =>
+                $('#DestinationCountry').append(`<option value="${x.id}">${x.name}</option>`)
+            );
+
+            table = loadTable();
+
+        });
+
+        function loadTable(){
+            return $('#tblTx').DataTable({
+                data: transactions,
+                columns: [
+                    { data:'reference' },
+                    { data:'senderName' },
+                    { data:'receiverName' },
+                    { data:'destinationCountry' },
+                    { data:'amount' },
+                            {
+            data: 'status',
+            render: function (s) {
+
+                const statusColors = {
+                    'Approved': 'success',
+                    'Rejected': 'danger',
+                    'Pending': 'warning',
+                    'Cancelled': 'secondary'
+                };
+
+                let color = statusColors[s] || 'dark';
+
+                return `<span class="badge bg-${color}">${s}</span>`;
+            }
+        },
+                            {
+                                data:'id',
+                                render: id => `
+                                    <div class="d-flex gap-2">
+                                        <a href="/Transactions/Update/${id}" class="btn btn-warning btn-sm"><i class="bi bi-pencil-fill"></i></a>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteTransaction(${id})"><i class="bi bi-trash-fill"></i></button>
+                                    </div>
+                                `
+                            }
+                ],
+                    drawCallback: () => $('#tblTx tbody tr').addClass('fade-in')
+            });
+        }
+
+        // 🖼️ preview
+        function previewImage(input){
+            const file = input.files[0];
+            if(file){
+                const reader = new FileReader();
+                reader.onload = e => $('#imgPreview').attr('src', e.target.result);
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // 💾 SAVE
+        $('#btnSaveTx').click(function(){
+
+            let amount = $('#Amount').val();
+            let sender = $('#SenderName').val();
+            let receiver = $('#ReceiverName').val();
+
+            if(!amount || !sender || !receiver){
+                Swal.fire('Error','Required fields missing','error');
+                return;
+            }
+
+            let tx = {
+                id: transactions.length + 1,
+                reference: $('#Reference').val() || "REF-" + Date.now(),
+                senderName: sender,
+                receiverName: receiver,
+                destinationCountry: $('#DestinationCountry').val(),
+                amount: amount,
+                status: "Pending",
+                image: $('#imgPreview').attr('src')
+            };
+
+            transactions.push(tx);
+            table.row.add(tx).draw();
+
+            Swal.fire('Saved!','','success');
+
+            $('#formTx')[0].reset();
+            $('#imgPreview').attr('src','');
+            $('#modalTx').modal('hide');
+
+        });
+
+                function deleteTransaction(id) {
+
+            let tx = transactions.find(x => x.id === id);
+
+            if (!tx) return;
+
+            Swal.fire({
+                title: 'Delete transaction?',
+                html: `
+                    <b>${tx.reference}</b><br/>
+                    ${tx.senderName} → ${tx.receiverName}<br/>
+                    <small>$${tx.amount}</small>
+                `,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete'
+            }).then(result => {
+
+                if (result.isConfirmed) {
+
+                    // 🧹 eliminar del array
+                    transactions = transactions.filter(x => x.id !== id);
+
+                    // 🔄 refrescar tabla
+                    table.clear().rows.add(transactions).draw();
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: 'Transaction removed successfully',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+
+            });
+        }
+
+        //busqueda de clients existentes
+                // 🔥 CLIENTES DEMO
+        let clientsSearchData = [
+            { id:1, name:"Carlos Perez", document:"12345678", phone:"7777-8888", address:"San Salvador" },
+            { id:2, name:"Ana Gomez", document:"87654321", phone:"9999-0000", address:"Mexico" },
+            { id:3, name:"Luis Martinez", document:"11223344", phone:"7012-3344", address:"Guatemala" }
+        ];
+
+        let searchTable;
+
+        $('#modalSearchClient').on('shown.bs.modal', function () {
+
+            if (!searchTable) {
+                searchTable = $('#tblSearchClient').DataTable({
+                    data: clientsSearchData,
+                    columns: [
+                        { data: 'name' },
+                        { data: 'document' },
+                        { data: 'phone' },
+                        {
+                            data: null,
+                            render: x => `
+                                <button class="btn btn-success btn-sm" onclick="selectClient(${x.id})">
+                                    Select
+                                </button>
+                            `
+                        }
+                    ]
+                });
+
+                // 🔍 búsqueda dinámica
+                $('#searchClientInput').on('keyup', function () {
+                    searchTable.search(this.value).draw();
+                });
+            }
+
+        });
+                function selectClient(id) {
+
+            let client = clientsSearchData.find(x => x.id === id);
+
+            if (!client) return;
+
+            // 🔥 autocompletar sender
+            $('#SenderName').val(client.name);
+            $('#SenderDocument').val(client.document);
+            $('#SenderPhone').val(client.phone);
+            $('#SenderAddress').val(client.address);
+
+            // cerrar modal
+            $('#modalSearchClient').modal('hide');
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Client loaded',
+                timer: 1200,
+                showConfirmButton: false
+            });
+        }
+    </script>
+}

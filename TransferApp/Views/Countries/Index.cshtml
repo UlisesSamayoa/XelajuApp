@@ -1,0 +1,197 @@
+﻿@{
+    ViewData["Title"] = "Countries";
+}
+
+<link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    :root {
+        --primary: #4f46e5;
+        --bg: #f1f5f9;
+    }
+
+    body {
+        background: var(--bg);
+    }
+
+    .card-custom {
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    .btn-custom {
+        background: var(--primary);
+        color: white;
+        border-radius: 10px;
+    }
+
+    .fade-in {
+        animation: fadeIn 0.4s ease-in-out;
+    }
+
+    @@keyframes fadeIn {
+        from
+
+    {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+
+    }
+</style>
+
+<div class="container-fluid mt-4 px-4">
+
+    <div class="card card-custom p-4">
+
+        <div class="d-flex justify-content-between mb-3">
+            <h3><i class="bi bi-globe-americas-fill"></i> Countries</h3>
+
+            <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalCountry">
+                <i class="bi bi-plus"></i> Add Country
+            </button>
+        </div>
+
+        <table id="tblCountries" class="table table-hover w-100">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Code</th>
+                    <th>Currency</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+        </table>
+
+    </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal fade" id="modalCountry">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content card-custom p-3">
+            <h5>New Country</h5>
+            <form id="formCountry">
+                <label class="form-label">Name</label>
+                <input name="Name" class="form-control mb-2" placeholder="Name" required />
+                <label class="form-label">Code</label>
+                <input name="Code" class="form-control mb-2" placeholder="Code (SV, US)" required />
+                <label class="form-label">Currency</label>
+                <input name="Currency" class="form-control mb-2" placeholder="Currency (USD)" />
+            </form>
+
+            <div class="modal-footer">
+                <button class="btn btn-custom" id="btnSaveCountry"><i class="bi bi-floppy-fill"></i> Save</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <script>
+
+        let countriesData = [
+            { id:1, name:"El Salvador", code:"SV", currency:"USD", isActive:true },
+            { id:2, name:"United States", code:"US", currency:"USD", isActive:true },
+            { id:3, name:"Mexico", code:"MX", currency:"MXN", isActive:true }
+        ];
+
+        let table;
+
+        $(document).ready(function () {
+            table = loadCountries();
+        });
+
+        function loadCountries() {
+            return $('#tblCountries').DataTable({
+                data: countriesData,
+                columns: [
+                    { data:'name' },
+                    { data:'code' },
+                    { data:'currency' },
+                    {
+                        data:'isActive',
+                        render: d => d
+                            ? '<span class="badge bg-success">Active</span>'
+                            : '<span class="badge bg-secondary">Inactive</span>'
+                    },
+                    {
+                        data:'id',
+                        render: id => `
+                            <a href="/Countries/Update/${id}" class="btn btn-warning btn-sm"><i class="bi bi-pencil-fill"></i></a>
+                            <button class="btn btn-danger btn-sm" onclick="deleteCountry(${id})"><i class="bi bi-trash-fill"></i></button>
+                        `
+                    }
+                ],
+                drawCallback: () => $('#tblCountries tbody tr').addClass('fade-in')
+            });
+        }
+
+        // 💾 SAVE
+        $('#btnSaveCountry').click(function () {
+
+            let name = $('input[name="Name"]').val().trim();
+            let code = $('input[name="Code"]').val().trim().toUpperCase();
+
+            if (!name || !code) {
+                Swal.fire('Error','Name & Code required','error');
+                return;
+            }
+
+            // 🚫 duplicado
+            const exists = countriesData.some(x => x.code === code);
+
+            if (exists) {
+                Swal.fire('Duplicate','Code already exists','warning');
+                return;
+            }
+
+            let newCountry = {
+                id: countriesData.length + 1,
+                name,
+                code,
+                currency: $('input[name="Currency"]').val(),
+                isActive: true
+            };
+
+            countriesData.push(newCountry);
+            table.row.add(newCountry).draw();
+
+            Swal.fire('Saved!','','success');
+
+            $('#formCountry')[0].reset();
+            $('#modalCountry').modal('hide');
+        });
+
+        // 🗑️ DELETE
+        function deleteCountry(id) {
+
+            let item = countriesData.find(x => x.id === id);
+
+            Swal.fire({
+                title:'Delete?',
+                html:`<b>${item.name}</b> (${item.code})`,
+                icon:'warning',
+                showCancelButton:true
+            }).then(r=>{
+                if(r.isConfirmed){
+                    countriesData = countriesData.filter(x=>x.id!==id);
+                    table.clear().rows.add(countriesData).draw();
+                    Swal.fire('Deleted!','','success');
+                }
+            });
+        }
+
+    </script>
+
+}

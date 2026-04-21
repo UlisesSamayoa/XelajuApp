@@ -1,0 +1,340 @@
+﻿@{
+    ViewData["Title"] = "Users";
+}
+
+<!-- LIBS -->
+<link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #4338ca;
+        --bg: #f1f5f9;
+    }
+
+    body {
+        background: var(--bg);
+    }
+
+    .card-custom {
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        border: none;
+    }
+
+    .btn-custom {
+        background: var(--primary);
+        color: white;
+        border-radius: 10px;
+        transition: 0.3s;
+    }
+
+        .btn-custom:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+    .skeleton {
+        animation: shimmer 1.5s infinite linear;
+        background: linear-gradient(to right, #eee 8%, #ddd 18%, #eee 33%);
+        height: 20px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    @@keyframes shimmer {
+        0% {
+            background-position: -1000px 0;
+        }
+
+        100% {
+            background-position: 1000px 0;
+        }
+    }
+
+    .fade-in {
+        animation: fadeIn 0.4s ease-in-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(5px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="container-fluid mt-4 px-4">
+
+    <div class="card card-custom p-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3><i class="bi bi-person-fill-gear"></i> Users</h3>
+
+            <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalUser">
+                <i class="bi bi-plus"></i> Add User
+            </button>
+        </div>
+
+        <!-- FILTROS -->
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <input id="filterName" class="form-control" placeholder="Search by name">
+            </div>
+            <div class="col-md-4">
+                <select id="filterStatus" class="form-control">
+                    <option value="">All Status</option>
+                    <option value="true">Active</option>
+                    <option value="false">Inactive</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- SKELETON -->
+        <div id="tableLoader">
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+        </div>
+
+        <!-- TABLA -->
+        <table id="tblUsers" class="table table-hover w-100" style="display:none;">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Country</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+        </table>
+
+    </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal fade" id="modalUser">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content card-custom">
+
+            <div class="modal-header">
+                <h5> New User</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="formUser">
+                    <div class="row">
+                        <div class="col-6">
+                            <label class="form-label">First Name</label>
+                            <input name="FirstName" class="form-control mb-2" placeholder="First Name" required />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Last Name</label>
+                            <input name="LastName" class="form-control mb-2" placeholder="Last Name" required />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <label class="form-label">Email</label>
+                            <input name="Email" class="form-control mb-2" placeholder="Email" type="email" required />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Phone</label>
+                            <input name="Phone" class="form-control mb-2" placeholder="Phone" />
+                        </div>
+                    </div>
+                    <label class="form-label">Country</label>
+                    <select name="Country" id="Country" class="form-control mb-2"></select>
+                    <label class="form-label">Document</label>
+                    <input name="DocumentNumber" class="form-control mb-2" placeholder="Document" required />
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-custom" id="btnSaveUser"><i class="bi bi-floppy-fill"></i> Save</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <script>
+
+        let usersData = [
+            {
+                id: 1,
+                firstName: "John",
+                lastName: "Doe",
+                email: "john@mail.com",
+                phone: "12345678",
+                country: "USA",
+                isActive: true
+            },
+            {
+                id: 2,
+                firstName: "Maria",
+                lastName: "Lopez",
+                email: "maria@mail.com",
+                phone: "87654321",
+                country: "El Salvador",
+                isActive: true
+            }
+        ];
+        let countries = [
+            { id:1, name:"Mexico" },
+            { id:2, name:"Honduras" },
+            { id:3, name:"El Salvador" }
+        ];
+
+        let table;
+
+        $(document).ready(function () {
+
+            $('#tableLoader').hide();
+            $('#tblUsers').show();
+
+            table = loadUsersTable();
+
+            // filtros
+            $('#filterName').on('keyup', function () {
+                table.search(this.value).draw();
+            });
+
+            $('#filterStatus').on('change', function () {
+                table.column(4).search(this.value).draw();
+            });
+            countries.forEach(x =>
+                $('#Country').append(`<option value="${x.id}">${x.name}</option>`)
+            );
+
+        });
+
+        function loadUsersTable() {
+
+            return $('#tblUsers').DataTable({
+                data: usersData,
+                scrollX: true,
+                columns: [
+                    {
+                        data: null,
+                        render: x => `${x.firstName} ${x.lastName}`
+                    },
+                    { data: 'email' },
+                    { data: 'phone' },
+                    { data: 'country' },
+                    {
+                        data: 'isActive',
+                        render: function (data, type) {
+                            if (type === 'filter') return data ? 'true' : 'false';
+
+                            return data
+                                ? '<span class="badge bg-success">Active</span>'
+                                : '<span class="badge bg-secondary">Inactive</span>';
+                        }
+                    },
+                    {
+                        data: 'id',
+                        render: id => `
+                            <div class="d-flex gap-2">
+                                <a href="/Users/Update/${id}" class="btn btn-sm btn-warning"><i class="bi bi-pencil-fill"></i></a>
+                                <button class="btn btn-sm btn-danger" onclick="deleteUser(${id})"><i class="bi bi-trash-fill"></i></button>
+                            </div>
+                        `
+                    }
+                ],
+                language: {
+                    emptyTable: "No users available yet"
+                },
+                drawCallback: () => {
+                    $('#tblUsers tbody tr').addClass('fade-in');
+                }
+            });
+        }
+
+        // 💾 SAVE
+        $('#btnSaveUser').click(function () {
+
+            let firstName = $('input[name="FirstName"]').val().trim();
+            let lastName = $('input[name="LastName"]').val().trim();
+            let email = $('input[name="Email"]').val().trim();
+
+            if (!firstName || !lastName || !email) {
+                Swal.fire('Error', 'Required fields missing', 'error');
+                return;
+            }
+
+            // 🚫 validar email duplicado
+            const exists = usersData.some(x =>
+                x.email.toLowerCase() === email.toLowerCase()
+            );
+
+            if (exists) {
+                Swal.fire('Duplicate', 'Email already exists', 'warning');
+                return;
+            }
+
+            let newId = usersData.length > 0
+                ? Math.max(...usersData.map(x => x.id)) + 1
+                : 1;
+
+            let newUser = {
+                id: newId,
+                firstName,
+                lastName,
+                email,
+                phone: $('input[name="Phone"]').val(),
+                country: $('#Country').val(),
+                isActive: true
+            };
+
+            usersData.push(newUser);
+            table.row.add(newUser).draw();
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Saved!',
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+            $('#formUser')[0].reset();
+            $('#modalUser').modal('hide');
+        });
+
+        // 🗑️ DELETE
+        function deleteUser(id) {
+
+            const user = usersData.find(x => x.id === id);
+
+            Swal.fire({
+                title: 'Delete user?',
+                html: `<b>${user.firstName} ${user.lastName}</b><br>${user.email}`,
+                icon: 'warning',
+                showCancelButton: true
+            }).then(res => {
+
+                if (res.isConfirmed) {
+
+                    usersData = usersData.filter(x => x.id !== id);
+                    table.clear().rows.add(usersData).draw();
+
+                    Swal.fire('Deleted!', '', 'success');
+                }
+            });
+        }
+
+    </script>
+}

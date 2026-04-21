@@ -1,0 +1,173 @@
+﻿@{
+    ViewData["Title"] = "Update Transaction";
+}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    :root {
+        --primary: #4f46e5;
+        --bg: #f1f5f9;
+    }
+
+    body {
+        background: var(--bg);
+    }
+
+    .card-custom {
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        border: none;
+    }
+
+    .btn-custom {
+        background: var(--primary);
+        color: white;
+        border-radius: 10px;
+        transition: 0.3s;
+    }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+        }
+
+    .form-control {
+        border-radius: 10px;
+    }
+
+    .title {
+        font-weight: bold;
+    }
+</style>
+<div class="container mt-4">
+
+    <div class="card card-custom p-4">
+
+        <div class="d-flex justify-content-between mb-3">
+            <h3>Update Transaction</h3>
+            <a href="/Transactions" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+        </div>
+
+        <form id="formUpdateTx">
+            <input type="hidden" id="Id" value="1" />
+
+            <div class="row">
+                <div class="col-6">
+                    <input id="Amount" type="number" class="form-control mb-2" value="250" />
+                </div>
+                <div class="col-6">
+                    <input id="Currency" class="form-control mb-2" value="USD" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-4">
+                    <select id="IntermediaryId" class="form-control mb-2">
+                        <option value="1" selected>Bank of America</option>
+                        <option value="2">HSBC</option>
+                    </select>
+                </div>
+                <div class="col-4">
+                    <input id="Reference" class="form-control mb-2" value="REF-123456" />
+                </div>
+                <div class="col-4">
+                    <input id="DestinationCountry" class="form-control mb-2" value="El Salvador" />
+                </div>
+            </div>
+
+            <hr />
+
+            <!-- 👤 SENDER -->
+            <div class="row">
+                <div class="col-6">
+                    <h6>Sender Info</h6>
+                    <div class="row">
+                        <div class="col-4">
+                            <input id="SenderName" class="form-control mb-2" value="Carlos Perez" />
+                        </div>
+                        <div class="col-4">
+                            <input id="SenderDocument" class="form-control mb-2" value="12345678" />
+                        </div>
+                        <div class="col-4">
+                            <input id="SenderPhone" class="form-control mb-2" value="7777-8888" />
+                        </div>
+                        <div class="col-12">
+                            <input id="SenderAddress" class="form-control mb-2" value="San Salvador" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 👥 RECEIVER -->
+                <div class="col-6">
+                    <h6>Receiver Info</h6>
+                    <div class="row">
+                        <div class="col-4">
+                            <input id="ReceiverName" class="form-control mb-2" value="Ana Gomez" />
+                        </div>
+                        <div class="col-4">
+                            <input id="ReceiverCountry" class="form-control mb-2" value="Mexico" />
+                        </div>
+                        <div class="col-4">
+                            <input id="ReceiverPhone" class="form-control mb-2" value="9999-0000" />
+                        </div>
+                        <div class="col-12">
+                            <input id="ReceiverAddress" class="form-control mb-2" value="CDMX" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3 d-flex gap-2">
+                <button type="button" class="btn btn-custom" id="btnUpdateTx">
+                    <i class="bi bi-floppy-fill"></i> Update
+                </button>
+
+                <a href="/Transactions" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+    function previewImage(input){
+        const file = input.files[0];
+        if(file){
+            const reader = new FileReader();
+            reader.onload = e => $('#imgPreview').attr('src', e.target.result);
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // 💾 UPDATE
+    $('#btnUpdateTx').click(function(){
+
+        let amount = $('#Amount').val();
+        let sender = $('#SenderName').val();
+
+        if(!amount || !sender){
+            Swal.fire('Error','Required fields missing','error');
+            return;
+        }
+
+        Swal.fire({
+            title:'Updating...',
+            allowOutsideClick:false,
+            didOpen:()=>Swal.showLoading()
+        });
+
+        setTimeout(()=>{
+            Swal.fire({
+                icon:'success',
+                title:'Updated!',
+                text:'Transaction updated successfully'
+            });
+        },1000);
+
+    });
+
+</script>

@@ -1,0 +1,102 @@
+﻿@{
+    ViewData["Title"] = "Update Client";
+}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    :root {
+        --primary: #4f46e5;
+        --bg: #f1f5f9;
+    }
+
+    body {
+        background: var(--bg);
+    }
+
+    .card-custom {
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        border: none;
+    }
+
+    .btn-custom {
+        background: var(--primary);
+        color: white;
+        border-radius: 10px;
+        transition: 0.3s;
+    }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+        }
+
+    .form-control {
+        border-radius: 10px;
+    }
+
+    .title {
+        font-weight: bold;
+    }
+</style>
+<div class="container mt-4">
+
+    <div class="card card-custom p-4">
+
+        <div class="d-flex justify-content-between mb-3">
+            <h3>Update Client</h3>
+            <a href="/Clients" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+        </div>
+
+        <form id="formUpdateClient">
+
+            <input type="hidden" id="Id" value="1" />
+            <input id="FirstName" class="form-control mb-2" value="Carlos" />
+            <input id="LastName" class="form-control mb-2" value="Perez" />
+            <input id="DocumentNumber" class="form-control mb-2" value="12345678" />
+            <input id="Phone" class="form-control mb-2" value="7777-8888" />
+            <input id="Country" class="form-control mb-2" value="El Salvador" />
+
+            <select id="IsActive" class="form-control mb-2">
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+            </select>
+
+            <div class="mt-3 d-flex gap-2">
+                <button type="button" class="btn btn-custom" id="btnUpdateClient">
+                    <i class="bi bi-floppy-fill"></i> Update
+                </button>
+
+                <a href="/Clients" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+    $('#btnUpdateClient').click(function(){
+
+        Swal.fire({
+            title:'Updating...',
+            didOpen:()=>Swal.showLoading()
+        });
+
+        setTimeout(()=>{
+            Swal.fire('Updated!','','success');
+        },1000);
+
+    });
+
+</script>@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}

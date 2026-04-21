@@ -1,0 +1,63 @@
+﻿@{
+    ViewData["Title"] = "Update Country";
+}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<div class="container mt-4">
+
+    <div class="card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3> Update Country</h3>
+
+            <a href="/Countries" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+        </div>
+
+        <form id="formUpdateCountry">
+
+            <input type="hidden" id="Id" value="1" />
+
+            <input id="Name" class="form-control mb-2" value="El Salvador" />
+            <input id="Code" class="form-control mb-2" value="SV" />
+            <input id="Currency" class="form-control mb-2" value="USD" />
+
+            <select id="IsActive" class="form-control mb-2">
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+            </select>
+
+            <div class="mt-3 d-flex gap-2">
+                <button type="button" class="btn btn-primary" id="btnUpdateCountry">
+                    <i class="bi bi-floppy-fill"></i> Update
+                </button>
+
+                <a href="/Countries" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+    $('#btnUpdateCountry').click(function(){
+
+        Swal.fire({
+            title:'Updating...',
+            didOpen:()=>Swal.showLoading()
+        });
+
+        setTimeout(()=>{
+            Swal.fire('Updated!','','success');
+        },1000);
+
+    });
+
+</script>
