@@ -4,10 +4,44 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    :root {
+        --primary: #4f46e5;
+        --bg: #f1f5f9;
+    }
 
+    body {
+        background: var(--bg);
+    }
+
+    .card-custom {
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        border: none;
+    }
+
+    .btn-custom {
+        background: var(--primary);
+        color: white;
+        border-radius: 10px;
+        transition: 0.3s;
+    }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+        }
+
+    .form-control {
+        border-radius: 10px;
+    }
+
+    .title {
+        font-weight: bold;
+    }
+</style>
 <div class="container mt-4">
 
-    <div class="card p-4">
+    <div class="card card-custom p-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h3> Update Country</h3>
 
@@ -15,49 +49,110 @@
                 <i class="bi bi-arrow-left"></i> Back
             </a>
         </div>
-
         <form id="formUpdateCountry">
-
             <input type="hidden" id="Id" value="1" />
-
             <input id="Name" class="form-control mb-2" value="El Salvador" />
             <input id="Code" class="form-control mb-2" value="SV" />
             <input id="Currency" class="form-control mb-2" value="USD" />
-
-            <select id="IsActive" class="form-control mb-2">
-                <option value="true">Active</option>
-                <option value="false">Inactive</option>
-            </select>
-
             <div class="mt-3 d-flex gap-2">
                 <button type="button" class="btn btn-primary" id="btnUpdateCountry">
                     <i class="bi bi-floppy-fill"></i> Update
                 </button>
-
                 <a href="/Countries" class="btn btn-secondary">
                     <i class="bi bi-arrow-left"></i> Back
                 </a>
             </div>
-
         </form>
-
     </div>
-
 </div>
 
 <script>
 
-    $('#btnUpdateCountry').click(function(){
+       const id = window.location.pathname.split('/').pop();
 
-        Swal.fire({
-            title:'Updating...',
-            didOpen:()=>Swal.showLoading()
+    $(document).ready(function () {
+
+        $.ajax({
+            url: '/Countries/GetById?id=' + id,
+            type: 'GET',
+
+            beforeSend: () => {
+                Swal.fire({
+                    title: 'Loading...',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+            },
+
+            success: function (data) {
+
+                Swal.close();
+
+                if (!data) {
+                    Swal.fire('Error', 'Country not found', 'error')
+                        .then(() => window.location.href = '/Countries');
+                    return;
+                }
+
+                $('#Id').val(data.idCountry);
+                $('#Name').val(data.name);
+                $('#Code').val(data.code);
+                $('#Currency').val(data.currency);
+            },
+
+            error: () => {
+                Swal.fire('Error', 'Failed to load data', 'error');
+            }
         });
 
-        setTimeout(()=>{
-            Swal.fire('Updated!','','success');
-        },1000);
+    });
 
+        $('#btnUpdateCountry').click(function () {
+
+        let data = {
+            IdCountry: $('#Id').val(),
+            Name: $('#Name').val(),
+            Code: $('#Code').val().toUpperCase(),
+            Currency: $('#Currency').val(),
+            UserU: "admin"
+        };
+
+        if (!data.Name || !data.Code) {
+            Swal.fire('Error', 'Name & Code required', 'error');
+            return;
+        }
+
+        $.ajax({
+            url: '/Countries/Update',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+
+            beforeSend: () => {
+                Swal.fire({
+                    title: 'Updating...',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+            },
+
+            success: function (res) {
+                Swal.fire({
+                    icon: 'success',
+                    title: res.message
+                }).then(() => {
+                    window.location.href = '/Countries';
+                });
+            },
+
+            error: function (err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: err.responseJSON?.message
+                });
+            }
+        });
     });
 
 </script>

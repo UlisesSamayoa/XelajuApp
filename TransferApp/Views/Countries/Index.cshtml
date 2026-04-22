@@ -49,7 +49,7 @@
     <div class="card card-custom p-4">
 
         <div class="d-flex justify-content-between mb-3">
-            <h3><i class="bi bi-globe-americas-fill"></i> Countries</h3>
+            <h3><i class="bi bi-flag-fill"></i> Countries</h3>
 
             <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalCountry">
                 <i class="bi bi-plus"></i> Add Country
@@ -62,7 +62,6 @@
                     <th>Name</th>
                     <th>Code</th>
                     <th>Currency</th>
-                    <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -75,7 +74,10 @@
 <div class="modal fade" id="modalCountry">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content card-custom p-3">
-            <h5>New Country</h5>
+            <div class="modal-header">
+                <h5>New Company</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
             <form id="formCountry">
                 <label class="form-label">Name</label>
                 <input name="Name" class="form-control mb-2" placeholder="Name" required />
@@ -99,96 +101,135 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
     <script>
-
-        let countriesData = [
-            { id:1, name:"El Salvador", code:"SV", currency:"USD", isActive:true },
-            { id:2, name:"United States", code:"US", currency:"USD", isActive:true },
-            { id:3, name:"Mexico", code:"MX", currency:"MXN", isActive:true }
-        ];
-
         let table;
-
         $(document).ready(function () {
             table = loadCountries();
         });
-
         function loadCountries() {
             return $('#tblCountries').DataTable({
-                data: countriesData,
+                ajax: {
+                    url: '/Countries/GetAll',
+                    type: 'GET',
+                    dataSrc: ''
+                },
                 columns: [
-                    { data:'name' },
-                    { data:'code' },
-                    { data:'currency' },
+                    { data: 'name' },
+                    { data: 'code' },
+                    { data: 'currency' },
                     {
-                        data:'isActive',
-                        render: d => d
-                            ? '<span class="badge bg-success">Active</span>'
-                            : '<span class="badge bg-secondary">Inactive</span>'
-                    },
-                    {
-                        data:'id',
+                        data: 'idCountry',
                         render: id => `
-                            <a href="/Countries/Update/${id}" class="btn btn-warning btn-sm"><i class="bi bi-pencil-fill"></i></a>
-                            <button class="btn btn-danger btn-sm" onclick="deleteCountry(${id})"><i class="bi bi-trash-fill"></i></button>
+                            <a href="/Countries/Update/${id}" class="btn btn-warning btn-sm">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
+                            <button class="btn btn-danger btn-sm" onclick="deleteCountry(${id})">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
                         `
                     }
                 ],
+                language: {
+                    emptyTable: "No countries available"
+                },
                 drawCallback: () => $('#tblCountries tbody tr').addClass('fade-in')
             });
         }
 
-        // 💾 SAVE
-        $('#btnSaveCountry').click(function () {
+                $('#btnSaveCountry').click(function () {
 
-            let name = $('input[name="Name"]').val().trim();
-            let code = $('input[name="Code"]').val().trim().toUpperCase();
-
-            if (!name || !code) {
-                Swal.fire('Error','Name & Code required','error');
-                return;
-            }
-
-            // 🚫 duplicado
-            const exists = countriesData.some(x => x.code === code);
-
-            if (exists) {
-                Swal.fire('Duplicate','Code already exists','warning');
-                return;
-            }
-
-            let newCountry = {
-                id: countriesData.length + 1,
-                name,
-                code,
-                currency: $('input[name="Currency"]').val(),
-                isActive: true
+            let data = {
+                Name: $('input[name="Name"]').val().trim(),
+                Code: $('input[name="Code"]').val().trim().toUpperCase(),
+                Currency: $('input[name="Currency"]').val(),
+                UserC: "admin"
             };
 
-            countriesData.push(newCountry);
-            table.row.add(newCountry).draw();
+            if (!data.Name || !data.Code) {
+                Swal.fire('Error', 'Name & Code required', 'error');
+                return;
+            }
 
-            Swal.fire('Saved!','','success');
+            $.ajax({
+                url: '/Countries/Create',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
 
-            $('#formCountry')[0].reset();
-            $('#modalCountry').modal('hide');
+                beforeSend: () => {
+                    Swal.fire({
+                        title: 'Saving...',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+                },
+
+                success: function (res) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: res.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                    $('#formCountry')[0].reset();
+                    $('#modalCountry').modal('hide');
+                    table.ajax.reload();
+                },
+
+                error: function (err) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: err.responseJSON?.message || 'Something went wrong'
+                    });
+                }
+            });
         });
 
-        // 🗑️ DELETE
-        function deleteCountry(id) {
-
-            let item = countriesData.find(x => x.id === id);
+                function deleteCountry(id) {
 
             Swal.fire({
-                title:'Delete?',
-                html:`<b>${item.name}</b> (${item.code})`,
-                icon:'warning',
-                showCancelButton:true
-            }).then(r=>{
-                if(r.isConfirmed){
-                    countriesData = countriesData.filter(x=>x.id!==id);
-                    table.clear().rows.add(countriesData).draw();
-                    Swal.fire('Deleted!','','success');
-                }
+                title: 'Delete?',
+                text: 'This country will be removed',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#4f46e5',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete'
+            }).then(r => {
+
+                if (!r.isConfirmed) return;
+
+                $.ajax({
+                    url: '/Countries/Delete?id=' + id,
+                    type: 'POST',
+
+                    beforeSend: () => {
+                        Swal.fire({
+                            title: 'Deleting...',
+                            allowOutsideClick: false,
+                            didOpen: () => Swal.showLoading()
+                        });
+                    },
+
+                    success: function (res) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: res.message
+                        });
+
+                        table.ajax.reload();
+                    },
+
+                    error: function (err) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: err.responseJSON?.message
+                        });
+                    }
+                });
+
             });
         }
 

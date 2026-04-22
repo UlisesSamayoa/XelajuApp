@@ -9,85 +9,85 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = TransferApp
 build_property.RootNamespace = TransferApp
-build_property.ProjectDir = C:\Users\Producción\Desktop\APP_GUDIEL\TransferApp\TransferApp\
+build_property.ProjectDir = C:\GIT\XelajuApp\XelajuApp\TransferApp\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = true
-build_property.MSBuildProjectDirectory = C:\Users\Producción\Desktop\APP_GUDIEL\TransferApp\TransferApp
+build_property.MSBuildProjectDirectory = C:\GIT\XelajuApp\XelajuApp\TransferApp
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/Producción/Desktop/APP_GUDIEL/TransferApp/TransferApp/Views/Auth/Login.cshtml]
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Auth/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Producción/Desktop/APP_GUDIEL/TransferApp/TransferApp/Views/Clients/Index.cshtml]
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Clients/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50c1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Producción/Desktop/APP_GUDIEL/TransferApp/TransferApp/Views/Clients/Update.cshtml]
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Clients/Update.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50c1xVcGRhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Producción/Desktop/APP_GUDIEL/TransferApp/TransferApp/Views/Countries/Index.cshtml]
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Companies/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29tcGFuaWVzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Companies/Update.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29tcGFuaWVzXFVwZGF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Countries/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ291bnRyaWVzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Producción/Desktop/APP_GUDIEL/TransferApp/TransferApp/Views/Countries/Update.cshtml]
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Countries/Update.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ291bnRyaWVzXFVwZGF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Producción/Desktop/APP_GUDIEL/TransferApp/TransferApp/Views/Home/Index.cshtml]
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Producción/Desktop/APP_GUDIEL/TransferApp/TransferApp/Views/Home/Privacy.cshtml]
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Producción/Desktop/APP_GUDIEL/TransferApp/TransferApp/Views/Intermediaries/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW50ZXJtZWRpYXJpZXNcSW5kZXguY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/Producción/Desktop/APP_GUDIEL/TransferApp/TransferApp/Views/Intermediaries/Update.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW50ZXJtZWRpYXJpZXNcVXBkYXRlLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/Producción/Desktop/APP_GUDIEL/TransferApp/TransferApp/Views/Shared/Error.cshtml]
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Producción/Desktop/APP_GUDIEL/TransferApp/TransferApp/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Producción/Desktop/APP_GUDIEL/TransferApp/TransferApp/Views/Transactions/Index.cshtml]
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Transactions/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNhY3Rpb25zXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Producción/Desktop/APP_GUDIEL/TransferApp/TransferApp/Views/Transactions/Update.cshtml]
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Transactions/Update.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNhY3Rpb25zXFVwZGF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Producción/Desktop/APP_GUDIEL/TransferApp/TransferApp/Views/Users/Index.cshtml]
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Users/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Producción/Desktop/APP_GUDIEL/TransferApp/TransferApp/Views/Users/Update.cshtml]
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Users/Update.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcVXBkYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Producción/Desktop/APP_GUDIEL/TransferApp/TransferApp/Views/_ViewImports.cshtml]
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Producción/Desktop/APP_GUDIEL/TransferApp/TransferApp/Views/_ViewStart.cshtml]
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Producción/Desktop/APP_GUDIEL/TransferApp/TransferApp/Views/Shared/_Layout.cshtml]
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-rqdx28vqm6

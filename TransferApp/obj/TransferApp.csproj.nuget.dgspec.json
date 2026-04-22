@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Producción\\Desktop\\APP_GUDIEL\\TransferApp\\TransferApp\\TransferApp.csproj": {}
+    "C:\\GIT\\XelajuApp\\XelajuApp\\TransferApp\\TransferApp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Producción\\Desktop\\APP_GUDIEL\\TransferApp\\TransferApp\\TransferApp.csproj": {
+    "C:\\GIT\\XelajuApp\\XelajuApp\\TransferApp\\TransferApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Producción\\Desktop\\APP_GUDIEL\\TransferApp\\TransferApp\\TransferApp.csproj",
+        "projectUniqueName": "C:\\GIT\\XelajuApp\\XelajuApp\\TransferApp\\TransferApp.csproj",
         "projectName": "TransferApp",
-        "projectPath": "C:\\Users\\Producción\\Desktop\\APP_GUDIEL\\TransferApp\\TransferApp\\TransferApp.csproj",
+        "projectPath": "C:\\GIT\\XelajuApp\\XelajuApp\\TransferApp\\TransferApp.csproj",
         "packagesPath": "C:\\Users\\Producción\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Producción\\Desktop\\APP_GUDIEL\\TransferApp\\TransferApp\\obj\\",
+        "outputPath": "C:\\GIT\\XelajuApp\\XelajuApp\\TransferApp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
@@ -54,6 +54,14 @@
             "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": {
               "target": "Package",
               "version": "[8.0.25, )"
+            },
+            "Microsoft.Data.SqlClient": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.0, )"
             }
           },
           "imports": [

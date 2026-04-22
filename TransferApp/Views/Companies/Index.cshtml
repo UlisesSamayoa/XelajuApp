@@ -1,0 +1,314 @@
+﻿@{
+    ViewData["Title"] = "Companies";
+}
+
+<!-- LIBS -->
+<link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #4338ca;
+        --bg: #f1f5f9;
+    }
+
+    body {
+        background: var(--bg);
+    }
+
+    .card-custom {
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        border: none;
+    }
+
+    .btn-custom {
+        background: var(--primary);
+        color: white;
+        border-radius: 10px;
+        transition: 0.3s;
+    }
+
+        .btn-custom:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+    .skeleton {
+        animation: shimmer 1.5s infinite linear;
+        background: linear-gradient(to right, #eee 8%, #ddd 18%, #eee 33%);
+        height: 20px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    @@keyframes shimmer {
+        0% {
+            background-position: -1000px 0;
+        }
+
+        100% {
+            background-position: 1000px 0;
+        }
+    }
+
+    .fade-in {
+        animation: fadeIn 0.4s ease-in-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(5px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    #tblCompanies tbody tr:hover {
+        background: #f8fafc;
+        transform: scale(1.01);
+    }
+</style>
+
+<div class="container mt-4">
+
+    <div class="card card-custom p-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3><i class="bi bi-bank2"></i> Companies</h3>
+
+            <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalCompany">
+                <i class="bi bi-plus"></i> Add Company
+            </button>
+        </div>
+
+        <!-- FILTROS -->
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <input type="text" id="filterCountry" class="form-control" placeholder="Filter by country">
+            </div>
+        </div>
+
+        <!-- SKELETON -->
+        <div id="tableLoader">
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+        </div>
+
+        <!-- TABLA -->
+        <table id="tblCompanies" class="table table-hover w-100" style="display:none;">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Country</th>
+                    <th>Swift</th>
+                    <th>Phone</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+        </table>
+
+    </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal fade" id="modalCompany">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content card-custom">
+
+            <div class="modal-header">
+                <h5>New Company</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="formCompany">
+                    <label class="form-label">Name</label>
+                    <input name="Name" class="form-control mb-2" placeholder="Name" required />
+                    <label class="form-label">Country</label>
+                    <select name="Country" id="Country" class="form-control mb-2"></select>
+                    <label class="form-label">Swift Code</label>
+                    <input name="SwiftCode" class="form-control mb-2" placeholder="Swift Code" />
+                    <label class="form-label">Phone</label>
+                    <input name="Phone" class="form-control mb-2" placeholder="Phone" />
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-custom" id="btnSave"><i class="bi bi-floppy-fill"></i> Save</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        let countries = [
+            { id:1, name:"Mexico" },
+            { id:2, name:"Honduras" },
+            { id:3, name:"El Salvador" }
+        ];
+        let table;
+        $(document).ready(function () {
+            table = loadTable();
+            $('#tableLoader').hide();
+            $('#tblCompanies').show();
+            $('#filterCountry').on('keyup', function () {
+                table.column(1).search(this.value).draw();
+            });
+            countries.forEach(x =>
+                $('#Country').append(`<option value="${x.id}">${x.name}</option>`)
+            );
+        });
+
+         function loadTable() {
+            return $('#tblCompanies').DataTable({
+                ajax: {
+                    url: '/Companies/GetAll',
+                    type: 'GET',
+                    dataSrc: ''
+                },
+                columns: [
+                    { data: 'name' },
+                    { data: 'country' },
+                    { data: 'swiftCode' },
+                    { data: 'phone' },
+                    {
+                        data: 'idCompany',
+                        render: id => `
+                        <div class="d-flex gap-2">
+                            <a href="/Companies/Update/${id}" class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
+                            <button class="btn btn-sm btn-danger" onclick="deleteItem(${id})">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                        </div>`
+                    }
+                ],
+                language: {
+                    emptyTable: "No Companies available yet",
+                    search: "Search:",
+                    lengthMenu: "Show _MENU_ entries"
+                },
+                drawCallback: function () {
+                    $('#tblCompanies tbody tr').addClass('fade-in');
+                }
+            });
+        }
+
+
+                   $('#btnSave').click(function () {
+
+            let data = {
+                Name: $('input[name="Name"]').val().trim(),
+                Country: $('#Country option:selected').text(),
+                IdCountry: $('#Country').val(),
+                SwiftCode: $('input[name="SwiftCode"]').val(),
+                Phone: $('input[name="Phone"]').val(),
+                UserC: "admin"
+            };
+
+            if (!data.Name) {
+                Swal.fire('Error', 'Name is required', 'error');
+                return;
+            }
+
+            $.ajax({
+                url: '/Companies/Create',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+
+                beforeSend: () => {
+                    Swal.fire({
+                        title: 'Saving...',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+                },
+
+                success: function (res) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: res.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                    $('#formCompany')[0].reset();
+                    $('#modalCompany').modal('hide');
+                    table.ajax.reload();
+                },
+
+                error: function (err) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: err.responseJSON?.message || 'Something went wrong'
+                    });
+                }
+            });
+        });
+
+                function deleteItem(id) {
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'This company will be deleted',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#4f46e5',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete'
+            }).then((result) => {
+
+                if (!result.isConfirmed) return;
+
+                $.ajax({
+                    url: '/Companies/Delete?id=' + id,
+                    type: 'POST',
+
+                    beforeSend: () => {
+                        Swal.fire({
+                            title: 'Deleting...',
+                            allowOutsideClick: false,
+                            didOpen: () => Swal.showLoading()
+                        });
+                    },
+
+                    success: function (res) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: res.message
+                        });
+
+                        table.ajax.reload();
+                    },
+
+                    error: function (err) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: err.responseJSON?.message
+                        });
+                    }
+                });
+
+            });
+        }
+
+    </script>
+
+}

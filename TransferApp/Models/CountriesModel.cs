@@ -6,14 +6,13 @@ namespace TransferApp.Models
     public class CountriesModel
     {
         public int IdCountry { get; set; }
-        [Required]
-        [StringLength(100)]
         public string Name { get; set; }
-        [Required]
-        [StringLength(10)]
         public string Code { get; set; }
-        [StringLength(10)]
         public string Currency { get; set; }
-        public bool IsActive { get; set; } = true;
+        public int Status { get; set; }
+        public DateTime DateC { get; set; }
+        public string UserC { get; set; }
+        public DateTime DateU { get; set; }
+        public string UserU { get; set; }
     }
 }
