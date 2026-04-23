@@ -58,3 +58,13 @@ wwwroot\lib\jquery\dist\jquery.js
 wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
+wwwroot\uploads\trainings\1_20260422224611.png
+wwwroot\uploads\trainings\Prueba_20260422224729.jpg
+wwwroot\uploads\trainings\Prueba_2_20260422230008.png
+wwwroot\uploads\trainings\Prueba_2_20260422230950.png
+wwwroot\uploads\trainings\Prueba_24444_5_20260422231250.pdf
+wwwroot\uploads\trainings\Training_1_20260422231322.png
+wwwroot\uploads\trainings\12_20260422231822.pdf
+wwwroot\uploads\trainings\12_20260422231830.pdf
+wwwroot\uploads\trainings\12121_20260422232024.pdf
+wwwroot\uploads\trainings\1212_20260422232131.pdf

@@ -60,22 +60,22 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label>Name</label>
-                    <input type="text" id="Name" class="form-control" value="Bank of America" />
+                    <input type="text" id="Name" class="form-control" />
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <label>Country</label>
-                    <input type="text" id="Country" class="form-control" value="USA" />
+                    <select name="Country" id="Country" class="form-control mb-2" required></select>
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <label>Swift Code</label>
-                    <input type="text" id="SwiftCode" class="form-control" value="BOFAUS3N" />
+                    <input type="text" id="SwiftCode" class="form-control" />
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <label>Phone</label>
-                    <input type="text" id="Phone" class="form-control" value="+1 800 432 1000" />
+                    <input type="text" id="Phone" class="form-control"  />
                 </div>
             </div>
 
@@ -101,25 +101,67 @@
 
     $(document).ready(function () {
 
-        $.get('/Companies/GetById?id=' + id, function (data) {
-            // $('#IdCompany').val(data.idCompany);
+        loadCountriesDropdown('#Country');
+        $.ajax({
+        url: '/Companies/GetById?id=' + id,
+        type: 'GET',
+
+        beforeSend: () => {
+            Swal.fire({
+                title: 'Loading...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+        },
+
+        success: function (data) {
+
+            Swal.close();
+
+            if (!data) {
+                Swal.fire('Error', 'Company not found', 'error')
+                    .then(() => window.location.href = '/Companies');
+                return;
+            }
+
+            $('#IdCompany').val(data.idCompany);
             $('#Name').val(data.name);
             $('#SwiftCode').val(data.swiftCode);
             $('#Phone').val(data.phone);
-            $('#Country').val(data.idCountry);
-            });
-        });
+            loadCountriesDropdown('#Country', data.idCountry);
+        },
+
+        error: () => {
+            Swal.fire('Error', 'Failed to load company', 'error');
+        }
+    });
+    });
         $('#btnUpdate').click(function () {
-        let data = {
-            // IdCompany: $('#IdCompany').val(),
-            IdCompany: id,
-            Name: $('#Name').val(),
-            Country: $('#Country option:selected').text(),
-            IdCountry: $('#Country').val(),
-            SwiftCode: $('#SwiftCode').val(),
-            Phone: $('#Phone').val(),
-            UserU: "admin"
-        };
+            let data = {
+                IdCompany: id,
+                Name: $('#Name').val(),
+                Country: $('#Country option:selected').text(),
+                IdCountry: $('#Country').val(),
+                SwiftCode: $('#SwiftCode').val(),
+                Phone: $('#Phone').val(),
+                UserU: "admin"
+            };
+             if (!data.Name) {
+                Swal.fire('Error', 'Name is required', 'error');
+                return;
+            }
+            if (!data.IdCountry) {
+                Swal.fire('Error', 'Country is required', 'error');
+                return;
+            }
+            if (!data.SwiftCode) {
+                Swal.fire('Error', 'SwiftCode is required', 'error');
+                return;
+            }
+            if (!data.Phone) {
+                Swal.fire('Error', 'Phone is required', 'error');
+                return;
+            }
 
         $.ajax({
             url: '/Companies/Update',
@@ -153,4 +195,37 @@
             }
         });
     });
+
+    function loadCountriesDropdown(selectId, selectedValue = null) {
+
+            $.ajax({
+                url: '/Countries/GetAll',
+                type: 'GET',
+
+                success: function (data) {
+
+                    let select = $(selectId);
+                    select.empty();
+
+                    select.append(`<option value="">Select country</option>`);
+
+                    data.forEach(c => {
+                        select.append(`
+                            <option value="${c.idCountry}">
+                                ${c.name}
+                            </option>
+                        `);
+                    });
+
+                    // 🔥 seleccionar valor si viene
+                    if (selectedValue) {
+                        select.val(selectedValue);
+                    }
+                },
+
+                error: function () {
+                    Swal.fire('Error', 'Failed to load countries', 'error');
+                }
+            });
+        }
 </script>

@@ -106,8 +106,8 @@
             <thead class="table-light">
                 <tr>
                     <th>Name</th>
-                    <th>Country</th>
                     <th>Swift</th>
+                    <th>Country</th>
                     <th>Phone</th>
                     <th>Actions</th>
                 </tr>
@@ -132,7 +132,7 @@
                     <label class="form-label">Name</label>
                     <input name="Name" class="form-control mb-2" placeholder="Name" required />
                     <label class="form-label">Country</label>
-                    <select name="Country" id="Country" class="form-control mb-2"></select>
+                    <select name="Country" id="Country" class="form-control mb-2" required></select>
                     <label class="form-label">Swift Code</label>
                     <input name="SwiftCode" class="form-control mb-2" placeholder="Swift Code" />
                     <label class="form-label">Phone</label>
@@ -154,22 +154,23 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
     <script>
-        let countries = [
-            { id:1, name:"Mexico" },
-            { id:2, name:"Honduras" },
-            { id:3, name:"El Salvador" }
-        ];
+        // let countries = [
+        //     { id:1, name:"Mexico" },
+        //     { id:2, name:"Honduras" },
+        //     { id:3, name:"El Salvador" }
+        // ];
         let table;
         $(document).ready(function () {
             table = loadTable();
             $('#tableLoader').hide();
             $('#tblCompanies').show();
             $('#filterCountry').on('keyup', function () {
-                table.column(1).search(this.value).draw();
+                table.column(2).search(this.value).draw();
             });
-            countries.forEach(x =>
-                $('#Country').append(`<option value="${x.id}">${x.name}</option>`)
-            );
+            // countries.forEach(x =>
+            //     $('#Country').append(`<option value="${x.id}">${x.name}</option>`)
+            // );
+             loadCountriesDropdown('#Country');
         });
 
          function loadTable() {
@@ -181,8 +182,8 @@
                 },
                 columns: [
                     { data: 'name' },
-                    { data: 'country' },
                     { data: 'swiftCode' },
+                    { data: 'country' },
                     { data: 'phone' },
                     {
                         data: 'idCompany',
@@ -224,7 +225,18 @@
                 Swal.fire('Error', 'Name is required', 'error');
                 return;
             }
-
+            if (!data.IdCountry) {
+                Swal.fire('Error', 'Country is required', 'error');
+                return;
+            }
+            if (!data.SwiftCode) {
+                Swal.fire('Error', 'SwiftCode is required', 'error');
+                return;
+            }
+            if (!data.Phone) {
+                Swal.fire('Error', 'Phone is required', 'error');
+                return;
+            }
             $.ajax({
                 url: '/Companies/Create',
                 type: 'POST',
@@ -306,6 +318,38 @@
                     }
                 });
 
+            });
+        }
+                function loadCountriesDropdown(selectId, selectedValue = null) {
+
+            $.ajax({
+                url: '/Countries/GetAll',
+                type: 'GET',
+
+                success: function (data) {
+
+                    let select = $(selectId);
+                    select.empty();
+
+                    select.append(`<option value="">Select country</option>`);
+
+                    data.forEach(c => {
+                        select.append(`
+                            <option value="${c.idCountry}">
+                                ${c.name}
+                            </option>
+                        `);
+                    });
+
+                    // 🔥 seleccionar valor si viene
+                    if (selectedValue) {
+                        select.val(selectedValue);
+                    }
+                },
+
+                error: function () {
+                    Swal.fire('Error', 'Failed to load countries', 'error');
+                }
             });
         }
 

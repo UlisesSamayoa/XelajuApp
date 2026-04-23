@@ -11,6 +11,10 @@ builder.Services.AddScoped<CompanyRepository>();
 builder.Services.AddScoped<CompanyService>();
 builder.Services.AddScoped<CountryRepository>();
 builder.Services.AddScoped<CountryService>();
+builder.Services.AddScoped<TrainingsLicensesRepository>();
+builder.Services.AddScoped<TrainingsLicensesService>();
+builder.Services.AddScoped<ReviewsRepository>();
+builder.Services.AddScoped<ReviewsService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

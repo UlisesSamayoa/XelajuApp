@@ -1,0 +1,304 @@
+﻿@{
+    ViewData["Title"] = "Trainings&Licenses";
+}
+
+<link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    :root {
+        --primary: #4f46e5;
+        --bg: #f1f5f9;
+    }
+
+    body {
+        background: var(--bg);
+    }
+
+    .card-custom {
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    .btn-custom {
+        background: var(--primary);
+        color: white;
+        border-radius: 10px;
+    }
+
+    .fade-in {
+        animation: fadeIn 0.4s ease-in-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+</style>
+<div class="container-fluid mt-4 px-4">
+    <div class="card card-custom p-4">
+
+        <div class="d-flex justify-content-between mb-3">
+            <h3><i class="bi bi-award-fill"></i> Trainings & Licenses</h3>
+
+            <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalTraining">
+                <i class="bi bi-plus"></i> Add
+            </button>
+        </div>
+
+        <table id="tblTraining" class="table table-hover w-100">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>File</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+        </table>
+
+    </div>
+</div>
+<div class="modal fade" id="modalTraining">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content card-custom p-3">
+            <div class="modal-header">
+                <h5>New Training / License</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <br />
+            <form id="formTraining">
+                <label class="form-label">Name</label>
+                <input name="Name" class="form-control mb-2" placeholder="Name" required />
+                <label class="form-label">Description</label>
+                <textarea name="Description" class="form-control mb-2" placeholder="Description"></textarea>
+                <label class="form-label">File</label>
+                <input type="file" id="fileTraining" class="form-control mb-2" onchange="previewFile(this)" />
+                <div id="filePreview" class="mt-2"></div>
+
+                @* <div id="filePreview" class="text-muted small"></div> *@
+            </form>
+
+            <div class="modal-footer">
+                <button class="btn btn-custom" id="btnSaveTraining">
+                    <i class="bi bi-floppy-fill"></i> Save
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalPreview">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content card-custom p-3">
+
+            <div class="d-flex justify-content-between mb-2">
+                <h5>File Preview</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div id="previewContent"></div>
+
+        </div>
+    </div>
+</div>
+@section Scripts {
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script>
+        let table;
+
+    $(document).ready(function () {
+        table = loadTraining();
+    });
+
+    function loadTraining() {
+        return $('#tblTraining').DataTable({
+            ajax: {
+                url: '/TrainingsLicenses/GetAll',
+                dataSrc: ''
+            },
+            columns: [
+                { data: 'name' },
+                { data: 'description' },
+                {data: 'trainingsLicensesFile',
+                render: f => {
+
+                    if (!f) {
+                        return '<span class="text-muted">No file</span>';
+                    }
+                    if (f.toLowerCase().endsWith('.pdf')) {
+                        return `
+                            <button class="btn btn-sm btn-outline-primary"
+                                    onclick="openPreview('${f}')">
+                                <i class="bi bi-file-earmark-pdf"></i> Preview
+                            </button>
+                        `;
+                    }
+                    return `
+                        <img src="${f}"
+                             onclick="openPreview('${f}')"
+                             style="height:50px;width:50px;object-fit:cover;
+                                    border-radius:8px;cursor:pointer;"
+                             class="shadow-sm"/>
+                    `;
+                }
+                },
+                {
+                    data: 'idTrainingsLicenses',
+                    render: id => `
+                        <a href="/TrainingsLicenses/Update/${id}" class="btn btn-warning btn-sm">
+                            <i class="bi bi-pencil-fill"></i>
+                        </a>
+                        <button class="btn btn-danger btn-sm" onclick="deleteTraining(${id})">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
+                    `
+                }
+            ]
+        });
+    }
+
+        $('#btnSaveTraining').click(function () {
+            var _Name= $('input[name="Name"]').val().trim();
+                var _Description= $('textarea[name="Description"]').val().trim();
+                if (!_Name) {
+                    Swal.fire('Error', 'Name is required', 'error');
+                    return;
+                }
+                if (!_Description) {
+                        Swal.fire('Error', 'Description is required', 'error');
+                    return;
+                }
+        let formData = new FormData();
+
+        formData.append("Name", _Name);
+        formData.append("Description", _Description);
+        formData.append("UserC", "admin");
+
+        let file = $('#fileTraining')[0].files[0];
+        if (file) formData.append("File", file);
+                if (!file) {
+                Swal.fire('Error', 'File is required', 'error');
+            return;
+        }
+        $.ajax({
+            url: '/TrainingsLicenses/Create',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+
+            beforeSend: () => Swal.fire({ title:'Saving...', didOpen:()=>Swal.showLoading() }),
+
+            success: res => {
+                Swal.fire('Saved!', res.message, 'success');
+                $('#modalTraining').modal('hide');
+                table.ajax.reload();
+                ClearForm();
+            },
+
+            error: err => Swal.fire('Error', err.responseJSON?.message, 'error')
+        });
+    });
+
+        function deleteTraining(id){
+            Swal.fire({
+                    title: 'Are you sure?',
+                        text: 'This TrainingsLicenses will be deleted',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#4f46e5',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete'
+                }).then((r) => {
+            if(r.isConfirmed){
+                $.post('/TrainingsLicenses/Delete?id='+id, ()=>{
+                    Swal.fire('Deleted!','','success');
+                    table.ajax.reload();
+                });
+            }
+        });
+    }
+            function previewFile(input) {
+
+            const file = input.files[0];
+            const preview = $('#filePreview');
+
+            preview.html('');
+
+            if (!file) return;
+
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+
+                if (file.type.includes("image")) {
+
+                    preview.html(`
+                        <img src="${e.target.result}"
+                             style="max-height:200px;border-radius:10px;"
+                             class="shadow" />
+                    `);
+
+                } else if (file.type === "application/pdf") {
+
+                    preview.html(`
+                        <iframe src="${e.target.result}"
+                                width="100%" height="300px"
+                                style="border-radius:10px;"></iframe>
+                    `);
+
+                } else {
+
+                    preview.html(`<span class="text-danger">Preview not available</span>`);
+                }
+            };
+
+            reader.readAsDataURL(file);
+        }
+                function openPreview(fileUrl) {
+
+            let content = '';
+
+            if (!fileUrl) {
+                content = '<span class="text-muted">No file</span>';
+            }
+            else if (fileUrl.toLowerCase().endsWith('.pdf')) {
+
+                content = `
+                    <iframe src="${fileUrl}"
+                            width="100%"
+                            height="500px"
+                            style="border-radius:10px;">
+                    </iframe>
+                `;
+
+            } else {
+
+                content = `
+                    <div class="text-center">
+                        <img src="${fileUrl}"
+                             style="max-height:400px;border-radius:10px;"
+                             class="shadow"/>
+                    </div>
+                `;
+            }
+
+            $('#previewContent').html(content);
+            $('#modalPreview').modal('show');
+        }
+            function ClearForm() {
+            $('input[name="Name"]').val('');
+            $('textarea[name="Description"]').val('');
+            $('#fileTraining').val('');
+            $('#filePreview').html('');
+            }
+</script>
+}

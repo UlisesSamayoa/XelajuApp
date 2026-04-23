@@ -1,0 +1,207 @@
+﻿@{
+    ViewData["Title"] = "Update Trainings&Licenses";
+}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
+    :root {
+        --primary: #4f46e5;
+        --bg: #f1f5f9;
+    }
+
+    body {
+        background: var(--bg);
+    }
+
+    .card-custom {
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        border: none;
+    }
+
+    .btn-custom {
+        background: var(--primary);
+        color: white;
+        border-radius: 10px;
+        transition: 0.3s;
+    }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+        }
+
+    .form-control {
+        border-radius: 10px;
+    }
+
+    .title {
+        font-weight: bold;
+    }
+</style>
+<div class="container mt-4">
+    <div class="card card-custom p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3> Update Training</h3>
+
+            <a href="/TrainingsLicenses" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+        </div>
+
+        <input id="Name" class="form-control mb-2" />
+        <textarea id="Description" class="form-control mb-2"></textarea>
+
+        <div class="row">
+
+            <!-- ARCHIVO ACTUAL -->
+            <div class="col-md-12">
+                <label class="form-label">Current File</label>
+                <div id="currentFilePreview" class="border rounded p-2 text-center"></div>
+            </div>
+
+            <!-- NUEVO ARCHIVO -->
+            <div class="col-md-12">
+                <label class="form-label">New File</label>
+                <input type="file" id="File" class="form-control mb-2" onchange="previewNewFile(this)" />
+                <div id="newFilePreview" class="border rounded p-2 text-center"></div>
+            </div>
+
+        </div>
+        <div class="mt-3 d-flex gap-2">
+            <button type="button" class="btn btn-primary" id="btnUpdateTraining">
+                <i class="bi bi-floppy-fill"></i> Update
+            </button>
+            <a href="/TrainingsLicenses" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+        </div>
+
+    </div>
+</div>
+<script>
+    const id = window.location.pathname.split('/').pop();
+
+    $(document).ready(function () {
+
+        $.get('/TrainingsLicenses/GetById?id='+id, data=>{
+
+            // $('#Id').val(data.idTrainingsLicenses);
+            $('#Name').val(data.name);
+            $('#Description').val(data.description);
+
+            if(data.trainingsLicensesFile){
+                $('#currentFile').html(`<a href="${data.trainingsLicensesFile}" target="_blank">Current File</a>`);
+            }
+            renderCurrentFile(data.trainingsLicensesFile);
+        });
+
+    });
+        $('#File').on('change', function () {
+        $('#newFilePreview').html('');
+    });
+    $('#btnUpdateTraining').click(function(){
+         var _Name= $('input[id="Name"]').val().trim();
+         var _Description= $('textarea[id="Description"]').val().trim();
+                if (!_Name) {
+                    Swal.fire('Error', 'Name is required', 'error');
+                    return;
+                }
+                if (!_Description) {
+                        Swal.fire('Error', 'Description is required', 'error');
+                    return;
+                }
+        let formData = new FormData();
+
+        // formData.append("IdTrainingsLicenses", $('#Id').val());
+        formData.append("IdTrainingsLicenses", id);
+        formData.append("Name", _Name);
+        formData.append("Description", _Description);
+        formData.append("UserU", "admin");
+
+        let file = $('#File')[0].files[0];
+        if(file) formData.append("File", file);
+
+        $.ajax({
+            url:'/TrainingsLicenses/Update',
+            type:'POST',
+            data:formData,
+            processData:false,
+            contentType:false,
+
+            beforeSend:()=>Swal.fire({title:'Updating...',didOpen:()=>Swal.showLoading()}),
+
+            success:()=>{
+                Swal.fire('Updated!','','success')
+                .then(()=>location.href='/TrainingsLicenses');
+            }
+        });
+    });
+        function renderCurrentFile(fileUrl) {
+
+        let html = '';
+
+        if (!fileUrl) {
+            html = '<span class="text-muted">No file uploaded</span>';
+        }
+        else if (fileUrl.toLowerCase().endsWith('.pdf')) {
+
+            html = `
+                <iframe src="${fileUrl}"
+                        width="100%"
+                        height="250px"
+                        style="border-radius:10px;">
+                </iframe>
+            `;
+
+        } else {
+
+            html = `
+                <img src="${fileUrl}"
+                     style="max-height:200px;border-radius:10px;"
+                     class="shadow"/>
+            `;
+        }
+
+        $('#currentFilePreview').html(html);
+    }
+        function previewNewFile(input) {
+
+        const file = input.files[0];
+        const preview = $('#newFilePreview');
+
+        preview.html('');
+
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+
+            if (file.type.includes("image")) {
+
+                preview.html(`
+                    <img src="${e.target.result}"
+                         style="max-height:200px;border-radius:10px;"
+                         class="shadow"/>
+                `);
+
+            } else if (file.type === "application/pdf") {
+
+                preview.html(`
+                    <iframe src="${e.target.result}"
+                            width="100%" height="250px"
+                            style="border-radius:10px;">
+                    </iframe>
+                `);
+
+            } else {
+
+                preview.html(`<span class="text-danger">Preview not available</span>`);
+            }
+        };
+
+        reader.readAsDataURL(file);
+    }
+</script>
