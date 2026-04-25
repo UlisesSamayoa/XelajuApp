@@ -49,54 +49,224 @@
                 <i class="bi bi-arrow-left"></i> Back
             </a>
         </div>
-
         <form id="formUpdateClient">
-
-            <input type="hidden" id="Id" value="1" />
-            <input id="FirstName" class="form-control mb-2" value="Carlos" />
-            <input id="LastName" class="form-control mb-2" value="Perez" />
-            <input id="DocumentNumber" class="form-control mb-2" value="12345678" />
-            <input id="Phone" class="form-control mb-2" value="7777-8888" />
-            <input id="Country" class="form-control mb-2" value="El Salvador" />
-
-            <select id="IsActive" class="form-control mb-2">
-                <option value="true">Active</option>
-                <option value="false">Inactive</option>
-            </select>
-
+            <input type="hidden" id="IdClient" />
+            <div class="row">
+                <div class="col-md-6">
+                    <label>First Name</label>
+                    <input name="FirstName" id="FirstName" class="form-control mb-2" required />
+                    <label>Last Name</label>
+                    <input name="LastName" id="LastName" class="form-control mb-2" required />
+                    <label>Document Type</label>
+                    <select name="IdDocumentType" id="IdDocumentType" class="form-control mb-2">
+                        <option value="1" selected>DUI</option>
+                        <option value="2">Passport</option>
+                        <option value="3">License</option>
+                    </select>
+                    <label>Document Number</label>
+                    <input name="DocumentNumber" id="DocumentNumber" class="form-control mb-2" required />
+                    <label>Expiration Date</label>
+                    <input type="date" name="ExpirationDate" id="ExpirationDate" class="form-control mb-2" />
+                    <label>Phone</label>
+                    <input name="Phone" id="Phone" class="form-control mb-2" />
+                    <label>Country</label>
+                    <select name="Country" id="Country" class="form-control mb-2"></select>
+                    <label>Address</label>
+                    <textarea name="Address" id="Address" class="form-control mb-2"></textarea>
+                </div>
+                <div class="col-md-6 text-center">
+                    <label>Client Photo / ID</label>
+                    <input type="file" id="fileClient" class="form-control mb-3" onchange="previewClientImage(this)" />
+                    <div id="clientPreview" class="border rounded p-3">
+                        <span class="text-muted">No image</span>
+                    </div>
+                </div>
+            </div>
             <div class="mt-3 d-flex gap-2">
                 <button type="button" class="btn btn-custom" id="btnUpdateClient">
                     <i class="bi bi-floppy-fill"></i> Update
                 </button>
-
                 <a href="/Clients" class="btn btn-secondary">
                     <i class="bi bi-arrow-left"></i> Back
                 </a>
             </div>
-
         </form>
-
     </div>
-
 </div>
 
 <script>
+    const id = window.location.pathname.split('/').pop();
+        $(document).ready(function () {
+        loadClient();
+        loadCountriesDropdown('#Country');
+    });
+        const documentTypeMap = {
+        "DUI": "1",
+        "Passport": "2",
+        "License": "3"
+    };
 
-    $('#btnUpdateClient').click(function(){
+        function loadClient() {
 
-        Swal.fire({
-            title:'Updating...',
-            didOpen:()=>Swal.showLoading()
+        $.get('/Clients/GetById?id=' + id, function (d) {
+
+            $('#IdClient').val(d.idClient);
+            $('#FirstName').val(d.firstName);
+            $('#LastName').val(d.lastName);
+            // $('#IdDocumentType').val(documentTypeMap[d.idDocumentType]);
+            $('#DocumentNumber').val(d.documentNumber);
+            if (d.expirationDate) {
+                let date = new Date(d.expirationDate);
+                if (!isNaN(date)) {
+                    let formatted = date.toISOString().split('T')[0];
+                    $('#ExpirationDate').val(formatted);
+                }
+            }
+            $('#Phone').val(d.phone);
+            // $('#Country').val(d.country);
+            $('#Address').val(d.address);
+            loadCountriesDropdown('#Country', d.country);
+            if (d.picture) {
+                $('#clientPreview').html(`
+                    <img src="${d.picture}"
+                         onclick="openPreview('${d.picture}')"
+                         style="height:150px;border-radius:12px;cursor:pointer;"
+                         class="shadow"/>
+                    <div class="small text-muted mt-2">Click to preview</div>
+                `);
+            }
+
+        });
+    } 
+        function previewClientImage(input) {
+
+        const file = input.files[0];
+
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+
+            $('#clientPreview').html(`
+                <img src="${e.target.result}"
+                     onclick="openPreview('${e.target.result}')"
+                     style="height:150px;border-radius:12px;cursor:pointer;"
+                     class="shadow"/>
+                <div class="small text-muted mt-2">New image</div>
+            `);
+        };
+
+        reader.readAsDataURL(file);
+    }
+        $('#btnUpdateClient').click(function () {
+
+        var _FirstName= $('input[name="FirstName"]').val().trim();
+             var _LastName= $('input[name="LastName"]').val().trim();
+             var _IdDocumentType = $('#IdDocumentType').val();
+             var _DocumentNumber= $('input[name="DocumentNumber"]').val().trim();
+             var _ExpirationDate= $('input[name="ExpirationDate"]').val().trim();
+             var _Phone= $('input[name="Phone"]').val().trim();
+             var _Country= $('#Country').val();
+             var _Address= $('textarea[name="Address"]').val().trim();
+                if (!_FirstName) {
+                    Swal.fire('Error', 'FirstName is required', 'error');
+                    return;
+                }
+                if (!_LastName) {
+                        Swal.fire('Error', 'LastName is required', 'error');
+                    return;
+                }
+                if (!_IdDocumentType) {
+                    Swal.fire('Error', 'DocumentType is required'+ _IdDocumentType, 'error');
+                    return;
+                }
+                if (!_DocumentNumber) {
+                    Swal.fire('Error', 'DocumentNumber is required', 'error');
+                    return;
+                }
+                if (!_ExpirationDate) {
+                        Swal.fire('Error', 'ExpirationDate is required', 'error');
+                    return;
+                }
+                if (!_Phone) {
+                        Swal.fire('Error', 'Phone is required', 'error');
+                    return;
+                }
+                if (!_Country) {
+                        Swal.fire('Error', 'Country is required', 'error');
+                    return;
+                }
+                if (!_Address) {
+                        Swal.fire('Error', 'Address is required', 'error');
+                    return;
+                }
+
+        let formData = new FormData();
+
+        formData.append("IdClient", $('#IdClient').val());
+        formData.append("FirstName", _FirstName);
+        formData.append("LastName",_LastName);
+        formData.append("IdDocumentType",_IdDocumentType);
+        formData.append("DocumentNumber", _DocumentNumber);
+        formData.append("ExpirationDate", _ExpirationDate);
+        formData.append("Phone", _Phone);
+        formData.append("Country", _Country);
+        formData.append("Address", _Address);
+        formData.append("UserU", "admin");
+
+        let file = $('#fileClient')[0].files[0];
+        if (file) formData.append("File", file);
+
+        $.ajax({
+            url: '/Clients/Update',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+
+            beforeSend: () => Swal.fire({
+                title: 'Updating...',
+                didOpen: () => Swal.showLoading()
+            }),
+
+            success: res => {
+                 Swal.fire({
+                    icon: 'success',
+                    title: res.message
+                }).then(() => {
+                    window.location.href = '/Clients';
+                });
+            },
+
+            error: err => {
+                Swal.fire('Error', err.responseJSON?.message, 'error');
+            }
         });
 
-        setTimeout(()=>{
-            Swal.fire('Updated!','','success');
-        },1000);
-
     });
-
-</script>@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+    function loadCountriesDropdown(selectId, selectedValue = null) {
+            $.ajax({
+                url: '/Countries/GetAll',
+                type: 'GET',
+                success: function (data) {
+                    let select = $(selectId);
+                    select.empty();
+                    select.append(`<option value="">Select country</option>`);
+                    data.forEach(c => {
+                        select.append(`
+                            <option value="${c.idCountry}">
+                                ${c.name}
+                            </option>
+                        `);
+                    });
+                    if (selectedValue) {
+                        select.val(selectedValue);
+                    }
+                },
+                error: function () {
+                    Swal.fire('Error', 'Failed to load countries', 'error');
+                }
+            });
+        }
+</script>

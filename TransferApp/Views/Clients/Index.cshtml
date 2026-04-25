@@ -69,11 +69,11 @@
         <table id="tblClients" class="table table-hover w-100">
             <thead class="table-light">
                 <tr>
-                    <th>Name</th>
+                    <th>Client</th>
                     <th>Document</th>
                     <th>Phone</th>
                     <th>Country</th>
-                    <th>Status</th>
+                    <th>Picture</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -84,83 +84,141 @@
 
 <!-- MODAL -->
 <div class="modal fade" id="modalClient">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content card-custom">
-
-            <div class="modal-header">
-                <h5>New Client</h5>
-                <button class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body">
-                <form id="formClient">
-                    <label class="form-label">First Name</label>
-                    <input name="FirstName" class="form-control mb-2" placeholder="First Name" required />
-                    <label class="form-label">Last Name</label>
-                    <input name="LastName" class="form-control mb-2" placeholder="Last Name" required />
-                    <label class="form-label">Document</label>
-                    <input name="DocumentNumber" class="form-control mb-2" placeholder="Document" required />
-                    <label class="form-label">Phone</label>
-                    <input name="Phone" class="form-control mb-2" placeholder="Phone" />
-                    <label class="form-label">Country</label>
-                    <select id="Country" class="form-control mb-2"></select>
-                </form>
-            </div>
-
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content card-custom p-3">
+            <h5 class="mb-3">New Client</h5>
+            <form id="formClient">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>First Name</label>
+                                <input name="FirstName" class="form-control mb-2" required placeholder="First Name" />
+                            </div>
+                            <div class="col-md-6">
+                                <label>Last Name</label>
+                                <input name="LastName" class="form-control mb-2" required placeholder="Last Name" />
+                            </div>
+                        </div>
+                        <label>Document Type</label>
+                        <select name="IdDocumentType" id="IdDocumentType" class="form-control mb-2">
+                            <option value="1">DUI</option>
+                            <option value="2">Passport</option>
+                            <option value="3">License</option>
+                        </select>
+                        <label>Document Number</label>
+                        <input name="DocumentNumber" class="form-control mb-2" required placeholder="Document Number" />
+                        <label>Expiration Date</label>
+                        <input type="date" name="ExpirationDate" class="form-control mb-2" />
+                        <label>Phone</label>
+                        <input name="Phone" class="form-control mb-2" placeholder="Phone" />
+                        <label>Country</label>
+                        <select name="Country" id="Country" class="form-control mb-2"></select>
+                        <label>Address</label>
+                        <textarea name="Address" class="form-control mb-2" placeholder="Address"></textarea>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <label class="mb-2">Client Photo / ID</label>
+                        <input type="file" id="fileClient" class="form-control mb-3"
+                               onchange="previewClientImage(this)" />
+                        <div id="clientPreview" class="text-center border rounded p-3">
+                            <span class="text-muted">No image selected</span>
+                        </div>
+                    </div>
+                </div>
+            </form>
             <div class="modal-footer">
-                <button class="btn btn-custom" id="btnSaveClient"><i class="bi bi-floppy-fill"></i> Save</button>
+                <button class="btn btn-custom" id="btnSaveClient">
+                    <i class="bi bi-floppy-fill"></i> Save
+                </button>
             </div>
 
         </div>
     </div>
 </div>
+<div class="modal fade" id="modalPreview">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content card-custom p-3">
 
+            <!-- HEADER -->
+            <div class="d-flex justify-content-between align-items-center mb-2">
+
+                <h5 class="mb-0">
+                    <i class="bi bi-eye"></i> File Preview
+                </h5>
+
+                <div class="d-flex gap-2">
+
+                    <a id="btnDownloadFile"
+                       class="btn btn-success btn-sm"
+                       target="_blank">
+                        <i class="bi bi-download"></i> Download
+                    </a>
+
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+
+                </div>
+            </div>
+
+            <!-- BODY -->
+            <div id="previewContent" class="text-center">
+                <span class="text-muted">No file selected</span>
+            </div>
+
+        </div>
+    </div>
+</div>
 @section Scripts {
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
     <script>
-
-        let clientsData = [
-            { id:1, firstName:"Carlos", lastName:"Perez", documentNumber:"12345678", phone:"7777-8888", country:"El Salvador", isActive:true },
-            { id:2, firstName:"Ana", lastName:"Gomez", documentNumber:"87654321", phone:"9999-0000", country:"Mexico", isActive:true }
-        ];
-        let countries = [
-            { id:1, name:"Mexico" },
-            { id:2, name:"Honduras" },
-            { id:3, name:"El Salvador" }
-        ];
         let table;
-
         $(document).ready(function () {
             table = loadClients();
-            countries.forEach(x =>
-                $('#Country').append(`<option value="${x.id}">${x.name}</option>`)
-            );
+            loadCountriesDropdown('#Country');
         });
 
-        function loadClients() {
-            return $('#tblClients').DataTable({
-                data: clientsData,
+          function loadClients() {
+                return $('#tblClients').DataTable({
+                ajax: {
+                    url: '/Clients/GetAll',
+                    dataSrc: ''
+                },
                 columns: [
-                    { data:null, render:x=>`${x.firstName} ${x.lastName}` },
-                    { data:'documentNumber' },
-                    { data:'phone' },
-                    { data:'country' },
                     {
-                        data:'isActive',
-                        render: d => d
-                            ? '<span class="badge bg-success">Active</span>'
-                            : '<span class="badge bg-secondary">Inactive</span>'
+                        data: null,
+                        render: d => `
+                            <b>${d.firstName} ${d.lastName}</b>
+                        `
                     },
                     {
-                        data:'id',
+                        data: null,
+                        render: d => `
+                            <small>${d.documentNumber}</small>
+                        `
+                    },
+                    { data: 'phone' },
+                    { data: 'countryName' },
+                    {
+                        data: 'picture',
+                        render: f => f
+                            ? `<img src="${f}"
+                                onclick="openPreview('${f}')"
+                                style="height:50px;width:50px;object-fit:cover;
+                                    border-radius:8px;cursor:pointer;" />`
+                            : '<span class="text-muted">No photo</span>'
+                    },
+                    {
+                        data: 'idClient',
                         render: id => `
-                            <div class="d-flex gap-2">
-                                <a href="/Clients/Update/${id}" class="btn btn-warning btn-sm"><i class="bi bi-pencil-fill"></i></a>
-                                <button class="btn btn-danger btn-sm" onclick="deleteClient(${id})"><i class="bi bi-trash-fill"></i></button>
-                            </div>
+                            <a href="/Clients/Update/${id}" class="btn btn-warning btn-sm">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
+                            <button class="btn btn-danger btn-sm" onclick="deleteClient(${id})">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
                         `
                     }
                 ],
@@ -168,64 +226,191 @@
             });
         }
 
-        // 💾 SAVE
-        $('#btnSaveClient').click(function () {
+            $('#btnSaveClient').click(function () {
 
-            let firstName = $('input[name="FirstName"]').val().trim();
-            let lastName = $('input[name="LastName"]').val().trim();
-            let document = $('input[name="DocumentNumber"]').val().trim();
+             var _FirstName= $('input[name="FirstName"]').val().trim();
+             var _LastName= $('input[name="LastName"]').val().trim();
+             var _IdDocumentType = $('#IdDocumentType').val();
+             var _DocumentNumber= $('input[name="DocumentNumber"]').val().trim();
+             var _ExpirationDate= $('input[name="ExpirationDate"]').val().trim();
+             var _Phone= $('input[name="Phone"]').val().trim();
+             var _Country= $('#Country').val();
+             var _Address= $('textarea[name="Address"]').val().trim();
+                if (!_FirstName) {
+                    Swal.fire('Error', 'FirstName is required', 'error');
+                    return;
+                }
+                if (!_LastName) {
+                        Swal.fire('Error', 'LastName is required', 'error');
+                    return;
+                }
+                if (!_IdDocumentType) {
+                    Swal.fire('Error', 'DocumentType is required'+ _IdDocumentType, 'error');
+                    return;
+                }
+                if (!_DocumentNumber) {
+                    Swal.fire('Error', 'DocumentNumber is required', 'error');
+                    return;
+                }
+                if (!_ExpirationDate) {
+                        Swal.fire('Error', 'ExpirationDate is required', 'error');
+                    return;
+                }
+                if (!_Phone) {
+                        Swal.fire('Error', 'Phone is required', 'error');
+                    return;
+                }
+                if (!_Country) {
+                        Swal.fire('Error', 'Country is required', 'error');
+                    return;
+                }
+                if (!_Address) {
+                        Swal.fire('Error', 'Address is required', 'error');
+                    return;
+                }
 
-            if (!firstName || !lastName || !document) {
-                Swal.fire('Error','Required fields missing','error');
-                return;
-            }
-
-            // 🚫 validar documento duplicado
-            const exists = clientsData.some(x => x.documentNumber === document);
-
-            if (exists) {
-                Swal.fire('Duplicate','Document already exists','warning');
-                return;
-            }
-
-            let newClient = {
-                id: clientsData.length + 1,
-                firstName,
-                lastName,
-                documentNumber: document,
-                phone: $('input[name="Phone"]').val(),
-                country: $('#Country').val(),
-                isActive: true
-            };
-
-            clientsData.push(newClient);
-            table.row.add(newClient).draw();
-
-            Swal.fire('Saved!','','success');
-
-            $('#formClient')[0].reset();
-            $('#modalClient').modal('hide');
+            let formData = new FormData();
+            $('#formClient').serializeArray().forEach(x => {
+                formData.append(x.name, x.value);
+            });
+            formData.append("UserC", "admin");
+            let file = $('#fileClient')[0].files[0];
+            if (file) formData.append("File", file);
+            $.ajax({
+                url: '/Clients/Create',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                beforeSend: () => Swal.fire({ title: 'Saving...', didOpen: () => Swal.showLoading() }),
+                success: res => {
+                    Swal.fire('Saved!', res.message, 'success');
+                    $('#modalClient').modal('hide');
+                    $('#formClient')[0].reset();
+                    $('#clientPreview').html('<span class="text-muted">No image selected</span>');
+                    $('#tblClients').DataTable().ajax.reload();
+                },
+                error: err => Swal.fire('Error', err.responseJSON?.message, 'error')
+            });
         });
 
-        // 🗑️ DELETE
         function deleteClient(id) {
-
-            let item = clientsData.find(x => x.id === id);
-
             Swal.fire({
-                title:'Delete?',
-                html:`<b>${item.firstName} ${item.lastName}</b><br>${item.documentNumber}`,
-                icon:'warning',
-                showCancelButton:true
-            }).then(r=>{
-                if(r.isConfirmed){
-                    clientsData = clientsData.filter(x=>x.id!==id);
-                    table.clear().rows.add(clientsData).draw();
-                    Swal.fire('Deleted!','','success');
+                title: 'Delete client?',
+                text: 'This Client will be deleted',
+                icon: 'warning',
+                showCancelButton: true
+            }).then(r => {
+                if (!r.isConfirmed) return;
+                $.post('/Clients/Delete?id=' + id, () => {
+                    Swal.fire('Deleted!', '', 'success');
+                    $('#tblClients').DataTable().ajax.reload();
+                });
+            });
+        }
+
+
+                 function previewClientImage(input) {
+
+            const file = input.files[0];
+            const preview = $('#clientPreview');
+
+            preview.html('');
+
+            if (!file) return;
+
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+
+                preview.html(`
+                    <img src="${e.target.result}"
+                         onclick="openPreview('${e.target.result}')"
+                         style="height:120px;width:120px;
+                                object-fit:cover;
+                                border-radius:12px;
+                                cursor:pointer;"
+                         class="shadow"/>
+                    <div class="mt-2 text-muted small">Click to preview</div>
+                `);
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function loadCountriesDropdown(selectId, selectedValue = null) {
+            $.ajax({
+                url: '/Countries/GetAll',
+                type: 'GET',
+                success: function (data) {
+                    let select = $(selectId);
+                    select.empty();
+                    select.append(`<option value="">Select country</option>`);
+                    data.forEach(c => {
+                        select.append(`
+                            <option value="${c.idCountry}">
+                                ${c.name}
+                            </option>
+                        `);
+                    });
+                    if (selectedValue) {
+                        select.val(selectedValue);
+                    }
+                },
+                error: function () {
+                    Swal.fire('Error', 'Failed to load countries', 'error');
                 }
             });
         }
 
+                function openPreview(fileUrl) {
+
+            let content = '';
+
+            if (!fileUrl) {
+                content = '<span class="text-muted">No file available</span>';
+                $('#btnDownloadFile').hide();
+            }
+            else if (fileUrl.toLowerCase().includes('.pdf')) {
+
+                content = `
+                    <iframe src="${fileUrl}"
+                            width="100%"
+                            height="500px"
+                            style="border-radius:12px;">
+                    </iframe>
+                `;
+
+                $('#btnDownloadFile')
+                    .show()
+                    .attr('href', fileUrl)
+                    .attr('download', fileUrl.split('/').pop());
+            }
+            else {
+
+                content = `
+                    <div class="text-center">
+                        <img src="${fileUrl}"
+                             style="max-height:450px; border-radius:12px;"
+                             class="shadow"/>
+                    </div>
+                `;
+
+                // 🔥 si es base64 (preview local), ocultar download
+                if (fileUrl.startsWith("data:")) {
+                    $('#btnDownloadFile').hide();
+                } else {
+                    $('#btnDownloadFile')
+                        .show()
+                        .attr('href', fileUrl)
+                        .attr('download', fileUrl.split('/').pop());
+                }
+            }
+
+            $('#previewContent').html(content);
+
+            $('#modalPreview').modal('show');
+        }
     </script>
 
 }

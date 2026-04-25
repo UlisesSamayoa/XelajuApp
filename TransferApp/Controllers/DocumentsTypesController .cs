@@ -1,17 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TransferApp.Models;
 
-public class ClientsController : Controller
+public class DocumentsTypesController : Controller
 {
-    private readonly ClientsService _service;
+    private readonly DocumentsTypesService _service;
 
-    public ClientsController(ClientsService service)
+    public DocumentsTypesController(DocumentsTypesService service)
     {
         _service = service;
     }
 
     public IActionResult Index() => View();
-    public IActionResult Update(int id) => View();
+
+    public IActionResult Update(int id)
+    {
+        ViewBag.Id = id;
+        return View();
+    }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
@@ -22,12 +27,13 @@ public class ClientsController : Controller
         => Json(await _service.GetById(id));
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromForm] ClientsModel model, IFormFile File)
+    public async Task<IActionResult> Create([FromBody] DocumentsTypes m)
     {
         try
         {
-            await _service.Create(model, File);
-            return Ok(new { message = "Client created" });
+            m.UserC = "admin";
+            await _service.Create(m);
+            return Json(new { success = true, message = "Saved!" });
         }
         catch (Exception ex)
         {
@@ -36,12 +42,13 @@ public class ClientsController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Update([FromForm] ClientsModel model, IFormFile File)
+    public async Task<IActionResult> Update([FromBody] DocumentsTypes m)
     {
         try
         {
-            await _service.Update(model, File);
-            return Ok(new { message = "Client updated" });
+            m.UserU = "admin";
+            await _service.Update(m);
+            return Json(new { success = true, message = "Updated!" });
         }
         catch (Exception ex)
         {
@@ -53,6 +60,6 @@ public class ClientsController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         await _service.Delete(id, "admin");
-        return Ok(new { message = "Deleted" });
+        return Json(new { success = true });
     }
 }

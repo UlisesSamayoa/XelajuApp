@@ -1,0 +1,191 @@
+﻿@{
+    ViewData["Title"] = "DocumentsType";
+}
+
+<link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #4338ca;
+        --bg: #f1f5f9;
+    }
+
+    body {
+        background: var(--bg);
+    }
+
+    .card-custom {
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        border: none;
+    }
+
+    .btn-custom {
+        background: var(--primary);
+        color: white;
+        border-radius: 10px;
+        transition: 0.3s;
+    }
+
+        .btn-custom:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+    .fade-in {
+        animation: fadeIn 0.4s ease-in-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(5px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="card card-custom p-4">
+
+        <div class="d-flex justify-content-between mb-3">
+            <h3>Document Types</h3>
+
+            <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalDoc">
+                <i class="bi bi-plus"></i> Add DocumentType
+            </button>
+        </div>
+
+        <table id="tblDoc" class="table table-hover w-100">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+        </table>
+
+    </div>
+</div>
+
+<div class="modal fade" id="modalDoc">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content card-custom">
+
+            <div class="modal-header">
+                <h5>New Document Type</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="formCompany">
+                    <label class="form-label">Name</label>
+                    <input name="Name" class="form-control mb-2" placeholder="Name" required />
+                    <label class="form-label">Description</label>
+                    <textarea name="Description" class="form-control mb-2" placeholder="Description"></textarea>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-custom" id="btnSaveDoc"><i class="bi bi-floppy-fill"></i> Save</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <script>
+             let table;
+
+        $(document).ready(function () {
+            table = $('#tblDoc').DataTable({
+                ajax: {
+                    url: '/DocumentsTypes/GetAll',
+                    dataSrc: ''
+                },
+                columns: [
+                    { data: 'name' },
+                    { data: 'description' },
+                    {
+                        data: 'idDocumentType',
+                        render: id => `
+                            <a href="/DocumentsTypes/Update/${id}" class="btn btn-warning btn-sm">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
+                            <button class="btn btn-danger btn-sm" onclick="deleteDoc(${id})">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                        `
+                    }
+                ]
+            });
+        });
+
+        $('#btnSaveDoc').click(function () {
+            var _Name= $('input[name="Name"]').val().trim();
+            var _Description= $('textarea[name="Description"]').val().trim();
+             if (!_Name) {
+                    Swal.fire('Error', 'Name is required', 'error');
+                    return;
+                }
+                if (!_Description) {
+                        Swal.fire('Error', 'Description is required', 'error');
+                    return;
+                }
+            $.ajax({
+                url: '/DocumentsTypes/Create',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    name: _Name,
+                    description:_Description
+                }),
+                success: () => {
+                    Swal.fire('Saved!', '', 'success');
+                    table.ajax.reload();
+                    $('#modalDoc').modal('hide');
+                },
+                error: e => Swal.fire('Error', e.responseJSON.message, 'error')
+            });
+
+        });
+
+        function deleteDoc(id) {
+
+           Swal.fire({
+                    title: 'Are you sure?',
+                        text: 'This Document Type will be deleted',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#4f46e5',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete'
+                }).then((r) => {
+
+                if (r.isConfirmed) {
+
+                    $.post('/DocumentsTypes/Delete?id=' + id, () => {
+                        Swal.fire('Deleted!', '', 'success');
+                        table.ajax.reload();
+                    });
+
+                }
+
+            });
+        }
+
+    </script>
+
+}
