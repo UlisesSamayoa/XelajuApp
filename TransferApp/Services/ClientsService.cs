@@ -60,4 +60,12 @@ public class ClientsService
 
     public async Task Delete(int id, string user)
         => await _repo.Delete(id, user);
+
+    public async Task<List<ClientsModel>> Search(string term)
+    {
+        if (string.IsNullOrWhiteSpace(term))
+            return new List<ClientsModel>();
+
+        return await _repo.Search(term);
+    }
 }

@@ -19,6 +19,9 @@ builder.Services.AddScoped<ClientsRepository>();
 builder.Services.AddScoped<ClientsService>();
 builder.Services.AddScoped<DocumentsTypesRepository>();
 builder.Services.AddScoped<DocumentsTypesService>();
+
+builder.Services.AddScoped<BeneficiariesRepository>();
+builder.Services.AddScoped<BeneficiariesService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

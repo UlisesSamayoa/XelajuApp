@@ -1,0 +1,317 @@
+﻿@{
+    ViewData["Title"] = "Update Beneficiary";
+}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
+    :root {
+        --primary: #4f46e5;
+        --bg: #f1f5f9;
+    }
+
+    body {
+        background: var(--bg);
+    }
+
+    .card-custom {
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        border: none;
+    }
+
+    .btn-custom {
+        background: var(--primary);
+        color: white;
+        border-radius: 10px;
+    }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+        }
+
+    #ParentClientName {
+        background: #eef2ff;
+        font-weight: 500;
+    }
+</style>
+
+<div class="container mt-4">
+
+    <div class="card card-custom p-4">
+
+        <div class="d-flex justify-content-between mb-3">
+            <h3>Update Beneficiary</h3>
+
+            <a href="/Beneficiaries" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+        </div>
+
+        <form id="formUpdateBeneficiarie">
+
+            <input type="hidden" id="IdBeneficiarie" value="@ViewBag.Id" />
+            <div class="mb-2">
+                <label>Parent</label>
+                <div class="input-group">
+                    <input id="ParentClientName" class="form-control" readonly />
+                </div>
+                <input type="hidden" id="IdClient_fk" />
+            </div>
+            <label>First Name</label>
+            <input id="FirstName" class="form-control mb-2" placeholder="First Name" />
+            <label>Last Name</label>
+            <input id="LastName" class="form-control mb-2" placeholder="Last Name" />
+            <label>Document Type</label>
+            <select name="IdDocumentType" id="IdDocumentType" class="form-control mb-2"></select>
+            <label>Document Number</label>
+            <input id="DocumentNumber" class="form-control mb-2" placeholder="Document Number" />
+            <label>Country</label>
+            <select name="Country" id="Country" class="form-control mb-2"></select>
+            <div class="mt-3 d-flex gap-2">
+                <button type="button" class="btn btn-custom" id="btnUpdate">
+                    <i class="bi bi-floppy-fill"></i> Update
+                </button>
+                <a href="/Beneficiaries" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal fade" id="modalClients">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content card-custom p-3">
+
+            <h5>Select Client</h5>
+
+            <input id="searchClient" class="form-control mb-3"
+                   placeholder="Search client..." />
+
+            <table id="tblClientsModal" class="table table-hover w-100">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Document</th>
+                        <th>Phone</th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+    let id = $('#IdBeneficiarie').val();
+
+    $(document).ready(function () {
+        loadData();
+        loadCountriesDropdown('#Country');
+        loadDocumentsTypesDropdown('#IdDocumentType');
+    });
+
+    function loadData() {
+
+        $.get('/Beneficiaries/GetById?id=' + id, function (d) {
+
+            $('#FirstName').val(d.firstName);
+            $('#LastName').val(d.lastName);
+            // $('#IdDocumentType').val(d.idDocumentType);
+            $('#DocumentNumber').val(d.documentNumber);
+            $('#Country').val(d.country);
+            $('#Status').val(d.status);
+
+            $('#ParentClientName').val(d.parentClientName);
+            $('#IdClient_fk').val(d.idClient_fk);
+            loadCountriesDropdown('#Country', d.country);
+            loadDocumentsTypesDropdown('#IdDocumentType', d.idDocumentType);
+            
+
+        });
+    }
+
+    $('#btnUpdate').click(function () {
+
+        let data = {
+            idBeneficiarie: id,
+            firstName: $('#FirstName').val(),
+            lastName: $('#LastName').val(),
+            idDocumentType: $('#IdDocumentType').val(),
+            documentNumber: $('#DocumentNumber').val(),
+            country: $('#Country').val(),
+            idClient_fk: $('#IdClient_fk').val()
+        };
+        if (!data.firstName) {
+               Swal.fire('Error', 'FirstName is required', 'error');
+               return;
+             }
+             if (!data.lastName) {
+               Swal.fire('Error', 'LastName is required', 'error');
+               return;
+             }
+             if (!data.idDocumentType) {
+               Swal.fire('Error', 'DocumentType is required'+ _IdDocumentType, 'error');
+               return;
+             }
+             if (!data.documentNumber) {
+               Swal.fire('Error', 'DocumentNumber is required', 'error');
+               return;
+             }
+             if (!data.country) {
+               Swal.fire('Error', 'Country is required', 'error');
+               return;
+             }
+        Swal.fire({
+            title: 'Updating...',
+            didOpen: () => Swal.showLoading()
+        });
+
+        $.ajax({
+            url: '/Beneficiaries/Update',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: () => {
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Updated!',
+                    timer: 1200,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = '/Beneficiaries';
+                });
+
+            },
+            error: e => {
+                Swal.fire('Error', e.responseJSON?.message || 'Error', 'error');
+            }
+        });
+
+    });
+
+    function openClientModal(){
+
+        $('#modalClients').modal('show');
+
+        if (!window.clientTableLoaded) {
+            loadClientsModal();
+            window.clientTableLoaded = true;
+        }
+    }
+
+    function loadClientsModal(){
+
+        window.tblClientsModal = $('#tblClientsModal').DataTable({
+            data: [],
+            columns:[
+                { data:'fullName' },
+                { data:'documentNumber' },
+                { data:'phone' },
+                {
+                    data:null,
+                    render:d=>`
+                        <button class="btn btn-success btn-sm"
+                            onclick="selectClient(${d.idClient}, '${d.fullName}')">
+                            Select
+                        </button>
+                    `
+                }
+            ]
+        });
+    }
+
+    let timer;
+
+    $('#searchClient').on('keyup', function () {
+
+        clearTimeout(timer);
+
+        let term = this.value;
+
+        timer = setTimeout(() => {
+
+            if(term.length < 2){
+                tblClientsModal.clear().draw();
+                return;
+            }
+
+            $.get('/Clients/Search?term=' + term, function(data){
+                tblClientsModal.clear().rows.add(data).draw();
+            });
+
+        }, 400);
+
+    });
+
+    function selectClient(id, name){
+
+        $('#IdClient_fk').val(id);
+        $('#ParentClientName').val(name);
+
+        $('#modalClients').modal('hide');
+
+        Swal.fire({
+            icon:'success',
+            title:'Client selected',
+            text:name,
+            timer:1200,
+            showConfirmButton:false
+        });
+    }
+
+    function loadCountriesDropdown(selectId, selectedValue = null) {
+            $.ajax({
+                url: '/Countries/GetAll',
+                type: 'GET',
+                success: function (data) {
+                    let select = $(selectId);
+                    select.empty();
+                    select.append(`<option value="">Select country</option>`);
+                    data.forEach(c => {
+                        select.append(`
+                            <option value="${c.idCountry}">
+                                ${c.name}
+                            </option>
+                        `);
+                    });
+                    if (selectedValue) {
+                        select.val(selectedValue);
+                    }
+                },
+                error: function () {
+                    Swal.fire('Error', 'Failed to load countries', 'error');
+                }
+            });
+        }
+
+        function loadDocumentsTypesDropdown(selectId, selectedValue = null) {
+            $.ajax({
+                url: '/DocumentsTypes/GetAll',
+                type: 'GET',
+                success: function (data) {
+                    let select = $(selectId);
+                    select.empty();
+                    select.append(`<option value="">Select country</option>`);
+                    data.forEach(c => {
+                        select.append(`
+                            <option value="${c.idDocumentType}">
+                                ${c.name}
+                            </option>
+                        `);
+                    });
+                    if (selectedValue) {
+                        select.val(selectedValue);
+                    }
+                },
+                error: function () {
+                    Swal.fire('Error', 'Failed to load countries', 'error');
+                }
+            });
+        }
+
+</script>

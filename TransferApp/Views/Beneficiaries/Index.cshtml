@@ -1,0 +1,389 @@
+﻿@{
+    ViewData["Title"] = "Beneficiaries";
+}
+<link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #4338ca;
+        --bg: #f1f5f9;
+    }
+
+    body { background: var(--bg); }
+
+    .card-custom {
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        border: none;
+    }
+
+    .btn-custom {
+        background: var(--primary);
+        color: white;
+        border-radius: 10px;
+        transition: 0.3s;
+    }
+
+    .btn-custom:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+    }
+
+    #ParentClientName {
+        background: #eef2ff;
+        font-weight: 500;
+    }
+
+    .fade-in {
+        animation: fadeIn 0.4s ease-in-out;
+    }
+
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<div class="container-fluid mt-4 px-4">
+
+    <div class="card card-custom p-4">
+
+        <div class="d-flex justify-content-between mb-3">
+            <h3><i class="bi bi-person-heart"></i> Beneficiaries</h3>
+
+            <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalBeneficiarie">
+                <i class="bi bi-plus"></i> Add Beneficiary
+            </button>
+        </div>
+
+        <table id="tblBeneficiaries" class="table table-hover w-100">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Document Type</th>
+                    <th>Document</th>
+                    <th>Country</th>
+                    <th>Parent</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+        </table>
+
+    </div>
+</div>
+<div class="modal fade" id="modalBeneficiarie">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content card-custom p-3">
+            <h5>New Beneficiary</h5>
+            <form id="formBeneficiarie">
+                <div class="mb-2">
+                    <label>Parent</label>
+                    <div class="input-group">
+                        <input id="ParentClientName" class="form-control" readonly placeholder="Select client..." />
+                        <button type="button" class="btn btn-outline-primary" onclick="openClientModal()">🔍</button>
+                    </div>
+                    <input type="hidden" id="IdClient_fk" />
+                </div>
+                <label>First Name</label>
+                <input id="FirstName" class="form-control mb-2" placeholder="First Name" required />
+                <label>Last Name</label>
+                <input id="LastName" class="form-control mb-2" placeholder="Last Name" required />
+                <label>Document Type</label>
+                <select name="IdDocumentType" id="IdDocumentType" class="form-control mb-2">
+                </select>
+                <label>Document Number</label>
+                <input id="DocumentNumber" class="form-control mb-2" placeholder="Document Number" />
+                <label>Country</label>
+                <select name="Country" id="Country" class="form-control mb-2"></select>
+            </form>
+            <div class="modal-footer">
+                <button class="btn btn-custom" id="btnSaveBeneficiarie">
+                    <i class="bi bi-floppy-fill"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalClients">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content card-custom p-3">
+
+            <h5>👤 Select Client</h5>
+
+            <input id="searchClient" class="form-control mb-3"
+                   placeholder="Search by name, document or phone..." />
+
+            <table id="tblClientsModal" class="table table-hover w-100">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Document</th>
+                        <th>Phone</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+            </table>
+
+        </div>
+    </div>
+</div>
+@section Scripts {
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script>
+
+    let table;
+    let timer;
+    $(document).ready(function () {
+        table = loadTable();
+            loadCountriesDropdown('#Country');
+            loadDocumentsTypesDropdown('#IdDocumentType');
+    });
+
+    function loadTable() {
+        return $('#tblBeneficiaries').DataTable({
+            ajax: {
+                url: '/Beneficiaries/GetAll',
+                dataSrc: ''
+            },
+            columns: [
+                 {
+                  data: null,
+                    render: d => `
+                      <b>${d.firstName} ${d.lastName}</b>`
+                },
+                        { data: 'documentTypeName' },
+                { data: 'documentNumber' },
+                { data: 'countryName' },
+                { data: 'parentClientName' },
+                {
+                    data: 'idBeneficiarie',
+                    render: id => `
+                        <a href="/Beneficiaries/Update/${id}" class="btn btn-warning btn-sm">
+                            <i class="bi bi-pencil-fill"></i>
+                        </a>
+                        <button class="btn btn-danger btn-sm" onclick="deleteItem(${id})">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
+                    `
+                }
+            ],
+            drawCallback: () => $('#tblBeneficiaries tbody tr').addClass('fade-in')
+        });
+    }
+
+    $('#btnSaveBeneficiarie').click(function () {
+
+        let data = {
+            firstName: $('#FirstName').val(),
+            lastName: $('#LastName').val(),
+            idDocumentType: $('#IdDocumentType').val(),
+            documentNumber: $('#DocumentNumber').val(),
+            country: $('#Country').val(),
+            idClient_fk: $('#IdClient_fk').val()
+        };
+                if (!data.idClient_fk) {
+               Swal.fire('Error', 'Parent is required', 'error');
+               return;
+            }
+            if (!data.firstName) {
+               Swal.fire('Error', 'FirstName is required', 'error');
+               return;
+             }
+             if (!data.lastName) {
+               Swal.fire('Error', 'LastName is required', 'error');
+               return;
+             }
+             if (!data.idDocumentType) {
+               Swal.fire('Error', 'DocumentType is required'+ _IdDocumentType, 'error');
+               return;
+             }
+             if (!data.documentNumber) {
+               Swal.fire('Error', 'DocumentNumber is required', 'error');
+               return;
+             }
+             if (!data.country) {
+               Swal.fire('Error', 'Country is required', 'error');
+               return;
+             }
+        
+
+        $.ajax({
+            url: '/Beneficiaries/Create',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: () => {
+                $('#modalBeneficiarie').modal('hide');
+                table.ajax.reload();
+
+                Swal.fire({
+                    icon:'success',
+                    title:'Saved!',
+                    timer:1200,
+                    showConfirmButton:false
+                });
+
+                $('#formBeneficiarie')[0].reset();
+            },
+            error: e => {
+                Swal.fire('Error', e.responseJSON?.message || 'Error', 'error');
+            }
+        });
+
+    });
+
+    function deleteItem(id){
+
+        Swal.fire({
+            title:'Delete?',
+            text: 'This Beneficiary will be deleted',
+            icon:'warning',
+            showCancelButton:true
+        }).then(r=>{
+
+            if(r.isConfirmed){
+
+                $.post('/Beneficiaries/Delete?id=' + id, () => {
+                    table.ajax.reload();
+
+                    Swal.fire({
+                        icon:'success',
+                        title:'Deleted!',
+                        timer:1200,
+                        showConfirmButton:false
+                    });
+                });
+            }
+        });
+    }
+
+    function openClientModal(){
+
+        $('#modalClients').modal('show');
+
+        if (!window.clientTableLoaded) {
+            loadClientsModal();
+            window.clientTableLoaded = true;
+        }
+    }
+
+            function loadClientsModal(){
+
+            window.tblClientsModal = $('#tblClientsModal').DataTable({
+                data: [],
+                columns:[
+                    { data:'fullName' },
+                    { data:'documentNumber' },
+                    { data:'phone' },
+                    {
+                        data:null,
+                        render:d=>`
+                            <button class="btn btn-success btn-sm"
+                                onclick="selectClient(${d.idClient}, '${d.fullName}')">
+                                Select
+                            </button>
+                        `
+                    }
+                ],
+                language:{
+                    emptyTable:'Type to search clients...'
+                }
+            });
+
+        }
+
+        $('#searchClient').on('keyup', function () {
+
+            clearTimeout(timer);
+
+            let term = this.value;
+
+            timer = setTimeout(() => {
+
+                if(term.length < 2){
+                    tblClientsModal.clear().draw();
+                    return;
+                }
+
+                $.get('/Clients/Search?term=' + term, function(data){
+
+                    tblClientsModal.clear().rows.add(data).draw();
+
+                });
+
+            }, 400);
+
+        });
+
+    function selectClient(id, name){
+
+        $('#IdClient_fk').val(id);
+        $('#ParentClientName').val(name);
+
+        $('#modalClients').modal('hide');
+
+        Swal.fire({
+            icon:'success',
+            title:'Client selected',
+            text:name,
+            timer:1200,
+            showConfirmButton:false
+        });
+    }
+
+
+            function loadDocumentsTypesDropdown(selectId, selectedValue = null) {
+                $.ajax({
+                    url: '/DocumentsTypes/GetAll',
+                    type: 'GET',
+                    success: function (data) {
+                        let select = $(selectId);
+                        select.empty();
+                        select.append(`<option value="">Select country</option>`);
+                        data.forEach(c => {
+                            select.append(`
+                                <option value="${c.idDocumentType}">
+                                    ${c.name}
+                                </option>
+                            `);
+                        });
+                        if (selectedValue) {
+                            select.val(selectedValue);
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('Error', 'Failed to load countries', 'error');
+                    }
+                });
+            }
+
+                function loadCountriesDropdown(selectId, selectedValue = null) {
+                $.ajax({
+                    url: '/Countries/GetAll',
+                    type: 'GET',
+                    success: function (data) {
+                        let select = $(selectId);
+                        select.empty();
+                        select.append(`<option value="">Select country</option>`);
+                        data.forEach(c => {
+                            select.append(`
+                                <option value="${c.idCountry}">
+                                    ${c.name}
+                                </option>
+                            `);
+                        });
+                        if (selectedValue) {
+                            select.val(selectedValue);
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('Error', 'Failed to load countries', 'error');
+                    }
+                });
+            }
+</script>
+}

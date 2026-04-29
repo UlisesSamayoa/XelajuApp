@@ -55,4 +55,17 @@ public class ClientsController : Controller
         await _service.Delete(id, "admin");
         return Ok(new { message = "Deleted" });
     }
+    [HttpGet]
+    public async Task<IActionResult> Search(string term)
+    {
+        try
+        {
+            var data = await _service.Search(term);
+            return Json(data);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
 }

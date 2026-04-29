@@ -101,10 +101,12 @@
                             </div>
                         </div>
                         <label>Document Type</label>
-                        <select name="IdDocumentType" id="IdDocumentType" class="form-control mb-2">
+                        @* <select name="IdDocumentType" id="IdDocumentType" class="form-control mb-2">
                             <option value="1">DUI</option>
                             <option value="2">Passport</option>
                             <option value="3">License</option>
+                        </select> *@
+                        <select name="IdDocumentType" id="IdDocumentType" class="form-control mb-2">
                         </select>
                         <label>Document Number</label>
                         <input name="DocumentNumber" class="form-control mb-2" required placeholder="Document Number" />
@@ -178,6 +180,7 @@
         $(document).ready(function () {
             table = loadClients();
             loadCountriesDropdown('#Country');
+            loadDocumentsTypesDropdown('#IdDocumentType');
         });
 
           function loadClients() {
@@ -363,7 +366,7 @@
             });
         }
 
-                function openPreview(fileUrl) {
+            function openPreview(fileUrl) {
 
             let content = '';
 
@@ -411,6 +414,32 @@
 
             $('#modalPreview').modal('show');
         }
+
+        function loadDocumentsTypesDropdown(selectId, selectedValue = null) {
+            $.ajax({
+                url: '/DocumentsTypes/GetAll',
+                type: 'GET',
+                success: function (data) {
+                    let select = $(selectId);
+                    select.empty();
+                    select.append(`<option value="">Select country</option>`);
+                    data.forEach(c => {
+                        select.append(`
+                            <option value="${c.idDocumentType}">
+                                ${c.name}
+                            </option>
+                        `);
+                    });
+                    if (selectedValue) {
+                        select.val(selectedValue);
+                    }
+                },
+                error: function () {
+                    Swal.fire('Error', 'Failed to load countries', 'error');
+                }
+            });
+        }
+
     </script>
 
 }
