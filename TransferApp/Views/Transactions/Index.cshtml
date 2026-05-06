@@ -43,6 +43,13 @@
         box-shadow: 0 20px 50px rgba(0,0,0,0.25);
     }
 
+    .modal-new {
+        background: #f8fafc; /* gris claro elegante */
+        border-radius: 15px;
+        border: 2px solid #154719;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    }
+
     /* header con identidad */
     .modal-search-header {
         background: linear-gradient(135deg, #4f46e5, #4338ca);
@@ -69,7 +76,7 @@
     <div class="card card-custom p-4">
 
         <div class="d-flex justify-content-between mb-3">
-            <h3><i class="bi bi-currency-exchange""></i> Transactions</h3>
+            <h3><i class="bi bi-currency-exchange" "></i> Transactions</h3>
 
             <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalTx">
                 <i class="bi bi-plus"></i> New Transaction
@@ -102,24 +109,21 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="row">
-                            <div class="col-6">
-                                <input id="Amount" type="number" class="form-control mb-2" placeholder="Amount" required />
+                            <div class="col-3">
+                                <label class="form-label">Reference Number</label>
+                                <input id="ReferenceNumber" class="form-control mb-2" placeholder="Reference Number" />
                             </div>
-                            <div class="col-6">           
-                                <select id="IntermediaryId" class="form-control mb-2"></select>
+                            <div class="col-3">
+                                <label class="form-label">Amount</label>
+                                <input id="Amount" type="number" class="form-control mb-2" placeholder="Amount" />
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="row">
-                            <div class="col-4">
-                                <input id="Reference" class="form-control mb-2" placeholder="Reference Number" />
+                            <div class="col-3">
+                                <label class="form-label">Transaction Type</label>
+                                <input id="TransactionType" type="text" class="form-control mb-2" placeholder="Transaction Type" />
                             </div>
-                            <div class="col-4">
-                                <select id="DestinationCountry" class="form-control mb-2"></select>
-                            </div>
-                            <div class="col-4">
-                                <input id="Currency" class="form-control mb-2" value="USD" />
+                            <div class="col-3">
+                                <label class="form-label">Currency</label>
+                                <select id="Currency" class="form-control mb-2"></select>
                             </div>
                         </div>
                     </div>
@@ -127,48 +131,117 @@
                 <hr />
 
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-12">
                         <div class="input-group" style="margin-bottom:5px;">
-                            <h6>Sender Info</h6> &nbsp;&nbsp;&nbsp;
-                        <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalSearchClient">
-                            🔍 Search Client
+                            <h6>Sender Info </h6> &nbsp;&nbsp;&nbsp;
+                            <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalSearchClient">
+                                Search Client <i class="bi bi-search"></i>
                             </button>&nbsp;&nbsp;&nbsp;
-                        <button class="btn btn-outline-success">
-                            New Client
-                        </button>
+                            <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalNewClient">
+                                New Client <i class="bi bi-plus-lg"></i>
+                            </button>
+                        </div>
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-4">
+                                    <label class="form-label">Country</label>
+                                    <select id="SenderCountry" class="form-control mb-2"></select>
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label">Company</label>
+                                    <select id="SenderCompany" class="form-control mb-2"></select>
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label">Currency</label>
+                                    <select id="SenderCurrency" class="form-control mb-2"></select>
+                                </div>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-4">
-                                <input id="SenderName" class="form-control mb-2" placeholder="Sender Name" required />
+                                <label class="form-label">Sender Name</label>
+                                <input id="SenderName" class="form-control mb-2" placeholder="Sender Name" />
                             </div>
-                            <div class="col-4">
-                                <input id="SenderDocument" class="form-control mb-2" placeholder="Document" required />
+                            <div class="col-3">
+                                <label class="form-label">Sender DocumentType</label>
+                                <select id="SenderDocumentType" class="form-control mb-2"></select>
                             </div>
-                            <div class="col-4">
+                            <div class="col-3">
+                                <label class="form-label">Sender Document Number</label>
+                                <input id="SenderDocumentNumber" class="form-control mb-2" placeholder="Document" />
+                            </div>
+                            <div class="col-2">
+                                <label class="form-label">Sender Phone</label>
                                 <input id="SenderPhone" class="form-control mb-2" placeholder="Phone" />
                             </div>
                             <div class="col-12">
+                                <label class="form-label">Sender Address</label>
                                 <input id="SenderAddress" class="form-control mb-2" placeholder="Address" />
                             </div>
                         </div>
                     </div>
-                    <div class="col-6">
-                        <h6>Receiver Info</h6>
+                    <hr />
+                    <div class="col-12">
+                        <div class="input-group" style="margin-bottom:5px;">
+                            <h6>Receiver Info</h6> &nbsp;&nbsp;&nbsp;
+                            @* <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalSearchBeneficiaries">
+                                Beneficiaries <i class="bi bi-search"></i> <label id="CantBeneficiariesXClient"></label>
+                            </button>&nbsp;&nbsp;&nbsp;
+                            <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalNewBeneficiary">
+                                New Beneficiary <i class="bi bi-plus-lg"></i>
+                            </button> *@
+                            <button id="btnOpenBeneficiaries" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalSearchBeneficiaries" disabled>
+                                Beneficiaries <i class="bi bi-search"></i> <label id="CantBeneficiariesXClient"></label>
+                            </button>
+
+                            <button id="btnNewBeneficiary" class="btn btn-outline-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalNewBeneficiary" disabled>
+                                New Beneficiary <i class="bi bi-plus-lg"></i>
+                            </button>
+                        </div>
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-4">
+                                    <label class="form-label">Country</label>
+                                    <select id="ReceiverCountry" class="form-control mb-2"></select>
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label">Company</label>
+                                    <select id="ReceiverCompany" class="form-control mb-2"></select>
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label">Currency</label>
+                                    <select id="ReceiverCurrency" class="form-control mb-2"></select>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-4">
-                                <input id="ReceiverName" class="form-control mb-2" placeholder="Receiver Name" required />
+                                <label class="form-label">Receiver Name</label>
+                                <input id="ReceiverName" class="form-control mb-2" placeholder="Receiver Name" />
                             </div>
-                            <div class="col-4">
-                                <input id="ReceiverCountry" class="form-control mb-2" placeholder="Country" required />
+                            <div class="col-3">
+                                <label class="form-label">Receiver DocumentType</label>
+                                <select id="ReceiverDocumentType" class="form-control mb-2"></select>
                             </div>
-                            <div class="col-4">
+                            <div class="col-3">
+                                <label class="form-label">Receiver Document Number</label>
+                                <input id="ReceiverDocumentNumber" class="form-control mb-2" placeholder="Document" />
+                            </div>
+                            <div class="col-2">
+                                <label class="form-label">Receiver Phone</label>
                                 <input id="ReceiverPhone" class="form-control mb-2" placeholder="Phone" />
                             </div>
                             <div class="col-12">
+                                <label class="form-label">Receiver Address</label>
                                 <input id="ReceiverAddress" class="form-control mb-2" placeholder="Address" />
                             </div>
                         </div>
                     </div>
+                </div>
+                <hr />
+                <div class="col-12">
+                    <label class="form-label">Justify Details</label>
+                    <input id="JustifyDetails" class="form-control mb-2" placeholder="Address" />
                 </div>
                 <hr />
                 <input type="file" class="form-control" onchange="previewImage(this)" />
@@ -181,21 +254,23 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="modalSearchClient">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content card-custom p-0 modal-search">
+        <div class="modal-content modal-search">
 
             <!-- HEADER -->
             <div class="modal-header modal-search-header">
-                <h5 class="mb-0">🔍 Search Client</h5>
-                <button class="btn-close" data-bs-dismiss="modal"></button>
+                <h5><i class="bi bi-search"></i> Search Client</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
 
-            <div class="p-3">
+            <!-- BODY -->
+            <div class="modal-body">
 
                 <input id="searchClientInput"
                        class="form-control mb-3 search-input"
-                       placeholder="Search by name, document or phone..." />
+                       placeholder="Search by name or document..." />
 
                 <table id="tblSearchClient" class="table table-hover w-100">
                     <thead>
@@ -213,268 +288,836 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="modalNewClient">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content card-custom modal-new">
+
+            <div class="modal-header bg-success text-white">
+                <h5><i class="bi bi-person-plus-fill"></i> New Client</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <form id="formNewClient">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>First Name</label>
+                            <input id="C_FirstName" class="form-control mb-2" placeholder="First Name" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Last Name</label>
+                            <input id="C_LastName" class="form-control mb-2" placeholder="Last Name" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>Document Type</label>
+                            <select id="C_DocumentType" class="form-control mb-2"></select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>Document Number</label>
+                            <input id="C_DocumentNumber" class="form-control mb-2" placeholder="Document Number" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>Expiration Date</label>
+                            <input type="date" id="C_ExpirationDate" class="form-control mb-2" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Phone</label>
+                            <input id="C_Phone" class="form-control mb-2" placeholder="Phone" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Country</label>
+                            <select id="C_Country" class="form-control mb-2"></select>
+                        </div>
+
+                        <div class="col-12">
+                            <label>Address</label>
+                            <input id="C_Address" class="form-control mb-2" placeholder="Address" />
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-success" id="btnSaveNewClient">
+                    <i class="bi bi-floppy-fill"></i> Save Client
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalSearchBeneficiaries">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content modal-search">
+
+            <div class="modal-header modal-search-header">
+                <h5>Beneficiaries</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <table id="tblBeneficiaries" class="table table-hover w-100">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Document</th>
+                            <th>Country</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalNewBeneficiary">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content modal-new">
+
+            <div class="modal-header bg-success text-white">
+                <h5><i class="bi bi-person-plus"></i> New Beneficiary</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <form id="formNewBeneficiary">
+
+                    <div class="row">
+                        <div class="col-6">
+                            <label>First Name</label>
+                            <input id="B_FirstName" class="form-control mb-2" placeholder="First Name"/>
+                        </div>
+
+                        <div class="col-6">
+                            <label>Last Name</label>
+                            <input id="B_LastName" class="form-control mb-2" placeholder="Last Name" />
+                        </div>
+
+                        <div class="col-4">
+                            <label>Document Type</label>
+                            <select id="B_DocumentType" class="form-control mb-2"></select>
+                        </div>
+
+                        <div class="col-4">
+                            <label>Document Number</label>
+                            <input id="B_DocumentNumber" class="form-control mb-2" placeholder="Document Number" />
+                        </div>
+
+                        <div class="col-4">
+                            <label>Country</label>
+                            <select id="B_Country" class="form-control mb-2"></select>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-success" id="btnSaveBeneficiary">
+                    <i class="bi bi-floppy-fill"></i> Save Beneficiary
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
     <script>
-                let transactions = [
-                {
-                    id:1,
-                    reference:"REF-1001",
-                    senderName:"Carlos Perez",
-                    receiverName:"Ana Gomez",
-                    destinationCountry:"Mexico",
-                    amount:250,
-                    status:"Pending",
-                    image:""
-                },
-                {
-                    id:2,
-                    reference:"REF-1002",
-                    senderName:"Luis Martinez",
-                    receiverName:"Maria Lopez",
-                    destinationCountry:"USA",
-                    amount:500,
-                    status:"Approved",
-                    image:""
-                },
-                {
-                    id:3,
-                    reference:"REF-1003",
-                    senderName:"Jose Ramirez",
-                    receiverName:"Pedro Castillo",
-                    destinationCountry:"Colombia",
-                    amount:120,
-                    status:"Rejected",
-                    image:""
-                },
-                {
-                    id:4,
-                    reference:"REF-1004",
-                    senderName:"Ana Torres",
-                    receiverName:"Lucia Perez",
-                    destinationCountry:"Guatemala",
-                    amount:300,
-                    status:"Pending",
-                    image:""
-                },
-                {
-                    id:5,
-                    reference:"REF-1005",
-                    senderName:"Mario Diaz",
-                    receiverName:"Juan Lopez",
-                    destinationCountry:"Honduras",
-                    amount:450,
-                    status:"Approved",
-                    image:""
-                }
-            ];
-        let intermediaries = [
-            { id:1, name:"Bank of America" },
-            { id:2, name:"HSBC" }
-        ];
-        let countries = [
-            { id:1, name:"Mexico" },
-            { id:2, name:"Honduras" },
-            { id:3, name:"El Salvador" }
-        ];
+                let tableTx;
 
-        let table;
+        $(document).ready(function () {
 
-        $(document).ready(function(){
-
-            intermediaries.forEach(x =>
-                $('#IntermediaryId').append(`<option value="${x.id}">${x.name}</option>`)
-            );
-            countries.forEach(x =>
-                $('#DestinationCountry').append(`<option value="${x.id}">${x.name}</option>`)
-            );
-
-            table = loadTable();
+            tableTx = loadTransactions();
+            loadCountries();
+            loadDocumentTypes();
 
         });
+                document.querySelectorAll('.btn').forEach(btn => {
+          btn.addEventListener('click', function(event) {
+            event.preventDefault(); // evita el submit
+          });
+        });
 
-        function loadTable(){
+        //         $('#modalNewClient').on('shown.bs.modal', function () {
+
+        //     // loadCountriesInto('#C_Country');
+        //     // loadDocumentTypesInto('#C_DocumentType');
+
+        // });
+
+        function loadTransactions() {
+
             return $('#tblTx').DataTable({
-                data: transactions,
+                ajax: {
+                    url: '/Transactions/GetAll',
+                    type: 'GET',
+                    dataSrc: ''
+                },
                 columns: [
-                    { data:'reference' },
-                    { data:'senderName' },
-                    { data:'receiverName' },
-                    { data:'destinationCountry' },
-                    { data:'amount' },
-                            {
-            data: 'status',
-            render: function (s) {
 
-                const statusColors = {
-                    'Approved': 'success',
-                    'Rejected': 'danger',
-                    'Pending': 'warning',
-                    'Cancelled': 'secondary'
-                };
+                    { data: 'referenceNumber' },
 
-                let color = statusColors[s] || 'dark';
+                    {
+                        data: 'senderName',
+                        render: d => `<b>${d}</b>`
+                    },
 
-                return `<span class="badge bg-${color}">${s}</span>`;
-            }
-        },
-                            {
-                                data:'id',
-                                render: id => `
-                                    <div class="d-flex gap-2">
-                                        <a href="/Transactions/Update/${id}" class="btn btn-warning btn-sm"><i class="bi bi-pencil-fill"></i></a>
-                                        <button class="btn btn-danger btn-sm" onclick="deleteTransaction(${id})"><i class="bi bi-trash-fill"></i></button>
-                                    </div>
-                                `
-                            }
+                    {
+                        data: 'receiverName',
+                        render: d => `<span class="text-primary">${d}</span>`
+                    },
+
+                    { data: 'receiverCountry' },
+
+                    {
+                        data: 'amount',
+                        render: d => `$ ${parseFloat(d).toFixed(2)}`
+                    },
+
+                    {
+                        data: 'status',
+                        render: s => s === 1
+                            ? '<span class="badge bg-success">Completed</span>'
+                            : '<span class="badge bg-secondary">Cancelled</span>'
+                    },
+
+                    {
+                        data: 'idTransaction',
+                        orderable: false,
+                        render: id => `
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-danger btn-sm" onclick="deleteTx(${id})">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                            </div>
+                        `
+                    }
+
                 ],
-                    drawCallback: () => $('#tblTx tbody tr').addClass('fade-in')
+
+                order: [[0, 'desc']],
+
+                language: {
+                    emptyTable: "No transactions yet",
+                    search: "Search:",
+                    lengthMenu: "Show _MENU_ entries",
+                    loadingRecords: "Loading...",
+                    zeroRecords: "No matches found"
+                },
+
+                drawCallback: function () {
+                    $('#tblTx tbody tr').addClass('fade-in');
+                }
             });
         }
 
-        // 🖼️ preview
-        function previewImage(input){
-            const file = input.files[0];
-            if(file){
-                const reader = new FileReader();
-                reader.onload = e => $('#imgPreview').attr('src', e.target.result);
-                reader.readAsDataURL(file);
-            }
-        }
 
-        // 💾 SAVE
-        $('#btnSaveTx').click(function(){
-
-            let amount = $('#Amount').val();
-            let sender = $('#SenderName').val();
-            let receiver = $('#ReceiverName').val();
-
-            if(!amount || !sender || !receiver){
-                Swal.fire('Error','Required fields missing','error');
-                return;
-            }
-
-            let tx = {
-                id: transactions.length + 1,
-                reference: $('#Reference').val() || "REF-" + Date.now(),
-                senderName: sender,
-                receiverName: receiver,
-                destinationCountry: $('#DestinationCountry').val(),
-                amount: amount,
-                status: "Pending",
-                image: $('#imgPreview').attr('src')
-            };
-
-            transactions.push(tx);
-            table.row.add(tx).draw();
-
-            Swal.fire('Saved!','','success');
-
-            $('#formTx')[0].reset();
-            $('#imgPreview').attr('src','');
-            $('#modalTx').modal('hide');
-
-        });
-
-                function deleteTransaction(id) {
-
-            let tx = transactions.find(x => x.id === id);
-
-            if (!tx) return;
+                function deleteTx(id) {
 
             Swal.fire({
                 title: 'Delete transaction?',
-                html: `
-                    <b>${tx.reference}</b><br/>
-                    ${tx.senderName} → ${tx.receiverName}<br/>
-                    <small>$${tx.amount}</small>
-                `,
+                text: 'This action will deactivate the transaction',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#d33',
+                confirmButtonColor: '#4f46e5',
+                cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, delete'
             }).then(result => {
 
                 if (result.isConfirmed) {
 
-                    // 🧹 eliminar del array
-                    transactions = transactions.filter(x => x.id !== id);
+                    $.post('/Transactions/Delete', { id }, function () {
 
-                    // 🔄 refrescar tabla
-                    table.clear().rows.add(transactions).draw();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted!',
+                            timer: 1200,
+                            showConfirmButton: false
+                        });
 
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Deleted!',
-                        text: 'Transaction removed successfully',
-                        timer: 1500,
-                        showConfirmButton: false
+                        tableTx.ajax.reload();
+
+                    }).fail(err => {
+
+                        Swal.fire('Error', err.responseText, 'error');
+
                     });
-                }
 
+                }
             });
         }
 
-        //busqueda de clients existentes
-                // 🔥 CLIENTES DEMO
-        let clientsSearchData = [
-            { id:1, name:"Carlos Perez", document:"12345678", phone:"7777-8888", address:"San Salvador" },
-            { id:2, name:"Ana Gomez", document:"87654321", phone:"9999-0000", address:"Mexico" },
-            { id:3, name:"Luis Martinez", document:"11223344", phone:"7012-3344", address:"Guatemala" }
-        ];
+                function loadCountries() {
 
-        let searchTable;
+            $.get('/Countries/GetAll', function (data) {
 
-        $('#modalSearchClient').on('shown.bs.modal', function () {
+                $('#SenderCountry, #ReceiverCountry, #C_Country,#B_Country').empty();
 
-            if (!searchTable) {
-                searchTable = $('#tblSearchClient').DataTable({
-                    data: clientsSearchData,
-                    columns: [
-                        { data: 'name' },
-                        { data: 'document' },
-                        { data: 'phone' },
-                        {
-                            data: null,
-                            render: x => `
-                                <button class="btn btn-success btn-sm" onclick="selectClient(${x.id})">
-                                    Select
-                                </button>
-                            `
-                        }
-                    ]
+                data.forEach(c => {
+
+                    $('#SenderCountry, #ReceiverCountry, #C_Country,#B_Country').append(
+                        `<option value="${c.idCountry}">${c.name}</option>`
+                    );
+
                 });
 
-                // 🔍 búsqueda dinámica
-                $('#searchClientInput').on('keyup', function () {
-                    searchTable.search(this.value).draw();
+                // 🔥 dispara carga inicial dependiente
+                loadCompaniesByCountry($('#SenderCountry').val(), 'Sender');
+                loadCompaniesByCountry($('#ReceiverCountry').val(), 'Receiver');
+
+                loadCurrencyByCountry($('#SenderCountry').val(), 'Sender');
+                loadCurrencyByCountry($('#ReceiverCountry').val(), 'Receiver');
+
+            });
+
+        }
+
+                function loadCompaniesByCountry(countryId, type) {
+
+            $.get('/Companies/GetByCountry?countryId=' + countryId, function (data) {
+
+                let select = type === 'Sender'
+                    ? $('#SenderCompany')
+                    : $('#ReceiverCompany');
+
+                select.empty();
+
+                data.forEach(c => {
+
+                    select.append(
+                        `<option value="${c.idCompany}">${c.name}</option>`
+                    );
+
                 });
+
+            });
+
+        }
+
+                function loadCurrencyByCountry(countryId, type) {
+
+            $.get('/Countries/GetById?id=' + countryId, function (c) {
+
+                let select = type === 'Sender'
+                    ? $('#SenderCurrency')
+                    : $('#ReceiverCurrency');
+
+                select.empty();
+
+                select.append(
+                    `<option value="${c.idCountry}">${c.currency}</option>`
+                );
+
+            });
+
+        }
+
+                function loadDocumentTypes() {
+
+            $.get('/DocumentsTypes/GetAll', function (data) {
+
+                $('#SenderDocumentType, #ReceiverDocumentType').empty();
+
+                data.forEach(d => {
+
+                    $('#SenderDocumentType, #ReceiverDocumentType, #C_DocumentType,#B_DocumentType').append(
+                        `<option value="${d.idDocumentType}">${d.name}</option>`
+                    );
+
+                });
+
+            });
+
+        }
+
+                $('#SenderCountry').change(function () {
+
+            let id = $(this).val();
+
+            loadCompaniesByCountry(id, 'Sender');
+            loadCurrencyByCountry(id, 'Sender');
+
+        });
+
+        $('#ReceiverCountry').change(function () {
+
+            $('#ReceiverCompany').empty();
+            $('#ReceiverCurrency').empty();
+            let id = $(this).val();
+
+            loadCompaniesByCountry(id, 'Receiver');
+            loadCurrencyByCountry(id, 'Receiver');
+
+        });
+
+                $('#SenderCountry').change(function () {
+
+            $('#SenderCompany').empty();
+            $('#SenderCurrency').empty();
+
+            let id = $(this).val();
+
+            loadCompaniesByCountry(id, 'Sender');
+            loadCurrencyByCountry(id, 'Sender');
+
+        });
+
+        let tableSearchClient;
+        let selectedClientId = null;
+                $(document).ready(function () {
+            toggleBeneficiariesActions();
+        });
+
+        function loadSearchClient() {
+
+            tableSearchClient = $('#tblSearchClient').DataTable({
+                ajax: {
+                    url: '/Clients/Search',
+                    data: function (d) {
+                        d.term = $('#searchClientInput').val();
+                    },
+                    dataSrc: ''
+                },
+                columns: [
+                    {
+                        data: null,
+                        render: d => `<b>${d.firstName} ${d.lastName}</b>`
+                    },
+                    { data: 'documentNumber' },
+                    { data: 'phone' },
+                    {
+                        data: 'idClient',
+                        render: id => `
+                            <button class="btn btn-success btn-sm"
+                                onclick="selectClient(${id})">
+                                Select
+                            </button>
+                        `
+                    }
+                ]
+            });
+
+        }
+
+                let timer;
+
+        $('#searchClientInput').on('keyup', function () {
+
+            clearTimeout(timer);
+
+            timer = setTimeout(() => {
+                tableSearchClient.ajax.reload();
+            }, 400);
+
+        });
+
+                        function selectClient(id) {
+
+            $.get('/Clients/GetById?id=' + id, function (c) {
+
+                selectedClientId = c.idClient;
+                $('#SenderName').val(c.firstName + ' ' + c.lastName);
+                $('#SenderDocumentNumber').val(c.documentNumber);
+                $('#SenderPhone').val(c.phone);
+                $('#SenderAddress').val(c.address);
+                $('#SenderDocumentType').val(c.idDocumentType);
+                $('#SenderCountry').val(c.country).trigger('change');
+                setTimeout(() => {
+                    loadCompaniesByCountry(c.country, 'Sender');
+                    loadCurrencyByCountry(c.country, 'Sender');
+
+                }, 200);
+                loadBeneficiariesCount(c.idClient);
+                toggleBeneficiariesActions();
+                $('#modalSearchClient').modal('hide');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Client loaded',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+
+            });
+
+        }
+
+                function loadBeneficiariesCount(clientId) {
+
+            $.get('/Beneficiaries/GetByClient?id=' + clientId, function (data) {
+
+                $('#CantBeneficiariesXClient').text(`(${data.length})`);
+
+            });
+
+        }
+
+        // let autoTimer;
+
+        //         $('#SenderName, #SenderDocumentNumber').on('keyup', function () {
+
+        //     clearTimeout(autoTimer);
+
+        //     autoTimer = setTimeout(() => {
+
+        //         let term = $('#SenderName').val() || $('#SenderDocumentNumber').val();
+
+        //         if (!term || term.length < 3) return;
+
+        //         $.get('/Clients/Search?term=' + term, function (data) {
+
+        //             if (data.length === 1) {
+
+        //                 let c = data[0];
+
+        //                 selectedClientId = c.idClient;
+
+        //                 $('#SenderName').val(c.firstName + ' ' + c.lastName);
+        //                 $('#SenderDocumentNumber').val(c.documentNumber);
+        //                 $('#SenderPhone').val(c.phone);
+        //                 $('#SenderAddress').val(c.address);
+
+        //                 // 🔥 NUEVO
+        //                 $('#SenderDocumentType').val(c.idDocumentType);
+        //                 $('#SenderCountry').val(c.country).trigger('change');
+
+        //                 setTimeout(() => {
+        //                     loadCompaniesByCountry(c.country, 'Sender');
+        //                     loadCurrencyByCountry(c.country, 'Sender');
+        //                 }, 200);
+
+        //                 loadBeneficiariesCount(c.idClient);
+
+        //             }
+
+        //         });
+
+        //     }, 500);
+
+        // });
+                let autoTimer;
+
+        // 🔥 limpiar selección si el usuario modifica
+        $('#SenderName, #SenderDocumentNumber').on('input', function () {
+            selectedClientId = null;
+        });
+
+        $('#SenderName, #SenderDocumentNumber').on('keyup', function () {
+            clearTimeout(autoTimer);
+            let input = $(this);
+            let term = input.val().trim();
+
+            autoTimer = setTimeout(() => {
+                if (!term || term.length < 3) return;
+                if (selectedClientId && term.length < 5) return;
+                $.get('/Clients/Search?term=' + term, function (data) {
+
+                    if (data.length === 1) {
+
+                        let c = data[0];
+
+                        selectedClientId = c.idClient;
+
+                        // 🔥 llenar sender
+                        $('#SenderName').val(c.firstName + ' ' + c.lastName);
+                        $('#SenderDocumentNumber').val(c.documentNumber);
+                        $('#SenderPhone').val(c.phone);
+                        $('#SenderAddress').val(c.address);
+
+                        // 🔥 selects
+                        $('#SenderDocumentType').val(c.idDocumentType);
+                        $('#SenderCountry').val(c.country).trigger('change');
+
+                        // 🔥 cargar dependencias del país
+                        setTimeout(() => {
+                            loadCompaniesByCountry(c.country, 'Sender');
+                            loadCurrencyByCountry(c.country, 'Sender');
+                        }, 200);
+
+                        // 🔥 beneficiaries
+                        loadBeneficiariesCount(c.idClient);
+
+                        // 💥 feedback opcional
+                        console.log('Client auto-selected:', c.firstName);
+                        toggleBeneficiariesActions();
+
+                    }
+
+                });
+
+            }, 500);
+
+        });
+
+                $('#modalSearchClient').on('shown.bs.modal', function () {
+
+            if (!tableSearchClient) {
+                loadSearchClient();
+            } else {
+                tableSearchClient.ajax.reload();
             }
 
         });
-                function selectClient(id) {
+                function loadCountriesInto(selector) {
 
-            let client = clientsSearchData.find(x => x.id === id);
+            $.get('/Countries/GetAll', function (data) {
 
-            if (!client) return;
+                let select = $(selector);
+                select.empty();
 
-            // 🔥 autocompletar sender
-            $('#SenderName').val(client.name);
-            $('#SenderDocument').val(client.document);
-            $('#SenderPhone').val(client.phone);
-            $('#SenderAddress').val(client.address);
+                data.forEach(c => {
+                    select.append(`<option value="${c.idCountry}">${c.name}</option>`);
+                });
 
-            // cerrar modal
-            $('#modalSearchClient').modal('hide');
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Client loaded',
-                timer: 1200,
-                showConfirmButton: false
             });
         }
+
+        function loadDocumentTypesInto(selector) {
+
+            $.get('/DocumentTypes/GetAll', function (data) {
+
+                let select = $(selector);
+                select.empty();
+
+                data.forEach(d => {
+                    select.append(`<option value="${d.idDocumentType}">${d.name}</option>`);
+                });
+
+            });
+        }
+                $('#btnSaveNewClient').click(function () {
+
+                let formData = new FormData();
+
+                formData.append("FirstName", $('#C_FirstName').val());
+                formData.append("LastName", $('#C_LastName').val());
+                formData.append("IdDocumentType", $('#C_DocumentType').val());
+                formData.append("DocumentNumber", $('#C_DocumentNumber').val());
+                formData.append("ExpirationDate", $('#C_ExpirationDate').val());
+                formData.append("Phone", $('#C_Phone').val());
+                formData.append("Country", $('#C_Country').val());
+                formData.append("Address", $('#C_Address').val());
+                formData.append("UserC", "admin");
+
+
+            Swal.fire({
+                title: 'Saving...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            $.ajax({
+                url: '/Clients/Create',
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (res) {
+                    selectedClientId = res.idClient;
+                     $('#SenderName').val($('#C_FirstName').val() + ' ' + $('#C_LastName').val());
+                    $('#SenderDocumentNumber').val($('#C_DocumentNumber').val());
+                    $('#SenderPhone').val($('#C_Phone').val());
+                    $('#SenderAddress').val($('#C_Address').val());
+
+                    $('#SenderDocumentType').val($('#C_DocumentType').val());
+                    $('#SenderCountry').val($('#C_Country').val()).trigger('change');
+
+                    setTimeout(() => {
+                        loadCompaniesByCountry($('#C_Country').val(), 'Sender');
+                        loadCurrencyByCountry($('#C_Country').val(), 'Sender');
+                    }, 200);
+
+                    $('#CantBeneficiariesXClient').text('(0)');
+
+                    $('#modalNewClient').modal('hide');
+
+                    Swal.fire({
+                    icon: 'success',
+                    title: 'Client created',
+                    timer: 1000,
+                    showConfirmButton: false
+                    });
+                    toggleBeneficiariesActions();
+                
+
+                },
+                error: function (err) {
+
+                    Swal.fire('Error', err.responseText, 'error');
+
+                }
+            });
+
+        });
+
+        function toggleBeneficiariesActions() {
+
+            if (selectedClientId) {
+
+                $('#btnOpenBeneficiaries').prop('disabled', false);
+                $('#btnNewBeneficiary').prop('disabled', false);
+
+            } else {
+
+                $('#btnOpenBeneficiaries').prop('disabled', true);
+                $('#btnNewBeneficiary').prop('disabled', true);
+
+            }
+
+        }
+
+
+                let tblBeneficiaries;
+
+        function loadBeneficiariesTable() {
+
+            tblBeneficiaries = $('#tblBeneficiaries').DataTable({
+                ajax: {
+                    url: '/Beneficiaries/GetByClient?id=' + selectedClientId,
+                    dataSrc: ''
+                },
+                columns: [
+                    { data: null, render: d => d.firstName + ' ' + d.lastName },
+                    { data: 'documentNumber' },
+                    { data: 'countryName' },
+                    {
+                        data: 'idBeneficiarie',
+                        render: id => `
+                            <button class="btn btn-success btn-sm"
+                                onclick="selectBeneficiary(${id})">
+                                Select
+                            </button>`
+                    }
+                ]
+            });
+
+        }
+
+                $('#btnOpenBeneficiaries').click(function () {
+
+            if (!selectedClientId) {
+                Swal.fire('Warning', 'Select a client first', 'warning');
+                return;
+            }
+
+            if ($.fn.DataTable.isDataTable('#tblBeneficiaries')) {
+                tblBeneficiaries.ajax.url('/Beneficiaries/GetByClient?id=' + selectedClientId).load();
+            } else {
+                loadBeneficiariesTable();
+            }
+
+            $('#modalSearchBeneficiaries').modal('show');
+        });
+
+                function selectBeneficiary(id) {
+
+            $.get('/Beneficiaries/GetById?id=' + id, function (b) {
+
+                $('#ReceiverName').val(b.firstName + ' ' + b.lastName);
+                $('#ReceiverDocumentNumber').val(b.documentNumber);
+                $('#ReceiverCountry').val(b.country).trigger('change');
+
+                $('#ReceiverDocumentType').val(b.idDocumentType);
+
+                setTimeout(() => {
+                    loadCompaniesByCountry(b.country, 'Receiver');
+                    loadCurrencyByCountry(b.country, 'Receiver');
+                }, 200);
+
+                $('#modalSearchBeneficiaries').modal('hide');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Beneficiary loaded',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+
+            });
+
+        }
+
+                $('#btnSaveBeneficiary').click(function () {
+
+            if (!selectedClientId) {
+                Swal.fire('Error', 'No client selected', 'error');
+                return;
+            }
+
+            let data = {
+                FirstName: $('#B_FirstName').val(),
+                LastName: $('#B_LastName').val(),
+                IdDocumentType: $('#B_DocumentType').val(),
+                DocumentNumber: $('#B_DocumentNumber').val(),
+                Country: $('#B_Country').val(),
+                IdClient_fk: selectedClientId
+            };
+
+            // 🔴 VALIDACIÓN
+            if (!data.FirstName || !data.LastName || !data.DocumentNumber) {
+                Swal.fire('Error', 'Complete required fields', 'error');
+                return;
+            }
+
+            Swal.fire({
+                title: 'Saving...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            $.ajax({
+                url: '/Beneficiaries/Create',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+
+                success: function (res) {
+                    let newId = res.idBeneficiarie;
+                    selectBeneficiary(newId);
+                    loadBeneficiariesCount(selectedClientId);
+                    $('#formNewBeneficiary')[0].reset();
+                    $('#modalNewBeneficiary').modal('hide');
+                    Swal.fire('Saved!', 'Beneficiary created', 'success');
+                },
+
+                error: function (err) {
+                    Swal.fire('Error', err.responseText, 'error');
+                }
+            });
+
+        });
+
+                $('#modalNewBeneficiary').on('hidden.bs.modal', function () {
+            $('#formNewBeneficiary')[0].reset();
+        });
+       
+        $('#modalNewClient').on('hidden.bs.modal', function () {
+
+            setTimeout(() => {
+                document.activeElement.blur();
+                $('body').focus();
+
+            }, 100);
+
+        });
     </script>
 }

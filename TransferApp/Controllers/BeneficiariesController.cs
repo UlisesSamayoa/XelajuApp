@@ -26,14 +26,35 @@ public class BeneficiariesController : Controller
     public async Task<IActionResult> GetById(int id)
         => Json(await _service.GetById(id));
 
+    //[HttpPost]
+    //public async Task<IActionResult> Create([FromBody] BeneficiariesModel m)
+    //{
+    //    try
+    //    {
+    //        m.UserC = "admin";
+    //        await _service.Create(m);
+    //        return Json(new { success = true, message = "Saved!" });
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return BadRequest(new { message = ex.Message });
+    //    }
+    //}
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] BeneficiariesModel m)
     {
         try
         {
             m.UserC = "admin";
-            await _service.Create(m);
-            return Json(new { success = true, message = "Saved!" });
+
+            var id = await _service.Create(m);
+
+            return Json(new
+            {
+                success = true,
+                message = "Saved!",
+                idBeneficiarie = id
+            });
         }
         catch (Exception ex)
         {
@@ -61,5 +82,11 @@ public class BeneficiariesController : Controller
     {
         await _service.Delete(id, "admin");
         return Json(new { success = true });
+    }
+    [HttpGet]
+    public async Task<IActionResult> GetByClient(int id)
+    {
+        var data = await _service.GetByClient(id);
+        return Json(data);
     }
 }

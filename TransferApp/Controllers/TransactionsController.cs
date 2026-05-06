@@ -1,16 +1,41 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TransferApp.Models;
 
-namespace TransferApp.Controllers
+public class TransactionsController : Controller
 {
-    public class TransactionsController : Controller
+    private readonly TransactionsService _service;
+
+    public TransactionsController(TransactionsService service)
     {
-        public IActionResult Index()
+        _service = service;
+    }
+
+    public IActionResult Index() => View();
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+        => Json(await _service.GetAll());
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] TransactionsModel m)
+    {
+        try
         {
-            return View();
+            m.UserC = "admin";
+            await _service.Create(m);
+
+            return Json(new { success = true });
         }
-        public IActionResult Update()
+        catch (Exception ex)
         {
-            return View();
+            return BadRequest(new { message = ex.Message });
         }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _service.Delete(id, "admin");
+        return Json(new { success = true });
     }
 }

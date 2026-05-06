@@ -127,4 +127,28 @@ public class CompanyRepository
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
     }
+    public async Task<List<CompaniesModel>> GetByCountry(int countryId)
+    {
+        var list = new List<CompaniesModel>();
+
+        using var conn = _db.CreateConnection();
+        using var cmd = new SqlCommand("sp_GetCompaniesByCountry", conn);
+
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@IdCountry", countryId);
+
+        await conn.OpenAsync();
+        using var rd = await cmd.ExecuteReaderAsync();
+
+        while (await rd.ReadAsync())
+        {
+            list.Add(new CompaniesModel
+            {
+                IdCompany = (int)rd["IdCompany"],
+                Name = rd["Name"].ToString()
+            });
+        }
+
+        return list;
+    }
 }

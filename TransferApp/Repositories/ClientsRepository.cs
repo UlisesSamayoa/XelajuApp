@@ -71,17 +71,32 @@ public class ClientsRepository
         return await reader.ReadAsync() ? Map(reader) : null;
     }
 
-    public async Task Create(ClientsModel model)
+    //public async Task Create(ClientsModel model)
+    //{
+    //    using var conn = _db.CreateConnection();
+    //    using var cmd = new SqlCommand("sp_CreateClient", conn);
+
+    //    cmd.CommandType = CommandType.StoredProcedure;
+
+    //    AddParams(cmd, model, true);
+
+    //    await conn.OpenAsync();
+    //    await cmd.ExecuteNonQueryAsync();
+    //}
+    public async Task<int> Create(ClientsModel m)
     {
         using var conn = _db.CreateConnection();
         using var cmd = new SqlCommand("sp_CreateClient", conn);
 
         cmd.CommandType = CommandType.StoredProcedure;
 
-        AddParams(cmd, model, true);
+        AddParams(cmd, m, true);
 
         await conn.OpenAsync();
-        await cmd.ExecuteNonQueryAsync();
+
+        var result = await cmd.ExecuteScalarAsync();
+
+        return Convert.ToInt32(result);
     }
 
     public async Task Update(ClientsModel model)
@@ -165,6 +180,34 @@ public class ClientsRepository
         else
             cmd.Parameters.AddWithValue("@UserU", m.UserU);
     }
+    //public async Task<List<ClientsModel>> Search(string term)
+    //{
+    //    var list = new List<ClientsModel>();
+
+    //    using var conn = _db.CreateConnection();
+    //    using var cmd = new SqlCommand("sp_SearchClients", conn);
+
+    //    cmd.CommandType = CommandType.StoredProcedure;
+    //    cmd.Parameters.AddWithValue("@term", term);
+
+    //    await conn.OpenAsync();
+    //    using var rd = await cmd.ExecuteReaderAsync();
+
+    //    while (await rd.ReadAsync())
+    //    {
+    //        list.Add(new ClientsModel
+    //        {
+    //            IdClient = (int)rd["IdClient"],
+    //            FirstName = rd["FirstName"].ToString(),
+    //            LastName = rd["LastName"].ToString(),
+    //            DocumentNumber = rd["DocumentNumber"].ToString(),
+    //            Phone = rd["Phone"].ToString(),
+    //            FullName = rd["FullName"].ToString()
+    //        });
+    //    }
+
+    //    return list;
+    //}
     public async Task<List<ClientsModel>> Search(string term)
     {
         var list = new List<ClientsModel>();
@@ -173,7 +216,7 @@ public class ClientsRepository
         using var cmd = new SqlCommand("sp_SearchClients", conn);
 
         cmd.CommandType = CommandType.StoredProcedure;
-        cmd.Parameters.AddWithValue("@term", term);
+        cmd.Parameters.AddWithValue("@Term", term ?? "");
 
         await conn.OpenAsync();
         using var rd = await cmd.ExecuteReaderAsync();
@@ -187,7 +230,10 @@ public class ClientsRepository
                 LastName = rd["LastName"].ToString(),
                 DocumentNumber = rd["DocumentNumber"].ToString(),
                 Phone = rd["Phone"].ToString(),
-                FullName = rd["FullName"].ToString()
+                Address = rd["Address"].ToString(),
+                IdDocumentType = rd["IdDocumentType"].ToString(),
+                Country = rd["Country"].ToString(),
+                FullName = rd["FirstName"].ToString() + ' ' + rd["LastName"].ToString()
             });
         }
 

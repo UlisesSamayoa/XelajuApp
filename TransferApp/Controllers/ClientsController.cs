@@ -21,13 +21,35 @@ public class ClientsController : Controller
     public async Task<IActionResult> GetById(int id)
         => Json(await _service.GetById(id));
 
+    //[HttpPost]
+    //public async Task<IActionResult> Create([FromForm] ClientsModel model, IFormFile File)
+    //{
+    //    try
+    //    {
+    //        await _service.Create(model, File);
+    //        return Ok(new { message = "Client created" });
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return BadRequest(new { message = ex.Message });
+    //    }
+    //}
+
     [HttpPost]
     public async Task<IActionResult> Create([FromForm] ClientsModel model, IFormFile File)
     {
         try
         {
-            await _service.Create(model, File);
-            return Ok(new { message = "Client created" });
+            model.UserC = "admin";
+
+            var id = await _service.Create(model, File);
+
+            return Ok(new
+            {
+                success = true,
+                message = "Client created",
+                idClient = id
+            });
         }
         catch (Exception ex)
         {
@@ -68,4 +90,5 @@ public class ClientsController : Controller
             return BadRequest(new { message = ex.Message });
         }
     }
+
 }

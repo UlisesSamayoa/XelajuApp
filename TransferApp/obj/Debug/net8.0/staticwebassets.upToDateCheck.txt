@@ -88,3 +88,5 @@ wwwroot\uploads\trainings\Prueba_24444_5_20260422231250.pdf
 wwwroot\uploads\trainings\Prueba_2_20260422230008.png
 wwwroot\uploads\trainings\Prueba_2_20260422230950.png
 wwwroot\uploads\trainings\Training_1_20260422231322.png
+wwwroot\uploads\clients\987654321_20260504230518.jpg
+wwwroot\uploads\clients\0111111111_20260505220054.jpg

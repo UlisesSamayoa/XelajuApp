@@ -71,4 +71,7 @@ public class CompaniesController : Controller
             return BadRequest(new { success = false, message = ex.Message });
         }
     }
+    [HttpGet]
+    public async Task<IActionResult> GetByCountry(int countryId)
+    => Json(await _service.GetByCountry(countryId));
 }

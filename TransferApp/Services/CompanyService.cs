@@ -20,6 +20,13 @@ public class CompanyService
     {
         return await _repo.GetById(id);
     }
+    public async Task<List<CompaniesModel>> GetByCountry(int countryId)
+    {
+        if (countryId <= 0)
+            throw new Exception("Invalid country");
+
+        return await _repo.GetByCountry(countryId);
+    }
     public async Task Update(CompaniesModel model)
     {
         await _repo.Update(model);

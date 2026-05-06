@@ -75,13 +75,30 @@ public class BeneficiariesRepository
         return null;
     }
 
-    public async Task Create(BeneficiariesModel m)
+    //public async Task Create(BeneficiariesModel m)
+    //{
+    //    using var conn = _db.CreateConnection();
+    //    using var cmd = new SqlCommand("sp_CreateBeneficiarie", conn);
+
+    //    cmd.CommandType = CommandType.StoredProcedure;
+
+    //    cmd.Parameters.AddWithValue("@FirstName", m.FirstName);
+    //    cmd.Parameters.AddWithValue("@LastName", m.LastName);
+    //    cmd.Parameters.AddWithValue("@IdDocumentType", m.IdDocumentType);
+    //    cmd.Parameters.AddWithValue("@DocumentNumber", m.DocumentNumber);
+    //    cmd.Parameters.AddWithValue("@Country", m.Country);
+    //    cmd.Parameters.AddWithValue("@UserC", m.UserC);
+    //    cmd.Parameters.AddWithValue("@IdClient_fk", m.IdClient_fk);
+
+    //    await conn.OpenAsync();
+    //    await cmd.ExecuteNonQueryAsync();
+    //}
+    public async Task<int> Create(BeneficiariesModel m)
     {
         using var conn = _db.CreateConnection();
         using var cmd = new SqlCommand("sp_CreateBeneficiarie", conn);
 
         cmd.CommandType = CommandType.StoredProcedure;
-
         cmd.Parameters.AddWithValue("@FirstName", m.FirstName);
         cmd.Parameters.AddWithValue("@LastName", m.LastName);
         cmd.Parameters.AddWithValue("@IdDocumentType", m.IdDocumentType);
@@ -89,9 +106,11 @@ public class BeneficiariesRepository
         cmd.Parameters.AddWithValue("@Country", m.Country);
         cmd.Parameters.AddWithValue("@UserC", m.UserC);
         cmd.Parameters.AddWithValue("@IdClient_fk", m.IdClient_fk);
-
         await conn.OpenAsync();
-        await cmd.ExecuteNonQueryAsync();
+
+        var result = await cmd.ExecuteScalarAsync();
+
+        return Convert.ToInt32(result);
     }
 
     public async Task Update(BeneficiariesModel m)
@@ -127,6 +146,34 @@ public class BeneficiariesRepository
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
     }
+    public async Task<List<BeneficiariesModel>> GetByClient(int clientId)
+    {
+        var list = new List<BeneficiariesModel>();
 
-   
+        using var conn = _db.CreateConnection();
+        using var cmd = new SqlCommand("sp_GetBeneficiariesByClient", conn);
+
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@IdClient", clientId);
+
+        await conn.OpenAsync();
+        using var rd = await cmd.ExecuteReaderAsync();
+
+        while (await rd.ReadAsync())
+        {
+            list.Add(new BeneficiariesModel
+            {
+                IdBeneficiarie = (int)rd["IdBeneficiarie"],
+                FirstName = rd["FirstName"].ToString(),
+                LastName = rd["LastName"].ToString(),
+                DocumentNumber = rd["DocumentNumber"].ToString(),
+                Country = rd["Country"].ToString(),
+                IdDocumentType = rd["IdDocumentType"].ToString(),
+                CountryName = rd["CountryName"].ToString()
+            });
+        }
+
+        return list;
+    }
+
 }

@@ -42,10 +42,31 @@ public class ClientsService
 
     public async Task<ClientsModel> GetById(int id) => await _repo.GetById(id);
 
-    public async Task Create(ClientsModel model, IFormFile file)
+    //public async Task Create(ClientsModel model, IFormFile file)
+    //{
+    //    model.Picture = SaveImage(file, model.DocumentNumber);
+    //    await _repo.Create(model);
+    //}
+    public async Task<int> Create(ClientsModel model, IFormFile file)
     {
-        model.Picture = SaveImage(file, model.DocumentNumber);
-        await _repo.Create(model);
+        if (file != null && file.Length > 0)
+        {
+            var fileName = $"{model.FirstName}_{DateTime.Now:yyyyMMddHHmmss}{Path.GetExtension(file.FileName)}";
+
+            var path = Path.Combine("wwwroot/uploads/clients", fileName);
+
+            using (var stream = new FileStream(path, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+            model.Picture = "/uploads/clients/" + fileName;
+        }
+        else
+        {
+            model.Picture = "/uploads/clients/default.png";
+        }
+
+        return await _repo.Create(model);
     }
 
     public async Task Update(ClientsModel model, IFormFile file)
