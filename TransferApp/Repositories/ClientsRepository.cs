@@ -159,9 +159,10 @@ public class ClientsRepository
             UserC = reader["UserC"] != DBNull.Value ? reader["UserC"].ToString() : string.Empty,
             DateU = reader["DateU"] != DBNull.Value ? Convert.ToDateTime(reader["DateU"]) : DateTime.MinValue,
             UserU = reader["UserU"] != DBNull.Value ? reader["UserU"].ToString() : string.Empty,
-            CountryName = reader["CountryName"] != DBNull.Value ? reader["CountryName"].ToString() : string.Empty
+            CountryName = reader["CountryName"] != DBNull.Value ? reader["CountryName"].ToString() : string.Empty,
         };
     }
+    
 
     private void AddParams(SqlCommand cmd, ClientsModel m, bool isCreate)
     {
@@ -238,5 +239,16 @@ public class ClientsRepository
         }
 
         return list;
+    }
+
+    public async Task<bool> ExistsClient(string documentNumber)
+    {
+        using var conn = _db.CreateConnection();
+        using var cmd = new SqlCommand("sp_ExistsClient", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@DocumentNumber", documentNumber);
+        await conn.OpenAsync();
+        var result = await cmd.ExecuteScalarAsync();
+        return Convert.ToBoolean(result);
     }
 }

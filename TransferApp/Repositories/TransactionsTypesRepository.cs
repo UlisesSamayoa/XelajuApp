@@ -110,4 +110,25 @@ public class TransactionsTypesRepository
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
     }
+    public async Task<List<TransactionsTypesModel>> GetAllTypes()
+    {
+        var list = new List<TransactionsTypesModel>();
+        using var conn = _db.CreateConnection();
+        using var cmd = new SqlCommand("sp_GetTransactionsTypes", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+
+        await conn.OpenAsync();
+        using var rd = await cmd.ExecuteReaderAsync();
+
+        while (await rd.ReadAsync())
+        {
+            list.Add(new TransactionsTypesModel
+            {
+                IdTypeTransaction = Convert.ToInt32(rd["IdTypeTransaction"]),
+                Name = rd["Name"].ToString(),
+                Commission = Convert.ToDecimal(rd["Commission"])
+            });
+        }
+        return list;
+    }
 }

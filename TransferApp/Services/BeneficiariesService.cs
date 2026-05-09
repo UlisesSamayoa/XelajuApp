@@ -25,4 +25,11 @@ public class BeneficiariesService
 
         return await _repo.GetByClient(clientId);
     }
+
+    public async Task<bool> ValidateBeneficiaryByClient(
+    int idBeneficiarie,
+    int idClient)
+    {
+        return await _repo.ValidateBeneficiaryByClient(idBeneficiarie,idClient);
+    }
 }

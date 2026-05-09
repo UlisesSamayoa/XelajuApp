@@ -1,0 +1,282 @@
+﻿@{
+    ViewData["Title"] = "Parameters";
+}
+
+<link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #4338ca;
+        --bg: #f1f5f9;
+    }
+
+    body {
+        background: var(--bg);
+    }
+
+    .card-custom {
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        border: none;
+    }
+
+    .btn-custom {
+        background: var(--primary);
+        color: white;
+        border-radius: 10px;
+    }
+
+        .btn-custom:hover {
+            background: var(--primary-dark);
+        }
+</style>
+
+<div class="container-fluid mt-4 px-4">
+
+    <div class="card card-custom p-4">
+
+        <div class="d-flex justify-content-between mb-3">
+            <h3>
+                <i class="bi bi-sliders"></i>
+                Parameters
+            </h3>
+
+            <button class="btn btn-custom"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalParameters">
+
+                <i class="bi bi-plus"></i>
+                Add Parameter
+            </button>
+        </div>
+
+        <table id="tblParameters"
+               class="table table-hover w-100">
+
+            <thead class="table-light">
+                <tr>
+                    <th>Mode</th>
+                    <th>Days</th>
+                    <th>Max Transactions</th>
+                    <th>Max Amount</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- MODAL -->
+
+<div class="modal fade" id="modalParameters">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content card-custom">
+
+            <div class="modal-header">
+                <h5>New Parameter</h5>
+
+                <button class="btn-close"
+                        data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <form id="formParameters">
+
+                    <div class="form-check form-switch mb-3">
+
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="LastMonth" />
+
+                        <label class="form-check-label">
+                            Use Current Month
+                        </label>
+
+                    </div>
+
+                    <label class="form-label">Count Days</label>
+                    <input id="CountDays" type="number" class="form-control mb-3" placeholder="30" />
+                    <label class="form-label">Max Transactions</label>
+                    <input id="MaxTransactions" type="number" class="form-control mb-3" placeholder="10" />
+
+                    <label class="form-label">
+                        Max Amount
+                    </label>
+
+                    <input id="MaxAmount"
+                           type="number"
+                           class="form-control"
+                           placeholder="1000" />
+
+                </form>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button class="btn btn-custom"
+                        id="btnSave">
+
+                    <i class="bi bi-floppy-fill"></i>
+                    Save
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <script>
+
+        let table = $('#tblParameters').DataTable({
+
+            ajax: {
+                url: '/Parameters/GetAll',
+                dataSrc: ''
+            },
+            columns: [
+                {
+                    data: 'lastMonth',
+                    render: d =>
+                        d
+                        ? '<span class="badge bg-primary">Current Month</span>'
+                        : '<span class="badge bg-secondary">Days Range</span>'
+                },
+                { data: 'countDays' },
+                { data: 'maxTransactions' },
+                {
+                    data: 'maxAmount',
+                    render: d => '$ ' + d
+                },
+                {
+                    data: 'idParameters',
+                    render: d => `
+                        <a href="/Parameters/Update?id=${d}"
+                           class="btn btn-warning btn-sm">
+                            <i class="bi bi-pencil-fill"></i>
+                        </a>
+                        <button class="btn btn-danger btn-sm"
+                                onclick="deleteParameter(${d})">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
+                    `
+                }
+            ]
+        });
+
+        $('#LastMonth').change(function(){
+
+            if($(this).is(':checked')){
+                $('#CountDays').prop('disabled', true);
+                $('#CountDays').val('');
+            }
+            else{
+                $('#CountDays').prop('disabled', false);
+            }
+
+        });
+
+        $('#btnSave').click(function(){
+
+            let data = {
+                lastMonth:$('#LastMonth').is(':checked'),
+                countDays:$('#LastMonth').is(':checked') ? 0 : $('#CountDays').val(),
+                MaxTransactions:$('#MaxTransactions').val(),
+                maxAmount:$('#MaxAmount').val()
+            };
+
+            if(!data.maxAmount){
+                Swal.fire(
+                    'Error',
+                    'Max Amount required',
+                    'error');
+                return;
+            }
+            Swal.fire({
+                title:'Saving...',
+                allowOutsideClick:false,
+                didOpen:()=>Swal.showLoading()
+            });
+
+            $.ajax({
+                url:'/Parameters/Create',
+                method:'POST',
+                contentType:'application/json',
+                data:JSON.stringify(data),
+                success:()=>{
+
+                    $('#modalParameters').modal('hide');
+                    table.ajax.reload();
+                    $('#formParameters')[0].reset();
+                        Swal.fire({
+                        icon:'success',
+                        title:'Saved!',
+                        timer:1200,
+                        showConfirmButton:false
+                        });
+                },
+                error:e=>{
+
+                    Swal.fire(
+                        'Error',
+                        e.responseJSON?.message || 'Error',
+                        'error');
+                }
+            });
+
+        });
+
+        function deleteParameter(id){
+
+            Swal.fire({
+
+                title:'Delete?',
+                text: 'This Parameters Config will be deleted',
+                icon:'warning',
+                showCancelButton:true
+
+            }).then(r=>{
+
+                if(r.isConfirmed){
+
+                    $.ajax({
+
+                        url:'/Parameters/Delete?id=' + id,
+                        method:'DELETE',
+
+                        success:()=>{
+
+                            table.ajax.reload();
+
+                            Swal.fire({
+                        icon:'success',
+                        title:'Deleted!',
+                        timer:1200,
+                        showConfirmButton:false
+                    });
+                        }
+                    });
+                }
+            });
+        }
+
+    </script>
+
+}

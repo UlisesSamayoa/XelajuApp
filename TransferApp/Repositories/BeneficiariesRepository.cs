@@ -176,4 +176,19 @@ public class BeneficiariesRepository
         return list;
     }
 
+    public async Task<bool> ValidateBeneficiaryByClient(
+    int idBeneficiarie,
+    int idClient)
+    {
+        using var conn = _db.CreateConnection();
+
+        using var cmd =new SqlCommand("sp_ValidateBeneficiaryByClient",conn);
+
+        cmd.CommandType =CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@IdBeneficiarie",idBeneficiarie);
+        cmd.Parameters.AddWithValue("@IdClient",idClient);
+        await conn.OpenAsync();
+        var result =Convert.ToInt32(await cmd.ExecuteScalarAsync());
+        return result > 0;
+    }
 }

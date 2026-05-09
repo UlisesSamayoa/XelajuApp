@@ -58,6 +58,7 @@ wwwroot\lib\jquery\dist\jquery.js
 wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
+wwwroot\uploads\clients\0111111111_20260505220054.jpg
 wwwroot\uploads\clients\04578458-5_20260428213824.jpg
 wwwroot\uploads\clients\05141545-8_20260424220156.png
 wwwroot\uploads\clients\05489654-5_20260428213644.jpeg
@@ -68,8 +69,10 @@ wwwroot\uploads\clients\05923411-9_20260424220302.jpg
 wwwroot\uploads\clients\13_20260424225657.jpg
 wwwroot\uploads\clients\13_20260424234148.png
 wwwroot\uploads\clients\1_20260424234108.png
+wwwroot\uploads\clients\1_20260505234943.png
 wwwroot\uploads\clients\33 3_20260424233604.png
 wwwroot\uploads\clients\3_20260424232850.png
+wwwroot\uploads\clients\987654321_20260504230518.jpg
 wwwroot\uploads\reviews\11_20260422235838.pdf
 wwwroot\uploads\reviews\121212_20260423000347.png
 wwwroot\uploads\reviews\1212_20260423000329.pdf
@@ -88,5 +91,3 @@ wwwroot\uploads\trainings\Prueba_24444_5_20260422231250.pdf
 wwwroot\uploads\trainings\Prueba_2_20260422230008.png
 wwwroot\uploads\trainings\Prueba_2_20260422230950.png
 wwwroot\uploads\trainings\Training_1_20260422231322.png
-wwwroot\uploads\clients\987654321_20260504230518.jpg
-wwwroot\uploads\clients\0111111111_20260505220054.jpg

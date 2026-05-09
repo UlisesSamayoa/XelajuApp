@@ -14,4 +14,8 @@ public class TransactionsTypesService
     public async Task Create(TransactionsTypesModel m) => await _repo.Create(m);
     public async Task Update(TransactionsTypesModel m) => await _repo.Update(m);
     public async Task Delete(int id, string user) => await _repo.Delete(id, user);
+    public async Task<List<TransactionsTypesModel>> GetAllTypes()
+    {
+        return await _repo.GetAllTypes();
+    }
 }

@@ -1,0 +1,176 @@
+﻿@{
+    ViewData["Title"] = "Update Parameters";
+}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #4338ca;
+        --bg: #f1f5f9;
+    }
+
+    body {
+        background: var(--bg);
+    }
+
+    .card-custom {
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        border: none;
+    }
+
+    .btn-custom {
+        background: var(--primary);
+        color: white;
+        border-radius: 10px;
+    }
+
+</style>
+
+<div class="container mt-4">
+
+    <div class="card card-custom p-4">
+        <div class="d-flex justify-content-between mb-3">
+            <h3>Update Parameters</h3>
+            <a href="/Parameters" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+        </div>
+
+        <form id="formUpdate">
+
+            <input type="hidden" id="IdParameters" value="@ViewBag.Id" />
+
+            <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" id="LastMonth" />
+                <label class="form-check-label">
+                    Use Current Month
+                </label>
+
+            </div>
+
+            <label class="form-label"> Count Days</label>
+
+            <input id="CountDays" type="number" class="form-control mb-3" />
+            <label class="form-label"> Max Transactions</label>
+
+            <input id="MaxTransactions" type="number" class="form-control mb-3" />
+
+            <label class="form-label">
+                Max Amount
+            </label>
+
+            <input id="MaxAmount" type="number" class="form-control mb-3" />
+
+            <div class="mt-3 d-flex gap-2">
+                <button type="button" class="btn btn-custom" id="btnUpdate">
+                    <i class="bi bi-floppy-fill"></i> Update
+                </button>
+
+                <a href="/Parameters" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+            </div>
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+    const id =
+        $('#IdParameters').val();
+
+    loadData();
+
+    function loadData(){
+
+        $.get('/Parameters/GetById?id=' + id,
+
+        function(d){
+
+            $('#LastMonth')
+                .prop('checked', d.lastMonth);
+
+            $('#CountDays').val(d.countDays);
+            $('#MaxTransactions').val(d.maxTransactions);
+
+            $('#MaxAmount')
+                .val(d.maxAmount);
+
+            $('#Status')
+                .val(d.status);
+
+            toggleDays();
+        });
+    }
+
+    $('#LastMonth').change(function(){
+        toggleDays();
+    });
+
+    function toggleDays(){
+
+        if($('#LastMonth').is(':checked')){
+
+            $('#CountDays')
+                .prop('disabled', true)
+                .val('');
+        }
+        else{
+
+            $('#CountDays')
+                .prop('disabled', false);
+        }
+    }
+
+    $('#btnUpdate').click(function(){
+
+        let data = {
+
+            idParameters:id,
+            lastMonth:$('#LastMonth').is(':checked'),
+            // countDays:$('#CountDays').val(),
+            countDays:$('#LastMonth').is(':checked') ? 0 : $('#CountDays').val(),
+            MaxTransactions:$('#MaxTransactions').val(),
+            maxAmount:$('#MaxAmount').val(),
+            status:$('#Status').val()
+        };
+
+        Swal.fire({
+            title:'Updating...',
+            didOpen:()=>Swal.showLoading()
+        });
+
+        $.ajax({
+
+            url:'/Parameters/UpdateData',
+            method:'PUT',
+            contentType:'application/json',
+            data:JSON.stringify(data),
+
+            success:()=>{
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Updated!',
+                    timer: 1200,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = '/Parameters';
+                });
+            },
+
+            error:e=>{
+
+                Swal.fire(
+                    'Error',
+                    e.responseJSON?.message || 'Error',
+                    'error');
+            }
+        });
+
+    });
+
+</script>

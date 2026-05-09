@@ -200,6 +200,7 @@
                 Swal.fire('Error', 'File is required', 'error');
             return;
         }
+        
         $.ajax({
             url: '/TrainingsLicenses/Create',
             type: 'POST',

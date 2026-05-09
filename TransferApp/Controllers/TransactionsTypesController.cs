@@ -62,4 +62,17 @@ public class TransactionsTypesController : Controller
         await _service.Delete(id, "admin");
         return Json(new { success = true });
     }
+    [HttpGet]
+    public async Task<IActionResult> GetAllTypes()
+    {
+        try
+        {
+            var list = await _service.GetAllTypes();
+            return Json(list);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }

@@ -26,6 +26,8 @@ builder.Services.AddScoped<TransactionsTypesRepository>();
 builder.Services.AddScoped<TransactionsTypesService>();
 builder.Services.AddScoped<TransactionsRepository>();
 builder.Services.AddScoped<TransactionsService>();
+builder.Services.AddScoped<ParametersRepository>();
+builder.Services.AddScoped<ParametersService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

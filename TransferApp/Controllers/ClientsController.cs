@@ -90,5 +90,22 @@ public class ClientsController : Controller
             return BadRequest(new { message = ex.Message });
         }
     }
-
+    
+    [HttpGet]
+    public async Task<IActionResult>
+    ExistsClient(string documentNumber)
+    {
+        try
+        {
+            var result = await _service.ExistsClient(documentNumber);
+            return Json(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
+        }
+    }
 }

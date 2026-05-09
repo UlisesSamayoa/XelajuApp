@@ -12,4 +12,12 @@ public class TransactionsService
     public async Task<List<TransactionsModel>> GetAll() => await _repo.GetAll();
     public async Task Create(TransactionsModel m) => await _repo.Create(m);
     public async Task Delete(int id, string user) => await _repo.Delete(id, user);
+    public async Task<TransactionsModel> GetById(int id)
+    {
+        return await _repo.GetById(id);
+    }
+    public async Task CreateSimple(SimpleTransactionsModel m)
+    {
+        await _repo.CreateSimple(m);
+    }
 }

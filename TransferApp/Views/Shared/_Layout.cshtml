@@ -25,7 +25,6 @@
         font-family: 'Segoe UI', sans-serif;
     }
 
-    /* SIDEBAR */
     .sidebar {
         width: 250px;
         height: 100vh;
@@ -35,15 +34,27 @@
         display: flex;
         flex-direction: column;
         transition: 0.3s;
+        /* 🔥 CLAVE */
+        overflow-y: auto;
+        overflow-x: hidden;
     }
 
-    .sidebar h2 {
-        text-align: center;
-        padding: 20px 0;
-        margin: 0;
-        font-weight: bold;
-    }
+        /* opcional: mejor scroll visual */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
 
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+        }
+
+        .sidebar h2 {
+            position: sticky;
+            top: 0;
+            background: var(--sidebar-bg);
+            z-index: 10;
+        }
     .sidebar a {
         color: var(--sidebar-text);
         text-decoration: none;
@@ -96,7 +107,7 @@
     }
 </style>
 <body>
-    <div class="sidebar">
+    @* <div class="sidebar">
         <h2>Xelaju Water</h2>
 
         <a asp-controller="Home" asp-action="Index"><i class="bi bi-house-fill" style="font-size:1.5rem;"></i> Home</a>
@@ -110,7 +121,75 @@
         <a asp-controller="DocumentsTypes" asp-action="Index"><i class="bi bi-file-earmark-medical-fill" style="font-size:1.5rem;"></i> Documents Types</a>
         <a asp-controller="TransactionsTypes" asp-action="Index"><i class="bi bi-cash-stack" style="font-size:1.5rem;"></i> TransactionsTypes</a>
         <a asp-controller="Users" asp-action="Index"><i class="bi bi-person-fill-gear" style="font-size:1.5rem;"></i> Users</a>
+        <a asp-controller="Parameters" asp-action="Index"><i class="bi bi-sliders" style="font-size:1.5rem;"></i> Parameters</a>
         <a asp-controller="Auth" asp-action="Login"><i class="bi bi-box-arrow-in-left" style="font-size:1.5rem;"></i> Log out</a>
+    </div> *@
+    <div class="sidebar">
+        <h2>Xelaju Water</h2>
+
+        <a asp-controller="Home" asp-action="Index">
+            <i class="bi bi-house-fill" style="font-size:1.5rem;"></i> Home
+        </a>
+
+        <a asp-controller="Transactions" asp-action="Index">
+            <i class="bi bi-currency-exchange" style="font-size:1.5rem;"></i> Transactions
+        </a>
+
+        <a asp-controller="Clients" asp-action="Index">
+            <i class="bi bi-people-fill" style="font-size:1.5rem;"></i> Clients
+        </a>
+
+        <a asp-controller="Beneficiaries" asp-action="Index">
+            <i class="bi bi-person-heart" style="font-size:1.5rem;"></i> Beneficiaries
+        </a>
+
+        
+
+        <a asp-controller="Reviews" asp-action="Index">
+            <i class="bi bi-journal-text" style="font-size:1.5rem;"></i> Independent Review
+        </a>
+
+        <a asp-controller="TrainingsLicenses" asp-action="Index">
+            <i class="bi bi-award" style="font-size:1.5rem;"></i> Trainings & Licenses
+        </a>
+        
+        <div class="mt-2">
+            <a class="d-flex justify-content-between align-items-center text-white"
+               data-bs-toggle="collapse"
+               href="#configMenu"
+               role="button"
+               aria-expanded="false"
+               aria-controls="configMenu">
+                <span>
+                    <i class="bi bi-gear-fill" style="font-size:1.5rem;"></i>
+                    Configurations
+                </span>
+                <i class="bi bi-chevron-down"></i>
+            </a>
+            <div class="collapse ms-3 mt-2" id="configMenu">
+                <a asp-controller="Countries" asp-action="Index">
+                    <i class="bi bi-flag" style="font-size:1.5rem;"></i> Countries
+                </a>
+                <a asp-controller="Companies" asp-action="Index">
+                    <i class="bi bi-bank2" style="font-size:1.5rem;"></i> Companies
+                </a>
+                <a asp-controller="DocumentsTypes" asp-action="Index">
+                    <i class="bi bi-file-earmark-medical-fill"></i> Documents Types
+                </a>
+                <a asp-controller="Parameters" asp-action="Index">
+                    <i class="bi bi-sliders"></i> Parameters
+                </a>
+                <a asp-controller="TransactionsTypes" asp-action="Index">
+                    <i class="bi bi-cash-stack"></i> Transactions Types
+                </a>
+            </div>
+        </div>
+        <a asp-controller="Users" asp-action="Index">
+            <i class="bi bi-person-fill-gear" style="font-size:1.5rem;"></i> Users
+        </a>
+        <a asp-controller="Auth" asp-action="Login">
+            <i class="bi bi-box-arrow-in-left" style="font-size:1.5rem;"></i> Log out
+        </a>
     </div>
 
     <div class="main-content">

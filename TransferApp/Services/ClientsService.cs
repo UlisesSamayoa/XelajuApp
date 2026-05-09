@@ -89,4 +89,8 @@ public class ClientsService
 
         return await _repo.Search(term);
     }
+    public async Task<bool> ExistsClient(string documentNumber)
+    {
+        return await _repo.ExistsClient(documentNumber);
+    }
 }
