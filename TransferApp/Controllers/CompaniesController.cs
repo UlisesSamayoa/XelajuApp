@@ -18,7 +18,7 @@ public class CompaniesController : Controller
         var data = await _service.GetAll();
         return Json(data);
     }
-    [HttpPost] 
+    [HttpPost]
     public async Task<IActionResult> Create([FromBody] CompaniesModel model)
     {
         try
@@ -74,4 +74,13 @@ public class CompaniesController : Controller
     [HttpGet]
     public async Task<IActionResult> GetByCountry(int countryId)
     => Json(await _service.GetByCountry(countryId));
+
+
+    [HttpGet]
+    public async Task<IActionResult> GetByTransactionType(int transactionType)
+    {
+        var result = await _service.GetByTransactionType(transactionType);
+
+        return Ok(result);
+    }
 }

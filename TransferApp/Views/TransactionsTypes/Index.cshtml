@@ -64,6 +64,7 @@
         <table id="tblTT" class="table table-hover w-100">
             <thead class="table-light">
                 <tr>
+                    <th>Transaction Number</th>
                     <th>Name</th>
                     <th>Commission</th>
                     <th>Description</th>
@@ -85,6 +86,8 @@
             </div>
 
             <form id="formTT">
+                <label class="form-label">Transaction Number</label>
+                <input name="NumberT" type="number" class="form-control mb-2" placeholder="Transaction Number" required />
                 <label class="form-label">Name</label>
                 <input name="Name" class="form-control mb-2" placeholder="Name" required />
                 <label class="form-label">Commission</label>
@@ -121,6 +124,7 @@
                 dataSrc:''
             },
             columns:[
+                { data:'numberT' },
                 { data:'name' },
                 { data:'commission',
                   render: c => `${parseFloat(c)} %`
@@ -147,9 +151,13 @@
         let data = {
             name:$('input[name="Name"]').val(),
             commission:parseFloat($('input[name="Commission"]').val()),
-            description:$('input[name="Description"]').val()
+            description:$('input[name="Description"]').val(),
+            NumberT:$('input[name="NumberT"]').val()
         };
-
+        if(!data.NumberT){
+                Swal.fire('Error','Transaction Numner is required','error');
+                return;
+        }
         if(!data.name || isNaN(data.commission)){
             Swal.fire('Error','Name & Commission required','error');
             return;

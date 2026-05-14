@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace TransferApp.Models
+﻿namespace TransferApp.Models
 {
     public class TransactionsModel
     {
@@ -19,6 +15,7 @@ namespace TransferApp.Models
         //SENDER
         public int SenderClientId { get; set; }
         public string SenderCountry { get; set; }
+        public string? SenderCountryName { get; set; }
         public int SenderCompany { get; set; }
         public string SenderCompanyName { get; set; }
         public int SenderCurrency { get; set; }
@@ -44,6 +41,8 @@ namespace TransferApp.Models
         public string? ReceiverAddress { get; set; }
 
         public string JustifyDetails { get; set; }
+        public string TransactionFile { get; set; }
+        public string TransactionStatus { get; set; }
 
         //OTROS
         public bool IsSimpleTransaction { get; set; }

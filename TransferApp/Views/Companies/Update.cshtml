@@ -77,6 +77,10 @@
                     <label>Phone</label>
                     <input type="text" id="Phone" class="form-control"  />
                 </div>
+                <div class="col-md-12">
+                    <label class="form-label">TransactionType</label>
+                    <select name="TransactionType" id="TransactionType" class="form-control mb-2" required></select>
+                </div>
             </div>
 
             <div class="mt-3 d-flex gap-2">
@@ -102,6 +106,7 @@
     $(document).ready(function () {
 
         loadCountriesDropdown('#Country');
+        // loadCompaniesDropdown('#TransactionType');
         $.ajax({
         url: '/Companies/GetById?id=' + id,
         type: 'GET',
@@ -129,6 +134,7 @@
             $('#SwiftCode').val(data.swiftCode);
             $('#Phone').val(data.phone);
             loadCountriesDropdown('#Country', data.idCountry);
+            loadCompaniesDropdown('#TransactionType',data.transactionType);
         },
 
         error: () => {
@@ -144,6 +150,7 @@
                 IdCountry: $('#Country').val(),
                 SwiftCode: $('#SwiftCode').val(),
                 Phone: $('#Phone').val(),
+                TransactionType: $('#TransactionType').val(),
                 UserU: "admin"
             };
              if (!data.Name) {
@@ -160,6 +167,10 @@
             }
             if (!data.Phone) {
                 Swal.fire('Error', 'Phone is required', 'error');
+                return;
+            }
+            if (!data.TransactionType) {
+                Swal.fire('Error', 'TransactionType is required', 'error');
                 return;
             }
 
@@ -179,9 +190,11 @@
 
             success: function (res) {
                 Swal.fire({
-                    icon: 'success',
-                    title: res.message
-                }).then(() => {
+                        icon: 'success',
+                        title: res.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
                     window.location.href = '/Companies';
                 });
             },
@@ -218,6 +231,35 @@
                     });
 
                     // 🔥 seleccionar valor si viene
+                    if (selectedValue) {
+                        select.val(selectedValue);
+                    }
+                },
+
+                error: function () {
+                    Swal.fire('Error', 'Failed to load countries', 'error');
+                }
+            });
+        }
+
+        function loadCompaniesDropdown(selectId, selectedValue = null) {
+
+            $.ajax({
+                url: '/TransactionsTypes/GetAllTypes',
+                type: 'GET',
+
+                success: function (data) {
+
+                    let select = $(selectId);
+                    select.empty();
+
+                    data.forEach(c => {
+                        select.append(`
+                            <option value="${c.numberT}">
+                                ${c.name}
+                            </option>
+                        `);
+                    });
                     if (selectedValue) {
                         select.val(selectedValue);
                     }

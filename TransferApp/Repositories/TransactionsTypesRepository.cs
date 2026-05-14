@@ -31,6 +31,7 @@ public class TransactionsTypesRepository
                 Name = rd["Name"].ToString(),
                 Commission = (decimal)rd["Commission"],
                 Description = rd["Description"].ToString(),
+                NumberT = (int)rd["NumberT"],
                 Status = (int)rd["Status"]
             });
         }
@@ -57,11 +58,67 @@ public class TransactionsTypesRepository
                 Name = rd["Name"].ToString(),
                 Commission = (decimal)rd["Commission"],
                 Description = rd["Description"].ToString(),
-                Status = (int)rd["Status"]
+                NumberT = (int)rd["NumberT"],
+                Status = (int)rd["Status"],
             };
         }
 
         return null;
+    }
+
+    //public async Task<TransactionsTypesModel> GetByNumber(int id)
+    //{
+    //    using var conn = _db.CreateConnection();
+    //    using var cmd = new SqlCommand("sp_GetTypeTransactionByNumber", conn);
+
+    //    cmd.CommandType = CommandType.StoredProcedure;
+    //    cmd.Parameters.AddWithValue("@IdTypeTransaction", id);
+
+    //    await conn.OpenAsync();
+    //    using var rd = await cmd.ExecuteReaderAsync();
+
+    //    if (await rd.ReadAsync())
+    //    {
+    //        return new TransactionsTypesModel
+    //        {
+    //            IdTypeTransaction = (int)rd["IdTypeTransaction"],
+    //            Name = rd["Name"].ToString(),
+    //            Commission = (decimal)rd["Commission"],
+    //            Description = rd["Description"].ToString(),
+    //            NumberT = (int)rd["NumberT"],
+    //            Status = (int)rd["Status"],
+    //        };
+    //    }
+
+    //    return null;
+    //}
+    public async Task<List<TransactionsTypesModel>> GetByNumber(int id)
+    {
+        var list = new List<TransactionsTypesModel>();
+
+        using var conn = _db.CreateConnection();
+        using var cmd = new SqlCommand("sp_GetTypeTransactionByNumber", conn);
+
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@IdTypeTransaction", id);
+
+        await conn.OpenAsync();
+        using var rd = await cmd.ExecuteReaderAsync();
+
+        while (await rd.ReadAsync())
+        {
+            list.Add(new TransactionsTypesModel
+            {
+                IdTypeTransaction = (int)rd["IdTypeTransaction"],
+                Name = rd["Name"].ToString(),
+                Commission = (decimal)rd["Commission"],
+                Description = rd["Description"].ToString(),
+                NumberT = (int)rd["NumberT"],
+                Status = (int)rd["Status"]
+            });
+        }
+
+        return list;
     }
 
     public async Task Create(TransactionsTypesModel m)
@@ -74,6 +131,7 @@ public class TransactionsTypesRepository
         cmd.Parameters.AddWithValue("@Name", m.Name);
         cmd.Parameters.AddWithValue("@Commission", m.Commission);
         cmd.Parameters.AddWithValue("@Description", m.Description ?? "");
+        cmd.Parameters.AddWithValue("@NumberT", m.NumberT);
         cmd.Parameters.AddWithValue("@UserC", m.UserC);
 
         await conn.OpenAsync();
@@ -91,6 +149,7 @@ public class TransactionsTypesRepository
         cmd.Parameters.AddWithValue("@Name", m.Name);
         cmd.Parameters.AddWithValue("@Commission", m.Commission);
         cmd.Parameters.AddWithValue("@Description", m.Description ?? "");
+        cmd.Parameters.AddWithValue("@NumberT", m.NumberT);
         cmd.Parameters.AddWithValue("@UserU", m.UserU);
 
         await conn.OpenAsync();
@@ -126,7 +185,8 @@ public class TransactionsTypesRepository
             {
                 IdTypeTransaction = Convert.ToInt32(rd["IdTypeTransaction"]),
                 Name = rd["Name"].ToString(),
-                Commission = Convert.ToDecimal(rd["Commission"])
+                Commission = Convert.ToDecimal(rd["Commission"]),
+                NumberT = Convert.ToInt32(rd["NumberT"])
             });
         }
         return list;

@@ -25,6 +25,8 @@ public class TransactionsTypesController : Controller
     [HttpGet]
     public async Task<IActionResult> GetById(int id)
         => Json(await _service.GetById(id));
+    public async Task<IActionResult> GetByNumber(int id)
+       => Json(await _service.GetByNumber(id));
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] TransactionsTypesModel m)

@@ -16,17 +16,21 @@
         background: var(--bg);
     }
 
+    .tmin-w {
+        min-width: 100px !important;
+        white-space: nowrap;
+    }
     .card-custom {
         border-radius: 15px;
         box-shadow: 0 10px 25px rgba(0,0,0,0.08);
         border: none;
     }
 
-    .btn-custom {
-        background: var(--primary);
-        color: white;
-        border-radius: 10px;
-    }
+    /* .btn-custom {
+                    background: var(--primary);
+                    color: white;
+                    border-radius: 10px;
+                } */
 
     .img-preview {
         width: 100%;
@@ -80,13 +84,19 @@
     <div class="card card-custom p-4">
 
         <div class="d-flex justify-content-between mb-3">
-            <h3><i class="bi bi-currency-exchange" "></i> Transactions</h3>
+            <h3><i class="bi bi-currency-exchange"></i> Transactions</h3>
 
-            <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalTx">
-                <i class="bi bi-plus"></i> New Money Transfer
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalTx" onclick="ObtenerTipoTransaccion(3,'TransactionType')">
+                <i class="bi bi-currency-exchange"></i> Money Transfer
             </button>
-            <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalSimpleTx">
-                <i class="bi bi-plus"></i> New Other Transaction
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSimpleTx" onclick="ObtenerTipoTransaccion(1,'SimpleTx')">
+                <i class="bi bi-cash-coin"></i> Check Cashing
+            </button>
+            <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalOrderTx" onclick="ObtenerTipoTransaccion(2,'MOrder')">
+                <i class="bi bi-folder-plus"></i> Money Order
+            </button>
+            <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalPaidTx" onclick="ObtenerTipoTransaccion(4,'PService')">
+                <i class="bi bi-lightbulb-fill"></i> Paid Service
             </button>
         </div>
 
@@ -95,10 +105,11 @@
                 <tr>
                     <th>Reference</th>
                     <th>Sender Document</th>
-                    <th>Sender</th>
-                    <th>Receiver</th>
-                    <th>Receiver Country</th>
-                    <th>TransactionType</th>
+                    <th>Name</th>
+                    <th>Sender Company</th>
+                    <th>Receiver Company</th>
+                    <th>Transaction Type</th>
+                    <th>Status</th>
                     <th>Amount</th>
                     <th>Actions</th>
                 </tr>
@@ -124,7 +135,7 @@
                             <div class="col-3">
                                 <label class="form-label">Transaction Type *</label>
                                 <input id="TransactionTypeName" type="text" class="form-control mb-2" value="Money Transfer" readonly />
-                                <input type="hidden" id="TransactionType" value="3" />
+                                <input type="hidden" id="TransactionType"/>
                             </div>
                             <div class="col-2">
                                 <label class="form-label">Amount *</label>
@@ -255,12 +266,12 @@
                     <input id="JustifyDetails" class="form-control mb-2" placeholder="Address" />
                 </div>
                 <hr />
-                <input type="file" class="form-control" onchange="previewImage(this)" id="ImgJustify"/>
+                <input type="file" class="form-control" onchange="previewImage(this)" id="ImgJustify" />
                 <img id="imgPreview" class="img-preview" />
 
             </form>
             <div class="modal-footer">
-                <button class="btn btn-custom" id="btnSaveTx"><i class="bi bi-floppy-fill"></i> Save</button>
+                <button class="btn btn-success" id="btnSaveTx"><i class="bi bi-floppy-fill"></i> Save</button>
             </div>
         </div>
     </div>
@@ -413,7 +424,7 @@
                     <div class="row">
                         <div class="col-6">
                             <label>First Name</label>
-                            <input id="B_FirstName" class="form-control mb-2" placeholder="First Name"/>
+                            <input id="B_FirstName" class="form-control mb-2" placeholder="First Name" />
                         </div>
 
                         <div class="col-6">
@@ -450,7 +461,8 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="modalTxDetails">
+
+@* <div class="modal fade" id="modalTxDetails">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content p-3">
 
@@ -553,14 +565,223 @@
 
         </div>
     </div>
+</div> *@
+
+<div class="modal fade" id="modalTxDetails">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg">
+
+            <!-- HEADER -->
+            <div class="modal-header bg-dark text-white">
+                <div>
+                    <h5 class="mb-0">
+                        <i class="bi bi-receipt"></i>
+                        Transaction Details
+                    </h5>
+
+                    <small id="dTransactionType"></small>
+                </div>
+
+                <button class="btn-close btn-close-white"
+                        data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <!-- SUMMARY -->
+                <div class="row g-3 mb-4">
+
+                    <div class="col-md-2">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <small class="text-muted">Reference</small>
+                                <h6 id="dReference"></h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <small class="text-muted">Amount</small>
+                                <h6 id="dAmount"></h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <small class="text-muted">Commission</small>
+                                <h6 id="dCommission"></h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="card shadow-sm h-100 bg-light">
+                            <div class="card-body">
+                                <small class="text-muted">Total</small>
+                                <h5 id="dTotal"></h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <small class="text-muted">Company</small>
+                                <h6 id="dCompany"></h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <small class="text-muted">Status</small>
+                                <h6 id="dStatus"></h6>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- PEOPLE -->
+                <div class="row">
+
+                    <!-- SENDER -->
+                    <div class="col-md-6">
+                        <div class="card shadow-sm h-100">
+
+                            <div class="card-header bg-primary text-white">
+                                Sender
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="row mb-2">
+                                    <div class="col-4 fw-bold">Name</div>
+                                    <div class="col-8" id="dSender"></div>
+                                </div>
+
+                                <div class="row mb-2">
+                                    <div class="col-4 fw-bold">Document</div>
+                                    <div class="col-8" id="dSenderDoc"></div>
+                                </div>
+
+                                <div class="row mb-2">
+                                    <div class="col-4 fw-bold">Phone</div>
+                                    <div class="col-8" id="dSenderPhone"></div>
+                                </div>
+
+                                <div class="row mb-2">
+                                    <div class="col-4 fw-bold">Address</div>
+                                    <div class="col-8" id="dSenderAddress"></div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-4 fw-bold">Country</div>
+                                    <div class="col-8" id="dSenderCountry"></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RECEIVER -->
+                    <div class="col-md-6" id="receiverBlock">
+
+                        <div class="card shadow-sm h-100">
+
+                            <div class="card-header bg-success text-white">
+                                Receiver
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="row mb-2">
+                                    <div class="col-4 fw-bold">Name</div>
+                                    <div class="col-8" id="dReceiver"></div>
+                                </div>
+
+                                <div class="row mb-2">
+                                    <div class="col-4 fw-bold">Document</div>
+                                    <div class="col-8" id="dReceiverDoc"></div>
+                                </div>
+
+                                <div class="row mb-2">
+                                    <div class="col-4 fw-bold">Phone</div>
+                                    <div class="col-8" id="dReceiverPhone"></div>
+                                </div>
+
+                                <div class="row mb-2">
+                                    <div class="col-4 fw-bold">Address</div>
+                                    <div class="col-8" id="dReceiverAddress"></div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-4 fw-bold">Country</div>
+                                    <div class="col-8" id="dReceiverCountry"></div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- NOTES -->
+                <div class="row mt-4">
+
+                    <div class="col-md-6">
+
+                        <div class="card shadow-sm h-100">
+
+                            <div class="card-header">
+                                Notes / Justification
+                            </div>
+
+                            <div class="card-body">
+                                <p id="dJustify"></p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card shadow-sm text-center">
+                            <div class="card-header">
+                                <h6>Evidence</h6>
+                            </div>
+                            <div class="card-body">
+                                <img id="imgJustifyPreview"
+                                     class="img-fluid rounded border mb-2"
+                                     style="max-height:250px; object-fit:contain; display:none;">
+                                     <br />
+                                @* <a id="btnDownloadEvidence"class="btn btn-primary btn-sm"style="display:none;"target="_blank"><i class="bi bi-download"></i> Download File</a> *@
+                                <a id="btnDownloadEvidence"class="btn btn-primary btn-sm"style="display:none;"><i class="bi bi-download"></i> Download File</a>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
 </div>
 
-@* MODAL DE OTRAS TRANASCCIONES *@
+@* MODAL DE CHECK CASHING*@
 <div class="modal fade" id="modalSimpleTx">
     <div class="modal-dialog modal-xl">
         <div class="modal-content card-custom p-3">
 
-            <h5>New Transaction</h5>
+            <h5>New Check Cashing</h5>
 
             <form id="formSimpleTx">
 
@@ -572,7 +793,8 @@
                     </div>
                     <div class="col-2">
                         <label class="form-label">Transaction Type *</label>
-                        <select id="SimpleTx_TransactionType" class="form-control mb-2"></select>
+                        <input id="SimpleTx_TransactionTypeName" type="text" class="form-control mb-2" readonly />
+                        <input type="hidden" id="SimpleTx_TransactionType"/>
                     </div>
                     <div class="col-2">
                         <label class="form-label">Company *</label>
@@ -581,7 +803,7 @@
 
                     <div class="col-2">
                         <label class="form-label">Amount *</label>
-                        <input id="SimpleTx_Amount" type="number" class="form-control mb-2" placeholder="Amount"/>
+                        <input id="SimpleTx_Amount" type="number" class="form-control mb-2" placeholder="Amount" />
                     </div>
 
                     <div class="col-1">
@@ -598,36 +820,36 @@
                 <div class="row">
                     <div class="input-group" style="margin-bottom:5px;">
                         <h6>Sender Info </h6> &nbsp;&nbsp;&nbsp;
-                        <button type="button" class="btn btn-primary btn-sm" onclick="loadModalSearchClientSimpleTx()">
+                        <button type="button" class="btn btn-primary btn-sm" onclick="loadModalSearchClient('1','SimpleTx')">
                             Search Client <i class="bi bi-search"></i>
                         </button>&nbsp;&nbsp;&nbsp;
-                        <button type="button" class="btn btn-success" onclick="loadModalNewClientSimpleTx()">
+                        <button type="button" class="btn btn-success" onclick="loadModalNewClient('1','SimpleTx')">
                             New Client <i class="bi bi-plus-lg"></i>
                         </button>
                     </div>
                     <div class="col-4">
-                        <label class="form-label">Sender Name *</label>
+                        <label class="form-label">Client Name *</label>
                         <input id="SimpleTx_SenderName" class="form-control mb-2" placeholder="Client Name" />
                     </div>
                     <div class="col-3">
-                        <label class="form-label">Sender DocumentType *</label>
+                        <label class="form-label">DocumentType *</label>
                         <select id="SimpleTx_SenderDocumentType" class="form-control mb-2"></select>
                     </div>
                     <div class="col-3">
-                        <label class="form-label">Sender Document Number *</label>
+                        <label class="form-label">Document Number *</label>
                         <input id="SimpleTx_SenderDocumentNumber" class="form-control mb-2" placeholder="Document" />
                     </div>
                     <div class="col-2">
-                        <label class="form-label">Sender Phone *</label>
+                        <label class="form-label">Phone *</label>
                         <input id="SimpleTx_SenderPhone" class="form-control mb-2" placeholder="Phone" />
                     </div>
                     <div class="col-12">
-                        <label class="form-label">Sender Address *</label>
+                        <label class="form-label">Address *</label>
                         <input id="SimpleTx_SenderAddress" class="form-control mb-2" placeholder="Address" />
                     </div>
                 </div>
                 <hr />
-                <div class="row">
+                @* <div class="row">
 
                     <div class="col-12">
                         <label class="form-label">Notes / Justification</label>
@@ -651,12 +873,230 @@
                              style="max-width:200px; display:none;" />
                     </div>
 
-                </div>
+                </div> *@
 
             </form>
 
             <div class="modal-footer">
-                <button class="btn btn-custom" id="btnSaveSimpleTx">
+                <button class="btn btn-primary" id="btnSaveSimpleTx">
+                    <i class="bi bi-floppy-fill"></i> Save
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalOrderTx">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content card-custom p-3">
+
+            <h5>New Money Order</h5>
+
+            <form id="formMOrder">
+
+                <!-- 🔵 HEADER -->
+                <div class="row">
+                    <div class="col-3">
+                        <label class="form-label">Reference Number *</label>
+                        <input id="MOrder_ReferenceNumber" class="form-control mb-2" placeholder="Reference Number" />
+                    </div>
+                    <div class="col-2">
+                        <label class="form-label">Transaction Type *</label>
+                        <input id="MOrder_TransactionTypeName" type="text" class="form-control mb-2" readonly />
+                        <input type="hidden" id="MOrder_TransactionType"/>
+                    </div>
+                    <div class="col-2">
+                        <label class="form-label">Company *</label>
+                        <select id="MOrder_Company" class="form-control mb-2"></select>
+                    </div>
+
+                    <div class="col-2">
+                        <label class="form-label">Amount *</label>
+                        <input id="MOrder_Amount" type="number" class="form-control mb-2" placeholder="Amount" />
+                    </div>
+
+                    <div class="col-1">
+                        <label class="form-label">Commission</label>
+                        <input id="MOrder_Commission" type="number" class="form-control mb-2" readonly placeholder="0.0" />
+                    </div>
+                    <div class="col-2">
+                        <label class="form-label">Total Amount</label>
+                        <input id="MOrder_TotalAmount" type="number" class="form-control mb-2" readonly placeholder="0.0" />
+                    </div>
+
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="input-group" style="margin-bottom:5px;">
+                        <h6>Sender Info </h6> &nbsp;&nbsp;&nbsp;
+                        <button type="button" class="btn btn-primary btn-sm" onclick="loadModalSearchClient('2','MOrder')">
+                            Search Client <i class="bi bi-search"></i>
+                        </button>&nbsp;&nbsp;&nbsp;
+                        <button type="button" class="btn btn-success" onclick="loadModalNewClient('2','MOrder')">
+                            New Client <i class="bi bi-plus-lg"></i>
+                        </button>
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label">Client Name *</label>
+                        <input id="MOrder_SenderName" class="form-control mb-2" placeholder="Client Name" />
+                    </div>
+                    <div class="col-3">
+                        <label class="form-label">DocumentType *</label>
+                        <select id="MOrder_SenderDocumentType" class="form-control mb-2"></select>
+                    </div>
+                    <div class="col-3">
+                        <label class="form-label">Document Number *</label>
+                        <input id="MOrder_SenderDocumentNumber" class="form-control mb-2" placeholder="Document" />
+                    </div>
+                    <div class="col-2">
+                        <label class="form-label">Phone *</label>
+                        <input id="MOrder_SenderPhone" class="form-control mb-2" placeholder="Phone" />
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Address *</label>
+                        <input id="MOrder_SenderAddress" class="form-control mb-2" placeholder="Address" />
+                    </div>
+                </div>
+                <hr />
+               @*  <div class="row">
+
+                    <div class="col-12">
+                        <label class="form-label">Notes / Justification</label>
+                        <input id="MOrder_JustifyDetails" class="form-control mb-2" />
+                    </div>
+
+                </div>
+                <div class="row">
+
+                    <div class="col-12">
+                        <label class="form-label">Attachment</label>
+                        <input type="file"
+                               class="form-control"
+                               id="MOrder_File"
+                               onchange="previewMOrderImage(this)" />
+                    </div>
+
+                    <div class="col-12 mt-2">
+                        <img id="MOrder_ImgPreview"
+                             class="img-preview"
+                             style="max-width:200px; display:none;" />
+                    </div>
+
+                </div> *@
+
+            </form>
+
+            <div class="modal-footer">
+                <button class="btn btn-info" id="btnSaveMOrder">
+                    <i class="bi bi-floppy-fill"></i> Save
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalPaidTx">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content card-custom p-3">
+
+            <h5>New Paid Service</h5>
+
+            <form id="formPService">
+
+                <!-- 🔵 HEADER -->
+                <div class="row">
+                    <div class="col-3">
+                        <label class="form-label">Reference Number *</label>
+                        <input id="PService_ReferenceNumber" class="form-control mb-2" placeholder="Reference Number" />
+                    </div>
+                    <div class="col-2">
+                        <label class="form-label">Transaction Type *</label>
+                        <input id="PService_TransactionTypeName" type="text" class="form-control mb-2" readonly />
+                        <input type="hidden" id="PService_TransactionType"/>
+                    </div>
+                    <div class="col-2">
+                        <label class="form-label">Company *</label>
+                        <select id="PService_Company" class="form-control mb-2"></select>
+                    </div>
+
+                    <div class="col-2">
+                        <label class="form-label">Amount *</label>
+                        <input id="PService_Amount" type="number" class="form-control mb-2" placeholder="Amount" />
+                    </div>
+
+                    <div class="col-1">
+                        <label class="form-label">Commission</label>
+                        <input id="PService_Commission" type="number" class="form-control mb-2" readonly placeholder="0.0" />
+                    </div>
+                    <div class="col-2">
+                        <label class="form-label">Total Amount</label>
+                        <input id="PService_TotalAmount" type="number" class="form-control mb-2" readonly placeholder="0.0" />
+                    </div>
+
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="input-group" style="margin-bottom:5px;">
+                        <h6>Sender Info </h6> &nbsp;&nbsp;&nbsp;
+                        <button type="button" class="btn btn-primary btn-sm" onclick="loadModalSearchClient('4','PService')">
+                            Search Client <i class="bi bi-search"></i>
+                        </button>&nbsp;&nbsp;&nbsp;
+                        <button type="button" class="btn btn-success" onclick="loadModalNewClient('4','PService')">
+                            New Client <i class="bi bi-plus-lg"></i>
+                        </button>
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label">Client Name *</label>
+                        <input id="PService_SenderName" class="form-control mb-2" placeholder="Client Name" />
+                    </div>
+                    <div class="col-3">
+                        <label class="form-label">DocumentType *</label>
+                        <select id="PService_SenderDocumentType" class="form-control mb-2"></select>
+                    </div>
+                    <div class="col-3">
+                        <label class="form-label">Document Number *</label>
+                        <input id="PService_SenderDocumentNumber" class="form-control mb-2" placeholder="Document" />
+                    </div>
+                    <div class="col-2">
+                        <label class="form-label">Phone *</label>
+                        <input id="PService_SenderPhone" class="form-control mb-2" placeholder="Phone" />
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Address *</label>
+                        <input id="PService_SenderAddress" class="form-control mb-2" placeholder="Address" />
+                    </div>
+                </div>
+                <hr />
+                @* <div class="row">
+
+                    <div class="col-12">
+                        <label class="form-label">Notes / Justification</label>
+                        <input id="PService_JustifyDetails" class="form-control mb-2" />
+                    </div>
+
+                </div>
+                <div class="row">
+
+                    <div class="col-12">
+                        <label class="form-label">Attachment</label>
+                        <input type="file"
+                               class="form-control"
+                               id="PService_File"
+                               onchange="previewPServiceImage(this)" />
+                    </div>
+
+                    <div class="col-12 mt-2">
+                        <img id="PService_ImgPreview"
+                             class="img-preview"
+                             style="max-width:200px; display:none;" />
+                    </div>
+
+                </div> *@
+
+            </form>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="btnSavePService">
                     <i class="bi bi-floppy-fill"></i> Save
                 </button>
             </div>
@@ -766,6 +1206,87 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="modalChangeStatus">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title">
+                    <i class="bi bi-arrow-repeat"></i>
+                    Change Transaction Status
+                </h5>
+
+                <button class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <input type="hidden"
+                       id="ChangeStatus_IdTransaction" />
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Current Status
+                    </label>
+
+                    <input type="text"
+                           id="ChangeStatus_Current"
+                           class="form-control"
+                           readonly />
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        New Status
+                    </label>
+
+                    <select id="ChangeStatus_New"
+                            class="form-control">
+
+                        <option value="">
+                            Select Status
+                        </option>
+
+                        <option value="Completed">
+                            Completed
+                        </option>
+
+                        <option value="Pending">
+                            Pending
+                        </option>
+
+                        <option value="Rejected">
+                            Rejected
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Cancel
+                </button>
+
+                <button class="btn btn-warning"
+                        id="btnSaveTransactionStatus">
+                    <i class="bi bi-floppy-fill"></i>
+                    Save Status
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -777,14 +1298,9 @@
             tableTx = loadTransactions();
             loadCountries();
             loadDocumentTypes();
-            $.get('/TransactionsTypes/GetById?id=3',
-            function(r){
-                $('#TransactionType').val(r.idTypeTransaction).data('commission',r.commission);
-                $('#TransactionTypeName').val(r.name);
-                calculateCommission();
-            });
-            loadTransactionTypes();
-            loadSimpleTxCompaniesUSA();
+
+            // loadTransactionTypes();
+            // loadSimpleTxCompaniesUSA();
              // SimpleTx_toggleBeneficiariesActions();
         });
                 document.querySelectorAll('.btn').forEach(btn => {
@@ -792,8 +1308,16 @@
             event.preventDefault(); // evita el submit
           });
         });
+        function ObtenerTypoTransaccion(NumeroT,InputId,InputName){
+            $.get('/TransactionsTypes/GetByNumber?id='+NumeroT,
+            function(r){
+                $('#'+InputId).val(r.idTypeTransaction).data('commission',r.commission);
+                $('#'+InputName).val(r.name);
 
-       
+                calculateCommission();
+            });
+        }
+
                 function loadTransactions() {
 
             return $('#tblTx').DataTable({
@@ -816,9 +1340,7 @@
                             `<b>${d}</b>`
                     },
                     {
-                        data: 'receiverName',
-                        render: d =>
-                            `<span class="text-primary">${d}</span>`
+                        data: 'senderCompanyName',
                     },
                     {
                         data: 'receiverCountryName'
@@ -827,31 +1349,100 @@
                         data: 'transactionTypeName'
                     },
                     {
+                    data: 'transactionStatus',
+                    render: function (data) {
+
+                        let badgeClass = 'bg-secondary';
+                        let icon = 'bi-question-circle';
+
+                        switch (data) {
+
+                            case 'Completed':
+                                badgeClass = 'bg-success';
+                                icon = 'bi-check-circle-fill';
+                                break;
+
+                            case 'Pending':
+                                badgeClass = 'bg-warning text-dark';
+                                icon = 'bi-clock-fill';
+                                break;
+
+                            case 'Rejected':
+                                badgeClass = 'bg-danger';
+                                icon = 'bi-x-circle-fill';
+                                break;
+                        }
+
+                        return `
+                            <span class="badge ${badgeClass}"
+                                  style="
+                                    padding:8px 12px;
+                                    font-size:13px;
+                                    border-radius:20px;
+                                    min-width:110px;
+                                    display:inline-block;
+                                    text-align:center;
+                                  ">
+                                <i class="bi ${icon}"></i>
+                                ${data}
+                            </span>
+                        `;
+                    }
+                },
+                    {
                         data: 'amount',
                         render: d =>
                             `$ ${parseFloat(d).toFixed(2)}`
                     },
-                    {
-                        data: 'idTransaction',
-                        orderable: false,
-                        render: id => `
-                            <div class="d-flex gap-2">
+                    // {
+                    //     data: 'idTransaction',
+                    //     orderable: false,
+                    //     render: id => `
+                    //         <div class="d-flex gap-2">
 
-                                <button class="btn btn-info btn-sm"
-                                    onclick="viewTx(${id})">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                                <button
-                                    class="btn btn-danger btn-sm"
-                                    onclick="deleteTx(${id})">
+                    //             <button class="btn btn-info btn-sm"
+                    //                 onclick="loadTransactionDetails(${id})">
+                    //                 <i class="bi bi-eye"></i>
+                    //             </button>
+                    //             <button
+                    //                 class="btn btn-danger btn-sm"
+                    //                 onclick="deleteTx(${id})">
 
-                                    <i class="bi bi-trash-fill"></i>
+                    //                 <i class="bi bi-trash-fill"></i>
 
-                                </button>
+                    //             </button>
 
-                            </div>
-                        `
-                    }
+                    //         </div>
+                    //     `
+                    // }
+                {
+                    className: 'tmin-w',
+                render: function (data, type, row) {
+                return `
+
+                    ${row.transactionType == 1 ? `
+                        <button class="btn btn-warning btn-sm"
+                            onclick="openChangeStatusModal(
+                                ${row.idTransaction},
+                                '${row.transactionStatus}'
+                            )">
+                            <i class="bi bi-arrow-repeat"></i>
+                        </button>
+                    ` : ''}
+
+                    <button class="btn btn-info btn-sm"
+                        onclick="loadTransactionDetails(${row.idTransaction})">
+                        <i class="bi bi-eye-fill"></i>
+                    </button>
+
+                    <button class="btn btn-danger btn-sm"
+                        onclick="deleteTx(${row.idTransaction})">
+                        <i class="bi bi-trash-fill"></i>
+                    </button>
+
+                `;
+            }
+        }
 
                 ],
 
@@ -935,35 +1526,36 @@
                 });
 
                 // 🔥 dispara carga inicial dependiente
-                loadCompaniesByCountry($('#SenderCountry').val(), 'Sender');
-                loadCompaniesByCountry($('#ReceiverCountry').val(), 'Receiver');
+                // loadCompaniesByCountry($('#SenderCountry').val(), 'Sender');
+                // loadCompaniesByCountry($('#ReceiverCountry').val(), 'Receiver');
 
-                loadCurrencyByCountry($('#SenderCountry').val(), 'Sender');
+                // loadCurrencyByCountry($('#SenderCountry').val(), 'Sender');
                 loadCurrencyByCountry($('#ReceiverCountry').val(), 'Receiver');
 
             });
-
         }
 
-                function loadCompaniesByCountry(countryId, type) {
+        
+        function loadCompanies(countryId, transactionType, selectId) {
 
-            $.get('/Companies/GetByCountry?countryId=' + countryId, function (data) {
+                $.get(
+                    '/Companies/GetByCountryAndType?countryId='+ countryId+ '&transactionType='+ transactionType, function (data) {
+                        let select = $('#' + selectId);
+                        select.empty();
+                        select.append(
+                            `<option value="">Select Company</option>`
+                        );
+                        data.forEach(c => {
 
-                let select = type === 'Sender'? $('#SenderCompany') : $('#ReceiverCompany');
-
-                select.empty();
-
-                data.forEach(c => {
-
-                    select.append(
-                        `<option value="${c.idCompany}">${c.name}</option>`
-                    );
-
-                });
-
-            });
-
-        }
+                            select.append(
+                                `<option value="${c.idCompany}">
+                                    ${c.name}
+                                </option>`
+                            );
+                        });
+                    }
+                );
+            }
 
                 function loadCurrencyByCountry(countryId, type) {
 
@@ -987,11 +1579,11 @@
 
             $.get('/DocumentsTypes/GetAll', function (data) {
 
-                $('#SenderDocumentType, #ReceiverDocumentType, #SimpleTx_SenderDocumentType').empty();
+                $('#SenderDocumentType, #ReceiverDocumentType, #SimpleTx_SenderDocumentType,#MOrder_SenderDocumentType,#PService_SenderDocumentType').empty();
 
                 data.forEach(d => {
 
-                    $('#SenderDocumentType, #ReceiverDocumentType, #C_DocumentType,#B_DocumentType, #SimpleTx_SenderDocumentType,#SimpleTx_C_DocumentType').append(
+                    $('#SenderDocumentType, #ReceiverDocumentType, #C_DocumentType,#B_DocumentType, #SimpleTx_SenderDocumentType,#SimpleTx_C_DocumentType,#MOrder_SenderDocumentType,#PService_SenderDocumentType').append(
                         `<option value="${d.idDocumentType}">${d.name}</option>`
                     );
 
@@ -1005,7 +1597,7 @@
 
             let id = $(this).val();
 
-            loadCompaniesByCountry(id, 'Sender');
+            // loadCompaniesByCountry(id, 'Sender');
             loadCurrencyByCountry(id, 'Sender');
 
         });
@@ -1016,7 +1608,7 @@
             $('#ReceiverCurrency').empty();
             let id = $(this).val();
 
-            loadCompaniesByCountry(id, 'Receiver');
+            // loadCompaniesByCountry(id, 'Receiver');
             loadCurrencyByCountry(id, 'Receiver');
 
         });
@@ -1028,7 +1620,7 @@
 
             let id = $(this).val();
 
-            loadCompaniesByCountry(id, 'Sender');
+            // loadCompaniesByCountry(id, 'Sender');
             loadCurrencyByCountry(id, 'Sender');
 
         });
@@ -1095,7 +1687,8 @@
                 $('#SenderDocumentType').val(c.idDocumentType);
                 $('#SenderCountry').val(c.country).trigger('change');
                 setTimeout(() => {
-                    loadCompaniesByCountry(c.country, 'Sender');
+                    // loadCompaniesByCountry(c.country, 'Sender');
+                    loadCompaniesByTransactionType(3,"SenderCompany");
                     loadCurrencyByCountry(c.country, 'Sender');
 
                 }, 200);
@@ -1202,7 +1795,7 @@
 
                         // 🔥 cargar dependencias del país
                         setTimeout(() => {
-                            loadCompaniesByCountry(c.country, 'Sender');
+                            // loadCompaniesByCountry(c.country, 'Sender');
                             loadCurrencyByCountry(c.country, 'Sender');
                         }, 200);
 
@@ -1344,7 +1937,8 @@
                     $('#SenderCountry').val($('#C_Country').val()).trigger('change');
 
                     setTimeout(() => {
-                        loadCompaniesByCountry($('#C_Country').val(), 'Sender');
+                        // loadCompaniesByCountry($('#C_Country').val(), 'Sender');
+                        loadCompaniesByTransactionType(3,"SenderCompany")
                         loadCurrencyByCountry($('#C_Country').val(), 'Sender');
                     }, 200);
 
@@ -1439,7 +2033,8 @@
                 $('#ReceiverDocumentType').val(b.idDocumentType);
 
                 setTimeout(() => {
-                    loadCompaniesByCountry(b.country, 'Receiver');
+                    // loadCompaniesByCountry(b.country, 'Receiver');
+                    loadCompaniesByTransactionType(3,"ReceiverCompany");
                     loadCurrencyByCountry(b.country, 'Receiver');
                 }, 200);
                     selectedBeneficiaryId = b.idBeneficiarie;
@@ -1516,6 +2111,7 @@
                     loadBeneficiariesCount(selectedClientId);
                     $('#formNewBeneficiary')[0].reset();
                     $('#modalNewBeneficiary').modal('hide');
+                    loadCompaniesByTransactionType(3,"ReceiverCompany")
                     Swal.fire('Saved!', 'Beneficiary created', 'success');
                 },
 
@@ -1529,7 +2125,7 @@
                 $('#modalNewBeneficiary').on('hidden.bs.modal', function () {
             $('#formNewBeneficiary')[0].reset();
         });
-       
+
         $('#modalNewClient').on('hidden.bs.modal', function () {
 
             setTimeout(() => {
@@ -1822,7 +2418,7 @@
             formData.append(
                 'IdClient_fk',
                 selectedClientId);
-            
+
             formData.append(
                 'IdBeneficiarie_fk',
                 selectedBeneficiaryId);
@@ -1966,47 +2562,79 @@
 
             toggleBeneficiariesActions();
         }
-                function viewTx(id){
+        //         function viewTx(id){
 
-            $.get('/Transactions/GetById?id=' + id, function(tx){
+        //     $.get('/Transactions/GetById?id=' + id, function(tx){
 
-                $('#modalTxDetails').modal('show');
+        //         $('#modalTxDetails').modal('show');
 
-                $('#dReference').text(tx.referenceNumber);
-                $('#dAmount').text(tx.amount);
-                $('#dCommission').text(tx.commission);
-                $('#dTotal').text(tx.totalAmount);
+        //         $('#dReference').text(tx.referenceNumber);
+        //         $('#dAmount').text(tx.amount);
+        //         $('#dCommission').text(tx.commission);
+        //         $('#dTotal').text(tx.totalAmount);
 
-                $('#dSender').text(tx.senderName);
-                $('#dSenderDoc').text(tx.senderDocumentNumber);
+        //         $('#dSender').text(tx.senderName);
+        //         $('#dSenderDoc').text(tx.senderDocumentNumber);
+        //         $('#dSenderPhone').text(tx.senderPhone);
+        //         $('#dSenderAddress').text(tx.senderAddress);
 
-                $('#dReceiver').text(tx.receiverName);
-                $('#dReceiverDoc').text(tx.receiverDocumentNumber);
-                $('#dReceiverCountry').text(tx.receiverCountryName);
+        //         $('#dReceiver').text(tx.receiverName);
+        //         $('#dReceiverDoc').text(tx.receiverDocumentNumber);
+        //         $('#dReceiverCountry').text(tx.receiverCountryName);
 
-                $('#dJustify').text(tx.justifyDetails);
+        //         $('#dJustify').text(tx.justifyDetails);
 
-                $('#imgJustifyPreview').attr('src', tx.imgJustify);
-            });
-        }
+        //         $('#imgJustifyPreview').attr('src', tx.imgJustify);
+        //     });
+        // }
 
 
 
         //OTRAS TRANSACCIONES
         let SimpleTx_tableSearchClient;
-        let SimpleTx_selectedClientId = null;
-        let SimpleTx_selectedBeneficiaryId = 0;
+        let currentPrefix = 'SimpleTx_';
 
-                function loadModalNewClientSimpleTx() {
-             $('#SimpleTx_modalNewClient').modal('show');
+        let selectedClients = {
+            SimpleTx_: null,
+            MOrder_: null,
+            PService_: null
+        };
+
+        let searchClientTimer;
+        let autoClientTimer;
+
+        //////////////////////////////////////////////////////////
+        // 🔵 OPEN MODALS
+        //////////////////////////////////////////////////////////
+
+        function loadModalSearchClient(numeroT, prefijo) {
+
+            currentPrefix = prefijo + '_';
+
+            $('#SimpleTx_modalSearchClient').modal('show');
+
+            loadSimpleTxSearchClient();
 
         }
-                function loadModalSearchClientSimpleTx() {
-             $('#SimpleTx_modalSearchClient').modal('show');
+
+        function loadModalNewClient(numeroT, prefijo) {
+
+            currentPrefix = prefijo + '_';
+
+            $('#SimpleTx_modalNewClient').modal('show');
 
         }
 
-                function loadSimpleTxSearchClient() {
+        //////////////////////////////////////////////////////////
+        // 🔵 SEARCH CLIENT DATATABLE
+        //////////////////////////////////////////////////////////
+
+        function loadSimpleTxSearchClient() {
+
+            // 🔥 destruir si ya existe
+            if ($.fn.DataTable.isDataTable('#SimpleTx_tblSearchClient')) {
+                $('#SimpleTx_tblSearchClient').DataTable().destroy();
+            }
 
             SimpleTx_tableSearchClient = $('#SimpleTx_tblSearchClient').DataTable({
                 ajax: {
@@ -2016,6 +2644,7 @@
                     },
                     dataSrc: ''
                 },
+                destroy: true,
                 columns: [
                     {
                         data: null,
@@ -2027,7 +2656,7 @@
                         data: 'idClient',
                         render: id => `
                             <button class="btn btn-success btn-sm"
-                                onclick="SimpleTx_selectClient(${id})">
+                                onclick="Global_selectClient(${id})">
                                 Select
                             </button>
                         `
@@ -2036,51 +2665,49 @@
             });
 
         }
-                let SimpleTx_timer;
+
+        //////////////////////////////////////////////////////////
+        // 🔵 SEARCH INPUT
+        //////////////////////////////////////////////////////////
 
         $('#SimpleTx_searchClientInput').on('keyup', function () {
 
-            clearTimeout(SimpleTx_timer);
+            clearTimeout(searchClientTimer);
 
-            SimpleTx_timer = setTimeout(() => {
-                SimpleTx_tableSearchClient.ajax.reload();
+            searchClientTimer = setTimeout(() => {
+
+                if (SimpleTx_tableSearchClient) {
+                    SimpleTx_tableSearchClient.ajax.reload();
+                }
+
             }, 400);
 
         });
-                function SimpleTx_selectClient(id) {
+
+        //////////////////////////////////////////////////////////
+        // 🔵 SELECT CLIENT
+        //////////////////////////////////////////////////////////
+
+        function Global_selectClient(id) {
 
             $.get('/Clients/GetById?id=' + id, function (c) {
 
-                SimpleTx_selectedClientId = c.idClient;
+                selectedClients[currentPrefix] = c.idClient;
 
-                // 🔵 sender data
-                $('#SimpleTx_SenderName')
+                $('#' + currentPrefix + 'SenderName')
                     .val(c.firstName + ' ' + c.lastName);
 
-                $('#SimpleTx_SenderDocumentNumber')
+                $('#' + currentPrefix + 'SenderDocumentNumber')
                     .val(c.documentNumber);
 
-                $('#SimpleTx_SenderPhone')
+                $('#' + currentPrefix + 'SenderPhone')
                     .val(c.phone);
 
-                $('#SimpleTx_SenderAddress')
+                $('#' + currentPrefix + 'SenderAddress')
                     .val(c.address);
 
-                $('#SimpleTx_SenderDocumentType')
+                $('#' + currentPrefix + 'SenderDocumentType')
                     .val(c.idDocumentType);
-
-                $('#SimpleTx_SenderCountry')
-                    .val(c.country)
-                    .trigger('change');
-
-                // 🔵 loaders (sender context)
-                // setTimeout(() => {
-                //     loadCompaniesByCountry(c.country, 'SimpleTx_Sender');
-                //     loadCurrencyByCountry(c.country, 'SimpleTx_Sender');
-                // }, 200);
-
-                // 🔵 reset beneficiary (IMPORTANTE)
-                SimpleTx_clearBeneficiaryData();
 
                 $('#SimpleTx_modalSearchClient').modal('hide');
 
@@ -2094,86 +2721,85 @@
             });
 
         }
-                function SimpleTx_clearBeneficiaryData() {
 
-            SimpleTx_selectedBeneficiaryId = 0;
+        //////////////////////////////////////////////////////////
+        // 🔵 AUTO SEARCH CLIENT
+        //////////////////////////////////////////////////////////
 
-            $('#SimpleTx_ReceiverName').val('');
-            $('#SimpleTx_ReceiverDocumentNumber').val('');
-            $('#SimpleTx_ReceiverPhone').val('');
-            $('#SimpleTx_ReceiverAddress').val('');
-        }
-        $('#SimpleTx_modalSearchClient').on('shown.bs.modal', function () {
+        $(document).on(
+            'input',
+            '#SimpleTx_SenderName, #SimpleTx_SenderDocumentNumber,' +
+            '#MOrder_SenderName, #MOrder_SenderDocumentNumber,' +
+            '#PService_SenderName, #PService_SenderDocumentNumber',
+            function () {
 
-            if (!SimpleTx_tableSearchClient) {
-                // SimpleTx_loadSearchClient();
-                loadSimpleTxSearchClient();
-            } else {
-                SimpleTx_tableSearchClient.ajax.reload();
+                let prefix = $(this).attr('id').split('Sender')[0];
+
+                selectedClients[prefix] = null;
+
             }
-        });
-        let SimpleTx_autoTimer;
+        );
 
-        $('#SimpleTx_SenderName, #SimpleTx_SenderDocumentNumber').on('input', function () {
-            SimpleTx_selectedClientId = null;
-        });
+        $(document).on(
+            'keyup',
+            '#SimpleTx_SenderName, #SimpleTx_SenderDocumentNumber,' +
+            '#MOrder_SenderName, #MOrder_SenderDocumentNumber,' +
+            '#PService_SenderName, #PService_SenderDocumentNumber',
+            function () {
 
-                $('#SimpleTx_SenderName, #SimpleTx_SenderDocumentNumber').on('keyup', function () {
+                clearTimeout(autoClientTimer);
 
-            clearTimeout(SimpleTx_autoTimer);
+                let input = $(this);
 
-            let input = $(this);
-            let term = input.val().trim();
+                let prefix = input.attr('id').split('Sender')[0];
 
-            SimpleTx_autoTimer = setTimeout(() => {
+                let term = input.val().trim();
 
-                if (!term || term.length < 3) return;
+                autoClientTimer = setTimeout(() => {
 
-                if (SimpleTx_selectedClientId && term.length < 5) return;
+                    if (!term || term.length < 3) return;
 
-                $.get('/Clients/Search?term=' + term, function (data) {
+                    if (selectedClients[prefix] && term.length < 5) return;
 
-                    if (data.length === 1) {
+                    $.get('/Clients/Search?term=' + term, function (data) {
 
-                        let c = data[0];
+                        if (data.length === 1) {
 
-                        SimpleTx_selectedClientId = c.idClient;
+                            let c = data[0];
 
-                        $('#SimpleTx_SenderName')
-                            .val(c.firstName + ' ' + c.lastName);
+                            selectedClients[prefix] = c.idClient;
 
-                        $('#SimpleTx_SenderDocumentNumber')
-                            .val(c.documentNumber);
+                            $('#' + prefix + 'SenderName')
+                                .val(c.firstName + ' ' + c.lastName);
 
-                        $('#SimpleTx_SenderPhone')
-                            .val(c.phone);
+                            $('#' + prefix + 'SenderDocumentNumber')
+                                .val(c.documentNumber);
 
-                        $('#SimpleTx_SenderAddress')
-                            .val(c.address);
-                        $('#SimpleTx_SenderDocumentType')
-                            .val(c.idDocumentType);
+                            $('#' + prefix + 'SenderPhone')
+                                .val(c.phone);
 
-                        $('#SimpleTx_SenderCountry')
-                            .val(c.country)
-                            .trigger('change');
+                            $('#' + prefix + 'SenderAddress')
+                                .val(c.address);
 
-                        // setTimeout(() => {
-                        //     loadCompaniesByCountry(c.country, 'SimpleTx_Sender');
-                        //     loadCurrencyByCountry(c.country, 'SimpleTx_Sender');
-                        // }, 200);
-                        SimpleTx_toggleBeneficiariesActions();
+                            $('#' + prefix + 'SenderDocumentType')
+                                .val(c.idDocumentType);
 
-                        console.log('SimpleTx client auto-selected:', c.firstName);
+                            console.log(prefix + ' client auto-selected:', c.firstName);
 
-                    }
+                        }
 
-                });
+                    });
 
-            }, 500);
+                }, 500);
 
-        });
+            }
+        );
 
-                $('#SimpleTx_btnSaveNewClient').click(function () {
+        //////////////////////////////////////////////////////////
+        // 🔵 CREATE CLIENT
+        //////////////////////////////////////////////////////////
+
+        $('#SimpleTx_btnSaveNewClient').click(function () {
 
             let _FirstName = $('#SimpleTx_C_FirstName').val().trim();
             let _LastName = $('#SimpleTx_C_LastName').val().trim();
@@ -2195,6 +2821,7 @@
             if (!_Address) return Swal.fire('Error', 'Address is required', 'error');
 
             let formData = new FormData();
+
             formData.append("FirstName", _FirstName);
             formData.append("LastName", _LastName);
             formData.append("IdDocumentType", _IdDocumentType);
@@ -2217,40 +2844,25 @@
                 data: formData,
                 contentType: false,
                 processData: false,
+
                 success: function (res) {
 
-                    // 🔵 CLIENT CONTEXT SIMPLETX
-                    SimpleTx_selectedClientId = res.idClient;
+                    selectedClients[currentPrefix] = res.idClient;
 
-                    // 🔵 llenar sender SIMPLETX
-                    $('#SimpleTx_SenderName')
+                    $('#' + currentPrefix + 'SenderName')
                         .val(_FirstName + ' ' + _LastName);
 
-                    $('#SimpleTx_SenderDocumentNumber')
+                    $('#' + currentPrefix + 'SenderDocumentNumber')
                         .val(_DocumentNumber);
 
-                    $('#SimpleTx_SenderPhone')
+                    $('#' + currentPrefix + 'SenderPhone')
                         .val(_Phone);
 
-                    $('#SimpleTx_SenderAddress')
+                    $('#' + currentPrefix + 'SenderAddress')
                         .val(_Address);
 
-                    $('#SimpleTx_SenderDocumentType')
+                    $('#' + currentPrefix + 'SenderDocumentType')
                         .val(_IdDocumentType);
-
-                    $('#SimpleTx_SenderCountry')
-                        .val(_Country)
-                        .trigger('change');
-
-                    // 🔵 dependencias
-                    // setTimeout(() => {
-                    //     loadCompaniesByCountry(_Country, 'SimpleTx_Sender');
-                    //     loadCurrencyByCountry(_Country, 'SimpleTx_Sender');
-                    // }, 200);
-
-                    // 🔵 reset beneficiaries
-                    SimpleTx_clearBeneficiaryData();
-                    $('#SimpleTx_CantBeneficiariesXClient').text('(0)');
 
                     $('#SimpleTx_modalNewClient').modal('hide');
 
@@ -2260,154 +2872,195 @@
                         timer: 1000,
                         showConfirmButton: false
                     });
-
+                     //loadCompaniesByTransactionType(3,"SenderCompany")
                     $('#SimpleTx_formNewClient')[0].reset();
 
                 },
+
                 error: function (err) {
-                    Swal.fire('Error', err.responseText, 'error');
+
+                    Swal.fire(
+                        'Error',
+                        err.responseText,
+                        'error'
+                    );
+
                 }
-            });
-
-        });
-                function loadTransactionTypes() {
-
-            $.get('/TransactionsTypes/GetAllTypes', function (data) {
-
-                //$('#SimpleTx_TransactionType, #TransactionType').empty();
-                $('#SimpleTx_TransactionType').empty();
-
-                // $('#SimpleTx_TransactionType')
-                //     .append(`<option value="">Select</option>`);
-
-                data.forEach(t => {
-                    if(t.idTypeTransaction != 3){
-                    $('#SimpleTx_TransactionType').append(
-                        `<option value="${t.idTypeTransaction}"
-                                 data-commission="${t.commission}">
-                            ${t.name}
-                        </option>`
-                    );
-                    };
-                });
 
             });
 
-        }
-
-                $('#SimpleTx_TransactionType').change(function () {
-
-            let commission = $('option:selected', this).data('commission');
-            let amount = parseFloat($('#SimpleTx_Amount').val() || 0);
-
-            $('#SimpleTx_Commission').val(commission);
-
-            let total = amount + (amount * (commission / 100));
-
-            $('#SimpleTx_TotalAmount').val(total.toFixed(2));
-
         });
 
-                $('#SimpleTx_Amount').on('input', function () {
+        //////////////////////////////////////////////////////////
+        // 🔵 COMMISSION CALCULATION
+        //////////////////////////////////////////////////////////
+                $(document).on(
+            'keyup change input',
+            '#SimpleTx_Amount, #MOrder_Amount, #PService_Amount',
+            function () {
 
-            let commission = parseFloat($('#SimpleTx_TransactionType option:selected').data('commission') || 0);
-            let amount = parseFloat($(this).val() || 0);
+                let prefix = $(this)
+                    .attr('id')
+                    .replace('_Amount', '');
 
-            let total = amount + (amount * (commission / 100));
+                calculateCommissionSimple(prefix);
 
-            $('#SimpleTx_TotalAmount').val(total.toFixed(2));
-
-        });
-                function loadSimpleTxCompaniesUSA() {
-
-            $.get('/Companies/GetByCountry?countryId=11', function (data) {
-
-                let select = $('#SimpleTx_Company');
-
-                select.empty();
-                data.forEach(c => {
-                    select.append(
-                        `<option value="${c.idCompany}">${c.name}</option>`
-                    );
-                });
-
-            });
-
-        }
-
-                $('#btnSaveSimpleTx').click(async function () {
-
-            // 🔵 VALIDACIONES FRONTEND (required *)
-            let reference = $('#SimpleTx_ReferenceNumber').val().trim();
-            let type = $('#SimpleTx_TransactionType').val();
-            let company = $('#SimpleTx_Company').val();
-            let amount = $('#SimpleTx_Amount').val();
-
-            let senderName = $('#SimpleTx_SenderName').val().trim();
-            let senderDocType = $('#SimpleTx_SenderDocumentType').val();
-            let senderDocNumber = $('#SimpleTx_SenderDocumentNumber').val().trim();
-            let senderPhone = $('#SimpleTx_SenderPhone').val().trim();
-            let senderAddress = $('#SimpleTx_SenderAddress').val().trim();
-
-            if (!reference) return Swal.fire('Error', 'Reference Number is required', 'error');
-            if (!type) return Swal.fire('Error', 'Transaction Type is required', 'error');
-            if (!company) return Swal.fire('Error', 'Company is required', 'error');
-            if (!amount || amount <= 0) return Swal.fire('Error', 'Amount is required', 'error');
-
-            if (!senderName) return Swal.fire('Error', 'Sender Name is required', 'error');
-            if (!senderDocType) return Swal.fire('Error', 'Document Type is required', 'error');
-            if (!senderDocNumber) return Swal.fire('Error', 'Document Number is required', 'error');
-            if (!senderPhone) return Swal.fire('Error', 'Phone is required', 'error');
-            if (!senderAddress) return Swal.fire('Error', 'Address is required', 'error');
-
-            // 🔵 VALIDAR CLIENTE SELECCIONADO
-            if (!SimpleTx_selectedClientId || SimpleTx_selectedClientId <= 0) {
-                return Swal.fire('Error', 'Select a valid client', 'error');
             }
-
-            // 🔵 RE-VALIDAR CLIENTE EN BACKEND (seguridad anti manipulación)
-            let clientValidation = await $.get(
-                '/Clients/GetById?id=' + SimpleTx_selectedClientId
+        );
+         function calculateCommissionSimple(prefix) {
+            let commission = parseFloat(
+                $('#' + prefix + '_TransactionType')
+                    .attr('data-commission') || 0
             );
 
-            if (!clientValidation || !clientValidation.idClient) {
-                return Swal.fire('Error', 'Client no longer exists', 'error');
+            let amount = parseFloat(
+                $('#' + prefix + '_Amount').val() || 0
+            );
+
+            let total = amount + (amount * (commission / 100));
+            let commissionValue = amount * (commission / 100);
+            $('#' + prefix + '_Commission')
+                .val(commissionValue.toFixed(2));
+
+            $('#' + prefix + '_TotalAmount')
+                .val(total.toFixed(2));
+
+        }
+        
+        function ObtenerTipoTransaccion(NumeroT,Prefijo) {
+
+            $.get('/TransactionsTypes/GetByNumber?id='+NumeroT, function (data) {
+                
+                data.forEach(t => {
+                    if(Prefijo == "TransactionType"){
+                      $('#TransactionType').empty();
+                      $('#TransactionType').val(t.idTypeTransaction);
+                      $('#TransactionTypeName').val(t.name);
+                      $('#TransactionType').attr('data-commission', t.commission);
+                      loadCompaniesByTransactionType(3,'TransactionType');
+                      // loadCompaniesByTransactionType(1,'TransactionType');
+                    }else{
+                      $('#'+Prefijo+'_TransactionType').empty();
+                      $('#'+Prefijo+'_TransactionType').val(t.idTypeTransaction);
+                      $('#'+Prefijo+'_TransactionTypeName').val(t.name);
+                     $('#' + Prefijo + '_TransactionType').attr('data-commission', t.commission);
+                     loadCompaniesByTransactionType(NumeroT,Prefijo+"_Company");
+                    }
+                });
+
+            });
+        }
+        // function loadSimpleTxCompaniesUSA() {
+        //     $.get('/Companies/GetByCountry?countryId=11', function (data) {
+        //         let SimpleTx_select = $('#SimpleTx_Company');
+        //         let MOrder_select = $('#MOrder_Company');
+        //         let PService_select = $('#PService_Company');
+        //         SimpleTx_select.empty();
+        //         MOrder_select.empty();
+        //         PService_select.empty();
+        //         data.forEach(c => {
+        //             SimpleTx_select.append(
+        //                 `<option value="${c.idCompany}">${c.name}</option>`
+        //             );
+        //             MOrder_select.append(
+        //                 `<option value="${c.idCompany}">${c.name}</option>`
+        //             );
+        //             PService_select.append(
+        //                 `<option value="${c.idCompany}">${c.name}</option>`
+        //             );
+        //         });
+
+        //     });
+
+        // }
+
+        //GUARDAR SimpleTx o CHECK CASHING
+            $('#btnSaveSimpleTx').click(async function () {
+
+            let prefix = "SimpleTx_";
+            let reference = $('#' + prefix + 'ReferenceNumber').val().trim();
+            let type = $('#' + prefix + 'TransactionType').val();
+            let company = $('#' + prefix + 'Company').val();
+            let amount = $('#' + prefix + 'Amount').val();
+            let senderName = $('#' + prefix + 'SenderName').val().trim();
+            let senderDocType = $('#' + prefix + 'SenderDocumentType').val();
+            let senderDocNumber = $('#' + prefix + 'SenderDocumentNumber').val().trim();
+            let senderPhone = $('#' + prefix + 'SenderPhone').val().trim();
+            let senderAddress = $('#' + prefix + 'SenderAddress').val().trim();
+
+            if (!reference)
+                return Swal.fire('Error', 'Reference Number is required', 'error');
+            if (!type)
+                return Swal.fire('Error', 'Transaction Type is required', 'error');
+            if (!company)
+                return Swal.fire('Error', 'Company is required', 'error');
+            if (!amount || amount <= 0)
+                return Swal.fire('Error', 'Amount is required', 'error');
+            if (!senderName)
+                return Swal.fire('Error', 'Sender Name is required', 'error');
+            if (!senderDocType)
+                return Swal.fire('Error', 'Document Type is required', 'error');
+            if (!senderDocNumber)
+                return Swal.fire('Error', 'Document Number is required', 'error');
+            if (!senderPhone)
+                return Swal.fire('Error', 'Phone is required', 'error');
+            if (!senderAddress)
+                return Swal.fire('Error', 'Address is required', 'error');
+            if (!selectedClients[prefix] || selectedClients[prefix] <= 0) {
+                return Swal.fire(
+                    'Error',
+                    'Select a valid client',
+                    'error'
+                );
             }
-
-            // 🔵 FORM DATA
+            let clientValidation = await $.get(
+                '/Clients/GetById?id=' + selectedClients[prefix]
+            );
+            if (!clientValidation || !clientValidation.idClient) {
+                return Swal.fire(
+                    'Error',
+                    'Client no longer exists',
+                    'error'
+                );
+            }
             let formData = new FormData();
-
-            formData.append("IdClient_fk", SimpleTx_selectedClientId);
+            formData.append(
+                "IdClient_fk",
+                selectedClients[prefix]
+            );
             formData.append("ReferenceNumber", reference);
             formData.append("TransactionType", type);
             formData.append("Company", company);
             formData.append("Amount", amount);
-            formData.append("Commission", $('#SimpleTx_Commission').val());
-            formData.append("TotalAmount", $('#SimpleTx_TotalAmount').val());
 
+            formData.append(
+                "Commission",
+                $('#' + prefix + 'Commission').val()
+            );
+
+            formData.append(
+                "TotalAmount",
+                $('#' + prefix + 'TotalAmount').val()
+            );
             formData.append("SenderName", senderName);
             formData.append("SenderDocumentType", senderDocType);
             formData.append("SenderDocumentNumber", senderDocNumber);
             formData.append("SenderPhone", senderPhone);
             formData.append("SenderAddress", senderAddress);
-
-            formData.append("JustifyDetails", $('#SimpleTx_JustifyDetails').val());
+            // formData.append(
+            //     "JustifyDetails",
+            //     $('#' + prefix + '_JustifyDetails').val()
+            // );
             formData.append("UserC", "admin");
-
-            // 🔵 FILE (opcional)
-            let file = $('#SimpleTx_File')[0].files[0];
-            if (file) {
-                formData.append("ImgJustify", file);
-            }
-
-            // 🔵 LOADING
+            // let file = $('#' + prefix + '_File')[0]?.files[0];
+            // if (file) {
+            //     formData.append("ImgJustify", file);
+            // }
             Swal.fire({
                 title: 'Saving...',
                 allowOutsideClick: false,
                 didOpen: () => Swal.showLoading()
             });
-
-            // 🔵 AJAX
             $.ajax({
                 url: '/Transactions/CreateSimpleTx',
                 method: 'POST',
@@ -2415,51 +3068,587 @@
                 contentType: false,
                 processData: false,
                 success: function () {
-
                     $('#modalSimpleTx').modal('hide');
-
                     $('#formSimpleTx')[0].reset();
-
-                    $('#SimpleTx_ImgPreview').hide();
-
-                    SimpleTx_selectedClientId = 0;
-
+                    // $('#' + prefix + '_ImgPreview').hide();
+                    selectedClients[prefix] = null;
                     Swal.fire({
                         icon: 'success',
                         title: 'Transaction saved',
                         timer: 1200,
                         showConfirmButton: false
                     });
+                    $('#tblTx').DataTable().ajax.reload();
+                },
+                error: function (err) {
+                    let msg = err.responseJSON?.message || err.responseText ||'Error';
+                    if (msg.includes('Reference number already exists')) {
+                        Swal.fire(
+                            'Duplicate',
+                            'This reference number already exists',
+                            'warning'
+                        );
+                        return;
+                    }
+                    if (msg.includes('Invalid transaction type')) {
+                        Swal.fire(
+                            'Error',
+                            'Invalid transaction type',
+                            'error'
+                        );
+                        return;
+                    }
+                    if (msg.includes('Total amount mismatch')) {
+                        Swal.fire(
+                            'Warning',
+                            'Amount was modified. Please recheck values.',
+                            'warning'
+                        );
+                        return;
+                    }
+                    Swal.fire('Error', msg, 'error');
+                }
+            });
+        });
+
+        $('#btnSaveMOrder').click(async function () {
+
+            let prefix = "MOrder_";
+            let reference = $('#' + prefix + 'ReferenceNumber').val().trim();
+            let type = $('#' + prefix + 'TransactionType').val();
+            let company = $('#' + prefix + 'Company').val();
+            let amount = $('#' + prefix + 'Amount').val();
+            let senderName = $('#' + prefix + 'SenderName').val().trim();
+            let senderDocType = $('#' + prefix + 'SenderDocumentType').val();
+            let senderDocNumber = $('#' + prefix + 'SenderDocumentNumber').val().trim();
+            let senderPhone = $('#' + prefix + 'SenderPhone').val().trim();
+            let senderAddress = $('#' + prefix + 'SenderAddress').val().trim();
+
+            if (!reference)
+                return Swal.fire('Error', 'Reference Number is required', 'error');
+            if (!type)
+                return Swal.fire('Error', 'Transaction Type is required', 'error');
+            if (!company)
+                return Swal.fire('Error', 'Company is required', 'error');
+            if (!amount || amount <= 0)
+                return Swal.fire('Error', 'Amount is required', 'error');
+            if (!senderName)
+                return Swal.fire('Error', 'Sender Name is required', 'error');
+            if (!senderDocType)
+                return Swal.fire('Error', 'Document Type is required', 'error');
+            if (!senderDocNumber)
+                return Swal.fire('Error', 'Document Number is required', 'error');
+            if (!senderPhone)
+                return Swal.fire('Error', 'Phone is required', 'error');
+            if (!senderAddress)
+                return Swal.fire('Error', 'Address is required', 'error');
+            if (!selectedClients[prefix] || selectedClients[prefix] <= 0) {
+                return Swal.fire(
+                    'Error',
+                    'Select a valid client',
+                    'error'
+                );
+            }
+            let clientValidation = await $.get(
+                '/Clients/GetById?id=' + selectedClients[prefix]
+            );
+            if (!clientValidation || !clientValidation.idClient) {
+                return Swal.fire(
+                    'Error',
+                    'Client no longer exists',
+                    'error'
+                );
+            }
+            let formData = new FormData();
+            formData.append(
+                "IdClient_fk",
+                selectedClients[prefix]
+            );
+            formData.append("ReferenceNumber", reference);
+            formData.append("TransactionType", type);
+            formData.append("Company", company);
+            formData.append("Amount", amount);
+
+            formData.append(
+                "Commission",
+                $('#' + prefix + 'Commission').val()
+            );
+
+            formData.append(
+                "TotalAmount",
+                $('#' + prefix + 'TotalAmount').val()
+            );
+            formData.append("SenderName", senderName);
+            formData.append("SenderDocumentType", senderDocType);
+            formData.append("SenderDocumentNumber", senderDocNumber);
+            formData.append("SenderPhone", senderPhone);
+            formData.append("SenderAddress", senderAddress);
+            // formData.append(
+            //     "JustifyDetails",
+            //     $('#' + prefix + '_JustifyDetails').val()
+            // );
+            formData.append("UserC", "admin");
+            // let file = $('#' + prefix + '_File')[0]?.files[0];
+            // if (file) {
+            //     formData.append("ImgJustify", file);
+            // }
+            Swal.fire({
+                title: 'Saving...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+            $.ajax({
+                url: '/Transactions/CreateSimpleTx',
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function () {
+                    $('#modalOrderTx').modal('hide');
+                    $('#formMOrder')[0].reset();
+                    // $('#' + prefix + '_ImgPreview').hide();
+                    selectedClients[prefix] = null;
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Transaction saved',
+                        timer: 1200,
+                        showConfirmButton: false
+                    });
+                    $('#tblTx').DataTable().ajax.reload();
+                },
+                error: function (err) {
+                    let msg = err.responseJSON?.message || err.responseText ||'Error';
+                    if (msg.includes('Reference number already exists')) {
+                        Swal.fire(
+                            'Duplicate',
+                            'This reference number already exists',
+                            'warning'
+                        );
+                        return;
+                    }
+                    if (msg.includes('Invalid transaction type')) {
+                        Swal.fire(
+                            'Error',
+                            'Invalid transaction type',
+                            'error'
+                        );
+                        return;
+                    }
+                    if (msg.includes('Total amount mismatch')) {
+                        Swal.fire(
+                            'Warning',
+                            'Amount was modified. Please recheck values.',
+                            'warning'
+                        );
+                        return;
+                    }
+                    Swal.fire('Error', msg, 'error');
+                }
+            });
+        });
+
+        $('#btnSavePService').click(async function () {
+
+            let prefix = "PService_";
+            let reference = $('#' + prefix + 'ReferenceNumber').val().trim();
+            let type = $('#' + prefix + 'TransactionType').val();
+            let company = $('#' + prefix + 'Company').val();
+            let amount = $('#' + prefix + 'Amount').val();
+            let senderName = $('#' + prefix + 'SenderName').val().trim();
+            let senderDocType = $('#' + prefix + 'SenderDocumentType').val();
+            let senderDocNumber = $('#' + prefix + 'SenderDocumentNumber').val().trim();
+            let senderPhone = $('#' + prefix + 'SenderPhone').val().trim();
+            let senderAddress = $('#' + prefix + 'SenderAddress').val().trim();
+
+            if (!reference)
+                return Swal.fire('Error', 'Reference Number is required', 'error');
+            if (!type)
+                return Swal.fire('Error', 'Transaction Type is required', 'error');
+            if (!company)
+                return Swal.fire('Error', 'Company is required', 'error');
+            if (!amount || amount <= 0)
+                return Swal.fire('Error', 'Amount is required', 'error');
+            if (!senderName)
+                return Swal.fire('Error', 'Sender Name is required', 'error');
+            if (!senderDocType)
+                return Swal.fire('Error', 'Document Type is required', 'error');
+            if (!senderDocNumber)
+                return Swal.fire('Error', 'Document Number is required', 'error');
+            if (!senderPhone)
+                return Swal.fire('Error', 'Phone is required', 'error');
+            if (!senderAddress)
+                return Swal.fire('Error', 'Address is required', 'error');
+            if (!selectedClients[prefix] || selectedClients[prefix] <= 0) {
+                return Swal.fire(
+                    'Error',
+                    'Select a valid client',
+                    'error'
+                );
+            }
+            let clientValidation = await $.get(
+                '/Clients/GetById?id=' + selectedClients[prefix]
+            );
+            if (!clientValidation || !clientValidation.idClient) {
+                return Swal.fire(
+                    'Error',
+                    'Client no longer exists',
+                    'error'
+                );
+            }
+            let formData = new FormData();
+            formData.append(
+                "IdClient_fk",
+                selectedClients[prefix]
+            );
+            formData.append("ReferenceNumber", reference);
+            formData.append("TransactionType", type);
+            formData.append("Company", company);
+            formData.append("Amount", amount);
+
+            formData.append(
+                "Commission",
+                $('#' + prefix + 'Commission').val()
+            );
+
+            formData.append(
+                "TotalAmount",
+                $('#' + prefix + 'TotalAmount').val()
+            );
+            formData.append("SenderName", senderName);
+            formData.append("SenderDocumentType", senderDocType);
+            formData.append("SenderDocumentNumber", senderDocNumber);
+            formData.append("SenderPhone", senderPhone);
+            formData.append("SenderAddress", senderAddress);
+            // formData.append(
+            //     "JustifyDetails",
+            //     $('#' + prefix + '_JustifyDetails').val()
+            // );
+            formData.append("UserC", "admin");
+            // let file = $('#' + prefix + '_File')[0]?.files[0];
+            // if (file) {
+            //     formData.append("ImgJustify", file);
+            // }
+            Swal.fire({
+                title: 'Saving...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+            $.ajax({
+                url: '/Transactions/CreateSimpleTx',
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function () {
+                    $('#modalPaidTx').modal('hide');
+                    $('#formPService')[0].reset();
+                    // $('#' + prefix + '_ImgPreview').hide();
+                    selectedClients[prefix] = null;
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Transaction saved',
+                        timer: 1200,
+                        showConfirmButton: false
+                    });
+                    $('#tblTx').DataTable().ajax.reload();
+                },
+                error: function (err) {
+                    let msg = err.responseJSON?.message || err.responseText ||'Error';
+                    if (msg.includes('Reference number already exists')) {
+                        Swal.fire(
+                            'Duplicate',
+                            'This reference number already exists',
+                            'warning'
+                        );
+                        return;
+                    }
+                    if (msg.includes('Invalid transaction type')) {
+                        Swal.fire(
+                            'Error',
+                            'Invalid transaction type',
+                            'error'
+                        );
+                        return;
+                    }
+                    if (msg.includes('Total amount mismatch')) {
+                        Swal.fire(
+                            'Warning',
+                            'Amount was modified. Please recheck values.',
+                            'warning'
+                        );
+                        return;
+                    }
+                    Swal.fire('Error', msg, 'error');
+                }
+            });
+        });
+
+                function loadTransactionDetails(id) {
+
+            $.get('/Transactions/GetById?id=' + id, function (t) {
+
+                // HEADER
+                $('#dTransactionType').text(t.transactionTypeName);
+
+                $('#dReference').text(t.referenceNumber);
+
+                $('#dAmount').text('$' + t.amount);
+
+                $('#dCommission').text(t.commission + '%');
+
+                $('#dTotal').text('$' + t.totalAmount);
+
+                $('#dCompany').text(
+                    t.senderCompanyName ||
+                    t.receiverCompanyName ||
+                    '-'
+                );
+
+                // $('#dStatus').html(
+                //     t.status == 1
+                //         ? '<span class="badge bg-success">Completed</span>'
+                //         : '<span class="badge bg-danger">Cancelled</span>'
+                // );
+                        let statusHtml = '';
+
+                switch (t.transactionStatus) {
+
+                    case 'Completed':
+
+                        statusHtml = `
+                            <span class="badge bg-success"
+                                  style="
+                                    padding:8px 14px;
+                                    border-radius:20px;
+                                    font-size:13px;
+                                  ">
+                                <i class="bi bi-check-circle-fill"></i>
+                                Completed
+                            </span>
+                        `;
+                        break;
+
+                    case 'Pending':
+
+                        statusHtml = `
+                            <span class="badge bg-warning text-dark"
+                                  style="
+                                    padding:8px 14px;
+                                    border-radius:20px;
+                                    font-size:13px;
+                                  ">
+                                <i class="bi bi-clock-fill"></i>
+                                Pending
+                            </span>
+                        `;
+                        break;
+
+                    case 'Rejected':
+
+                        statusHtml = `
+                            <span class="badge bg-danger"
+                                  style="
+                                    padding:8px 14px;
+                                    border-radius:20px;
+                                    font-size:13px;
+                                  ">
+                                <i class="bi bi-x-circle-fill"></i>
+                                Rejected
+                            </span>
+                        `;
+                        break;
+
+                    default:
+
+                        statusHtml = `
+                            <span class="badge bg-secondary"
+                                  style="
+                                    padding:8px 14px;
+                                    border-radius:20px;
+                                    font-size:13px;
+                                  ">
+                                <i class="bi bi-question-circle-fill"></i>
+                                Unknown
+                            </span>
+                        `;
+                        break;
+                }
+
+                $('#dStatus').html(statusHtml);
+
+
+
+
+                // SENDER
+                $('#dSender').text(t.senderName);
+                $('#dSenderDoc').text(t.senderDocumentNumber);
+                $('#dSenderPhone').text(t.senderPhone);
+                $('#dSenderAddress').text(t.senderAddress);
+                $('#dSenderCountry').text(t.senderCountryName);
+
+                // 🔥 VALIDAR SI ES SIMPLE
+                if (t.isSimpleTransaction) {
+
+                    $('#receiverBlock').hide();
+
+                } else {
+
+                    $('#receiverBlock').show();
+
+                    $('#dReceiver').text(t.receiverName);
+                    $('#dReceiverDoc').text(t.receiverDocumentNumber);
+                    $('#dReceiverPhone').text(t.receiverPhone);
+                    $('#dReceiverAddress').text(t.receiverAddress);
+                    $('#dReceiverCountry').text(t.receiverCountryName);
+
+                }
+
+                $('#dJustify').text(
+                    t.justifyDetails || 'No notes'
+                );
+                    if (t.transactionFile) {
+
+                        let previewUrl ='/Transactions/ViewTransactionFile?id='+ t.idTransaction;
+                        let downloadUrl ='/Transactions/DownloadTransactionFile?id='+ t.idTransaction;
+                        $('#imgJustifyPreview').attr('src', previewUrl).show();
+                        $('#btnDownloadEvidence').show().off('click').on('click', function (e) {
+                                e.preventDefault();
+                                window.location.href = downloadUrl;
+                            });
+                    } else {
+
+                        $('#imgJustifyPreview').hide();
+
+                        $('#btnDownloadEvidence').hide();
+
+                    }
+
+                $('#modalTxDetails').modal('show');
+
+            });
+
+        }
+        //         function loadCompaniesByCountry(countryId, type) {
+        //     $.get('/Companies/GetByCountry?countryId=' + countryId, function (data) {
+        //         let select = type === 'Sender'? $('#SenderCompany') : $('#ReceiverCompany');
+        //         select.empty();
+        //         data.forEach(c => {
+        //             select.append(
+        //                 `<option value="${c.idCompany}">${c.name}</option>`
+        //             );
+        //         });
+        //     });
+        // }
+
+                function loadCompaniesByTransactionType(transactionType, selectId, selectedValue = null) {
+
+            $.get(
+                '/Companies/GetByTransactionType?transactionType=' + transactionType,
+                function (data) {
+                    let select;
+                    let select2;
+                    if (selectId == "TransactionType") {
+                        select = $('#SenderCompany');
+                        select2 = $('#ReceiverCompany');
+                            select2.empty();
+                            data.forEach(c => {
+                                select2.append(
+                                    `<option value="${c.idCompany}">
+                                        ${c.name}
+                                    </option>`
+                                );
+                            });
+                    } else {
+                        select = $('#' + selectId);
+                    }
+                    select.empty();
+                    data.forEach(c => {
+                        select.append(
+                            `<option value="${c.idCompany}">
+                                ${c.name}
+                            </option>`
+                        );
+                    });
+                }
+            );
+        }
+
+                function openChangeStatusModal(id, currentStatus) {
+
+            $('#ChangeStatus_IdTransaction')
+                .val(id);
+
+            $('#ChangeStatus_Current')
+                .val(currentStatus);
+
+            $('#ChangeStatus_New')
+                .val('');
+
+            $('#modalChangeStatus')
+                .modal('show');
+        }
+                $('#btnSaveTransactionStatus').click(function () {
+
+            let idTransaction =
+                $('#ChangeStatus_IdTransaction').val();
+
+            let status =
+                $('#ChangeStatus_New').val();
+
+            if (!status) {
+
+                Swal.fire(
+                    'Error',
+                    'Select a status',
+                    'error'
+                );
+
+                return;
+            }
+
+            Swal.fire({
+                title: 'Saving...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            $.ajax({
+
+                url: '/Transactions/ChangeStatus',
+
+                method: 'POST',
+
+                data: {
+                    idTransaction: idTransaction,
+                    status: status
+                },
+
+                success: function () {
+
+                    $('#modalChangeStatus')
+                        .modal('hide');
+
                     $('#tblTx')
                         .DataTable()
                         .ajax.reload();
 
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Status updated',
+                        timer: 1200,
+                        showConfirmButton: false
+                    });
                 },
-                       error: function (err) {
-            let msg = err.responseJSON?.message || 'Error';
 
-            // 🔴 referencia duplicada
-            if (msg.includes('Reference number already exists')) {
-                Swal.fire('Duplicate', 'This reference number already exists', 'warning');
-                return;
-            }
+                error: function (err) {
 
-            // 🔴 tipo inválido
-            if (msg.includes('Invalid transaction type')) {
-                Swal.fire('Error', 'Invalid transaction type', 'error');
-                return;
-            }
-
-            // 🔴 mismatch total
-            if (msg.includes('Total amount mismatch')) {
-                Swal.fire('Warning', 'Amount was modified. Please recheck values.', 'warning');
-                return;
-            }
-
-            Swal.fire('Error', msg, 'error');
-        }
+                    Swal.fire(
+                        'Error',
+                        err.responseText,
+                        'error'
+                    );
+                }
             });
-
         });
     </script>
 }

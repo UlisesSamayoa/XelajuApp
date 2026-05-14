@@ -45,38 +45,36 @@ public class TransactionsRepository
 
         using var conn = _db.CreateConnection();
 
-        using var cmd =new SqlCommand("sp_GetTransactions",conn);
+        using var cmd = new SqlCommand("sp_GetTransactions", conn);
 
-        cmd.CommandType =CommandType.StoredProcedure;
+        cmd.CommandType = CommandType.StoredProcedure;
 
         await conn.OpenAsync();
 
-        using var rd =await cmd.ExecuteReaderAsync();
+        using var rd = await cmd.ExecuteReaderAsync();
 
         while (await rd.ReadAsync())
         {
             list.Add(new TransactionsModel
             {
-                IdTransaction =rd["IdTransaction"] != DBNull.Value? Convert.ToInt32(rd["IdTransaction"]): 0,
-
-                ReferenceNumber =rd["ReferenceNumber"] != DBNull.Value? rd["ReferenceNumber"].ToString(): string.Empty,
-
-                SenderName =rd["SenderName"] != DBNull.Value? rd["SenderName"].ToString(): string.Empty,
-
-                SenderDocumentNumber =rd["SenderDocumentNumber"] != DBNull.Value? rd["SenderDocumentNumber"].ToString(): string.Empty,
-
-                ReceiverName =rd["ReceiverName"] != DBNull.Value? rd["ReceiverName"].ToString(): string.Empty,
-
-                ReceiverDocumentNumber =rd["ReceiverDocumentNumber"] != DBNull.Value? rd["ReceiverDocumentNumber"].ToString(): string.Empty,
-
-                ReceiverCountry =rd["ReceiverCountry"] != DBNull.Value? rd["ReceiverCountry"].ToString(): string.Empty,
-
-                ReceiverCountryName =rd["ReceiverCountryName"] != DBNull.Value? rd["ReceiverCountryName"].ToString(): string.Empty,
-                TransactionTypeName = rd["TransactionTypeName"] != DBNull.Value? rd["TransactionTypeName"].ToString(): string.Empty,
-
-                Amount =rd["Amount"] != DBNull.Value? Convert.ToDecimal(rd["Amount"]): 0,
-
-                Status =rd["Status"] != DBNull.Value? Convert.ToInt32(rd["Status"]): 0
+                IdTransaction = rd["IdTransaction"] != DBNull.Value ? Convert.ToInt32(rd["IdTransaction"]) : 0,
+                TransactionType = rd["TransactionType"] != DBNull.Value ? Convert.ToInt32(rd["TransactionType"]) : 0,
+                ReferenceNumber = rd["ReferenceNumber"] != DBNull.Value ? rd["ReferenceNumber"].ToString() : string.Empty,
+                SenderName = rd["SenderName"] != DBNull.Value ? rd["SenderName"].ToString() : string.Empty,
+                SenderCompany = rd["SenderCompany"] != DBNull.Value ? Convert.ToInt32(rd["SenderCompany"]) : 0,
+                SenderCompanyName = rd["SenderCompanyName"]?.ToString(),
+                SenderDocumentNumber = rd["SenderDocumentNumber"] != DBNull.Value ? rd["SenderDocumentNumber"].ToString() : string.Empty,
+                ReceiverName = rd["ReceiverName"] != DBNull.Value ? rd["ReceiverName"].ToString() : string.Empty,
+                ReceiverDocumentNumber = rd["ReceiverDocumentNumber"] != DBNull.Value ? rd["ReceiverDocumentNumber"].ToString() : string.Empty,
+                ReceiverCountry = rd["ReceiverCountry"] != DBNull.Value ? rd["ReceiverCountry"].ToString() : string.Empty,
+                ReceiverCountryName = rd["ReceiverCountryName"] != DBNull.Value ? rd["ReceiverCountryName"].ToString() : string.Empty,
+                ReceiverCompany = rd["ReceiverCompany"] != DBNull.Value ? Convert.ToInt32(rd["ReceiverCompany"]) : 0,
+                ReceiverCompanyName = rd["ReceiverCompanyName"]?.ToString(),
+                TransactionTypeName = rd["TransactionTypeName"] != DBNull.Value ? rd["TransactionTypeName"].ToString() : string.Empty,
+                TransactionFile = rd["TransactionFile"] != DBNull.Value ? rd["TransactionFile"].ToString() : string.Empty,
+                TransactionStatus = rd["TransactionStatus"] != DBNull.Value ? rd["TransactionStatus"].ToString() : string.Empty,
+                Amount = rd["Amount"] != DBNull.Value ? Convert.ToDecimal(rd["Amount"]) : 0,
+                Status = rd["Status"] != DBNull.Value ? Convert.ToInt32(rd["Status"]) : 0
             });
         }
 
@@ -118,6 +116,7 @@ public class TransactionsRepository
         cmd.Parameters.AddWithValue("@IdBeneficiarie_fk", m.IdBeneficiarie_fk);
 
         cmd.Parameters.AddWithValue("@JustifyDetails", m.JustifyDetails ?? "");
+        cmd.Parameters.AddWithValue("@TransactionFile", m.TransactionFile ?? "");
         cmd.Parameters.AddWithValue("@UserC", m.UserC);
 
         await conn.OpenAsync();
@@ -157,66 +156,30 @@ public class TransactionsRepository
         {
             return new TransactionsModel
             {
-                IdTransaction =
-                    rd["IdTransaction"] != DBNull.Value
-                    ? Convert.ToInt32(rd["IdTransaction"])
-                    : 0,
-
-                ReferenceNumber =
-                    rd["ReferenceNumber"]?.ToString(),
-
-                SenderName =
-                    rd["SenderName"]?.ToString(),
-
-                SenderDocumentNumber =
-                    rd["SenderDocumentNumber"]?.ToString(),
-
-                SenderPhone =
-                    rd["SenderPhone"]?.ToString(),
-
-                SenderAddress =
-                    rd["SenderAddress"]?.ToString(),
-
-                ReceiverName =
-                    rd["ReceiverName"]?.ToString(),
-
-                ReceiverDocumentNumber =
-                    rd["ReceiverDocumentNumber"]?.ToString(),
-
-                ReceiverPhone =
-                    rd["ReceiverPhone"]?.ToString(),
-
-                ReceiverAddress =
-                    rd["ReceiverAddress"]?.ToString(),
-
-                ReceiverCountryName =
-                    rd["ReceiverCountryName"]?.ToString(),
-
-                Amount =
-                    rd["Amount"] != DBNull.Value
-                    ? Convert.ToDecimal(rd["Amount"])
-                    : 0,
-
-                Commission =
-                    rd["Comission"] != DBNull.Value
-                    ? Convert.ToDecimal(rd["Comission"])
-                    : 0,
-
-                TotalAmount =
-                    rd["TotalAmount"] != DBNull.Value
-                    ? Convert.ToDecimal(rd["TotalAmount"])
-                    : 0,
-
-                JustifyDetails =
-                    rd["JustifyDetails"]?.ToString(),
-
-                //ImgJustify =
-                //    rd["ImgJustify"]?.ToString(),
-
-                Status =
-                    rd["Status"] != DBNull.Value
-                    ? Convert.ToInt32(rd["Status"])
-                    : 0
+                IdTransaction = rd["IdTransaction"] != DBNull.Value ? Convert.ToInt32(rd["IdTransaction"]) : 0,
+                ReferenceNumber = rd["ReferenceNumber"]?.ToString(),
+                SenderName = rd["SenderName"]?.ToString(),
+                SenderDocumentNumber = rd["SenderDocumentNumber"]?.ToString(),
+                SenderPhone = rd["SenderPhone"]?.ToString(),
+                SenderAddress = rd["SenderAddress"]?.ToString(),
+                SenderCompany = rd["SenderCompany"] != DBNull.Value ? Convert.ToInt32(rd["SenderCompany"]) : 0,
+                SenderCompanyName = rd["SenderCompanyName"]?.ToString(),
+                ReceiverName = rd["ReceiverName"]?.ToString(),
+                ReceiverDocumentNumber = rd["ReceiverDocumentNumber"]?.ToString(),
+                ReceiverPhone = rd["ReceiverPhone"]?.ToString(),
+                ReceiverAddress = rd["ReceiverAddress"]?.ToString(),
+                ReceiverCompany = rd["ReceiverCompany"] != DBNull.Value ? Convert.ToInt32(rd["ReceiverCompany"]) : 0,
+                ReceiverCompanyName = rd["ReceiverCompanyName"]?.ToString(),
+                ReceiverCountryName = rd["ReceiverCountryName"]?.ToString(),
+                Amount = rd["Amount"] != DBNull.Value ? Convert.ToDecimal(rd["Amount"]) : 0,
+                Commission = rd["Commission"] != DBNull.Value ? Convert.ToDecimal(rd["Commission"]) : 0,
+                TotalAmount = rd["TotalAmount"] != DBNull.Value ? Convert.ToDecimal(rd["TotalAmount"]) : 0,
+                JustifyDetails = rd["JustifyDetails"]?.ToString(),
+                TransactionFile = rd["TransactionFile"]?.ToString(),
+                Status = rd["Status"] != DBNull.Value ? Convert.ToInt32(rd["Status"]) : 0,
+                TransactionTypeName = rd["TransactionTypeName"] != DBNull.Value ? rd["TransactionTypeName"].ToString() : string.Empty,
+                SenderCountryName = rd["SenderCountryName"] != DBNull.Value ? rd["SenderCountryName"].ToString() : string.Empty,
+                TransactionStatus = rd["TransactionStatus"] != DBNull.Value ? rd["TransactionStatus"].ToString() : string.Empty
             };
         }
 
@@ -246,4 +209,17 @@ public class TransactionsRepository
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
     }
+
+    public async Task ChangeStatus(int idTransaction, string status)
+    {
+        using var conn = _db.CreateConnection();
+        using var cmd = new SqlCommand("sp_Transactions_ChangeStatus", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@IdTransaction", idTransaction);
+        cmd.Parameters.AddWithValue("@Status", status);
+        await conn.OpenAsync();
+        await cmd.ExecuteNonQueryAsync();
+
+    }
+
 }

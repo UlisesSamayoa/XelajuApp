@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
-
-namespace TransferApp.Models
+﻿namespace TransferApp.Models
 {
     public class CompaniesModel
     {
@@ -11,6 +8,8 @@ namespace TransferApp.Models
         public string Country { get; set; }
         public string IdCountry { get; set; }
         public string Phone { get; set; }
+        public int TransactionType { get; set; }
+        public string? TransactionTypeName { get; set; }
         public int Status { get; set; }
         public DateTime DateC { get; set; }
         public string UserC { get; set; }

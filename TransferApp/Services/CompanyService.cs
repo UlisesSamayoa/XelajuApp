@@ -38,4 +38,8 @@ public class CompanyService
 
         await _repo.Delete(id, userU);
     }
+    public async Task<List<CompaniesModel>> GetByTransactionType(int transactionType)
+    {
+        return await _repo.GetByTransactionType(transactionType);
+    }
 }

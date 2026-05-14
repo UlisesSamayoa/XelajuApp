@@ -8,6 +8,7 @@ namespace TransferApp.Models
         public string Name { get; set; }
         public decimal Commission { get; set; }
         public string Description { get; set; }
+        public int NumberT { get; set; }
         public int Status { get; set; }
         public DateTime DateC { get; set; }
         public string UserC { get; set; }

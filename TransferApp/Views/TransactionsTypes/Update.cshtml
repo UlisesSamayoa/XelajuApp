@@ -20,6 +20,8 @@
         <form id="formUpdateTT">
 
             <input type="hidden" id="Id" value="@ViewBag.Id" />
+            <label class="form-label">Transaction Number</label>
+            <input name="NumberT" id="NumberT" type="number" class="form-control mb-2" placeholder="Transaction Number" required />
             <label class="form-label">Name</label>
             <input id="Name" class="form-control mb-2" placeholder="Name" />
             <label class="form-label">Commission</label>
@@ -56,6 +58,7 @@
             $('#Commission').val(d.commission);
             $('#Description').val(d.description);
             $('#Status').val(d.status);
+            $('#NumberT').val(d.numberT);
 
         });
     }
@@ -67,8 +70,13 @@
             name:$('#Name').val(),
             commission:parseFloat($('#Commission').val()),
             description:$('#Description').val(),
+            NumberT:$('#NumberT').val(),
             status:$('#Status').val()
         };
+        if(!data.NumberT){
+                Swal.fire('Error','Transaction Numner is required','error');
+                return;
+        }
         if(!data.name || isNaN(data.commission)){
             Swal.fire('Error','Name & Commission required','error');
             return;

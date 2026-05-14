@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Connections;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using System.Data;
 using TransferApp.Data;
 using TransferApp.Models;
@@ -25,6 +24,7 @@ public class CompanyRepository
             cmd.Parameters.AddWithValue("@Country", model.Country);
             cmd.Parameters.AddWithValue("@IdCountry", model.IdCountry);
             cmd.Parameters.AddWithValue("@Phone", model.Phone);
+            cmd.Parameters.AddWithValue("@TransactionType", model.TransactionType);
             cmd.Parameters.AddWithValue("@UserC", model.UserC);
 
             await conn.OpenAsync();
@@ -58,6 +58,8 @@ public class CompanyRepository
                 Country = reader["Country"].ToString(),
                 IdCountry = reader["IdCountry"].ToString(),
                 Phone = reader["Phone"].ToString(),
+                TransactionType = (int)reader["TransactionType"],
+                TransactionTypeName = reader["TransactionTypeName"].ToString(),
                 Status = (int)reader["Status"]
             });
         }
@@ -85,7 +87,9 @@ public class CompanyRepository
                 Country = reader["Country"].ToString(),
                 IdCountry = reader["IdCountry"].ToString(),
                 SwiftCode = reader["SwiftCode"].ToString(),
-                Phone = reader["Phone"].ToString()
+                Phone = reader["Phone"].ToString(),
+                TransactionType = (int)reader["TransactionType"],
+                TransactionTypeName = reader["TransactionTypeName"].ToString()
             };
         }
 
@@ -103,6 +107,7 @@ public class CompanyRepository
             cmd.Parameters.AddWithValue("@SwiftCode", model.SwiftCode);
             cmd.Parameters.AddWithValue("@Country", model.Country);
             cmd.Parameters.AddWithValue("@IdCountry", model.IdCountry);
+            cmd.Parameters.AddWithValue("@TransactionType", model.TransactionType);
             cmd.Parameters.AddWithValue("@Phone", model.Phone);
             cmd.Parameters.AddWithValue("@UserU", model.UserU);
             await conn.OpenAsync();
@@ -151,4 +156,36 @@ public class CompanyRepository
 
         return list;
     }
+
+    public async Task<List<CompaniesModel>> GetByTransactionType(int transactionType)
+    {
+        List<CompaniesModel> list = new();
+
+        using var conn = _db.CreateConnection();
+        using var cmd = new SqlCommand("sp_GetCompaniesByTransactionType", conn);
+
+        cmd.CommandType = CommandType.StoredProcedure;
+
+        cmd.Parameters.AddWithValue(
+            "@TransactionType",
+            transactionType
+        );
+
+        await conn.OpenAsync();
+
+        using SqlDataReader dr = await cmd.ExecuteReaderAsync();
+
+        while (await dr.ReadAsync())
+        {
+            list.Add(new CompaniesModel
+            {
+                IdCompany = Convert.ToInt32(dr["IdCompany"]),
+                Name = dr["Name"].ToString()
+            });
+        }
+
+
+        return list;
+    }
+
 }

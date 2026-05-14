@@ -9,7 +9,7 @@ public class TransactionsController : Controller
     private readonly BeneficiariesService _beneficiaries;
     private readonly ParametersService _parameters;
 
-    public TransactionsController(TransactionsService service,ClientsService clientes,BeneficiariesService beneficiaries,ParametersService parameters)
+    public TransactionsController(TransactionsService service, ClientsService clientes, BeneficiariesService beneficiaries, ParametersService parameters)
     {
         _service = service;
 
@@ -59,7 +59,7 @@ public class TransactionsController : Controller
             m.UserC = "admin";
 
             // CLIENTE
-            var client =await _clientes.GetById(m.IdClient_fk);
+            var client = await _clientes.GetById(m.IdClient_fk);
 
             if (client == null)
             {
@@ -73,22 +73,22 @@ public class TransactionsController : Controller
 
             // BENEFICIARIO
             //bool validBeneficiary =await _beneficiaries.ValidateBeneficiaryByClient(m.IdClient_fk,m.IdBeneficiarie_fk ?? 0);
-            bool validBeneficiary =await _beneficiaries.ValidateBeneficiaryByClient(m.IdBeneficiarie_fk,m.IdClient_fk);
+            bool validBeneficiary = await _beneficiaries.ValidateBeneficiaryByClient(m.IdBeneficiarie_fk, m.IdClient_fk);
             if (!validBeneficiary)
             {
                 return BadRequest(new
                 {
                     success = false,
                     type = "BENEFICIARY_INVALID",
-                    message ="Beneficiary does not belong to selected client"
+                    message = "Beneficiary does not belong to selected client"
                 });
             }
 
-            var aml =await _parameters.ValidateClientTransactions(m.IdClient_fk.ToString());
+            var aml = await _parameters.ValidateClientTransactions(m.IdClient_fk.ToString());
 
-            bool amountExceeded =(aml.TotalAmount + m.Amount)> aml.MaxAmount;
+            bool amountExceeded = (aml.TotalAmount + m.Amount) > aml.MaxAmount;
 
-            bool txExceeded =(aml.TotalTransactions + 1)> aml.MaxTransactions;
+            bool txExceeded = (aml.TotalTransactions + 1) > aml.MaxTransactions;
 
             if (amountExceeded || txExceeded)
             {
@@ -107,7 +107,7 @@ public class TransactionsController : Controller
                     });
                 }
             }
-            await _service.Create(m);
+            await _service.Create(m, ImgJustify);
 
             return Ok(new
             {
@@ -168,4 +168,87 @@ public class TransactionsController : Controller
             });
         }
     }
+
+    [HttpGet]
+    public async Task<IActionResult> ViewTransactionFile(int id)
+    {
+        var tx = await _service.GetById(id);
+
+        if (tx == null)
+            return NotFound();
+
+        if (string.IsNullOrWhiteSpace(tx.TransactionFile))
+            return NotFound();
+
+        if (!System.IO.File.Exists(tx.TransactionFile))
+            return NotFound();
+
+        var ext = Path.GetExtension(tx.TransactionFile).ToLower();
+
+        string contentType = ext switch
+        {
+            ".jpg" => "image/jpeg",
+            ".jpeg" => "image/jpeg",
+            ".png" => "image/png",
+            ".pdf" => "application/pdf",
+            _ => "application/octet-stream"
+        };
+
+        var bytes = await System.IO.File.ReadAllBytesAsync(
+            tx.TransactionFile
+        );
+
+        return File(bytes, contentType);
+    }
+    [HttpGet]
+    public async Task<IActionResult> DownloadTransactionFile(int id)
+    {
+        var tx = await _service.GetById(id);
+
+        if (tx == null)
+            return NotFound();
+
+        if (string.IsNullOrWhiteSpace(tx.TransactionFile))
+            return NotFound();
+
+        if (!System.IO.File.Exists(tx.TransactionFile))
+            return NotFound();
+
+        var ext = Path.GetExtension(tx.TransactionFile).ToLower();
+
+        string contentType = ext switch
+        {
+            ".jpg" => "image/jpeg",
+            ".jpeg" => "image/jpeg",
+            ".png" => "image/png",
+            ".pdf" => "application/pdf",
+            _ => "application/octet-stream"
+        };
+
+        var bytes = await System.IO.File.ReadAllBytesAsync(
+            tx.TransactionFile
+        );
+
+        var fileName = Path.GetFileName(tx.TransactionFile);
+
+        return File(bytes, contentType, fileName);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ChangeStatus(int idTransaction, string status)
+    {
+        try
+        {
+            await _service.ChangeStatus(
+                idTransaction,
+                status
+            );
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
 }

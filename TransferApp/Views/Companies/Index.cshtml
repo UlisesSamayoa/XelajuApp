@@ -109,6 +109,7 @@
                     <th>Swift</th>
                     <th>Country</th>
                     <th>Phone</th>
+                    <th>TransactionType</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -119,7 +120,7 @@
 
 <!-- MODAL -->
 <div class="modal fade" id="modalCompany">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content card-custom">
 
             <div class="modal-header">
@@ -129,14 +130,31 @@
 
             <div class="modal-body">
                 <form id="formCompany">
-                    <label class="form-label">Name</label>
-                    <input name="Name" class="form-control mb-2" placeholder="Name" required />
-                    <label class="form-label">Country</label>
-                    <select name="Country" id="Country" class="form-control mb-2" required></select>
-                    <label class="form-label">Swift Code</label>
-                    <input name="SwiftCode" class="form-control mb-2" placeholder="Swift Code" />
-                    <label class="form-label">Phone</label>
-                    <input name="Phone" class="form-control mb-2" placeholder="Phone" />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">Name</label>
+                            <input name="Name" class="form-control mb-2" placeholder="Name" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Country</label>
+                            <select name="Country" id="Country" class="form-control mb-2" required></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">Swift Code</label>
+                            <input name="SwiftCode" class="form-control mb-2" placeholder="Swift Code" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone</label>
+                            <input name="Phone" class="form-control mb-2" placeholder="Phone" />
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">TransactionType</label>
+                        <select name="TransactionType" id="TransactionType" class="form-control mb-2" required></select>
+                    </div>
+                    
                 </form>
             </div>
 
@@ -185,6 +203,7 @@
                     { data: 'swiftCode' },
                     { data: 'country' },
                     { data: 'phone' },
+                        { data: 'transactionTypeName' },
                     {
                         data: 'idCompany',
                         render: id => `
@@ -218,6 +237,7 @@
                 IdCountry: $('#Country').val(),
                 SwiftCode: $('input[name="SwiftCode"]').val(),
                 Phone: $('input[name="Phone"]').val(),
+                TransactionType: $('#TransactionType').val(),
                 UserC: "admin"
             };
 
@@ -235,6 +255,10 @@
             }
             if (!data.Phone) {
                 Swal.fire('Error', 'Phone is required', 'error');
+                return;
+            }
+            if (!data.TransactionType) {
+                Swal.fire('Error', 'TransactionType is required', 'error');
                 return;
             }
             $.ajax({
@@ -351,8 +375,22 @@
                     Swal.fire('Error', 'Failed to load countries', 'error');
                 }
             });
-        }
+        
 
+       $.get('/TransactionsTypes/GetAllTypes', function (data) {
+                    $('#TransactionType').empty();
+                data.forEach(t => {
+                        $('#TransactionType').append(
+                        `<option value="${t.numberT}"
+                                 data-commission="${t.commission}">
+                            ${t.name}
+                        </option>`
+                        );
+                });
+
+        });
+        
+    }
     </script>
 
 }
