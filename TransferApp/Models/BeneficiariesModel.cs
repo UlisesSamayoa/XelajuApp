@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace TransferApp.Models
+﻿namespace TransferApp.Models
 {
     public class BeneficiariesModel
     {
@@ -11,6 +9,8 @@ namespace TransferApp.Models
         public string DocumentTypeName { get; set; }
         public string DocumentNumber { get; set; }
         public string Country { get; set; }
+        public string Phone { get; set; }
+        public string Address { get; set; }
         public int IdClient_fk { get; set; }
         public string ParentClientName { get; set; }
         public int Status { get; set; }

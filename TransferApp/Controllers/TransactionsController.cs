@@ -235,13 +235,14 @@ public class TransactionsController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> ChangeStatus(int idTransaction, string status)
+    public async Task<IActionResult> ChangeStatus(int idTransaction, string status, string transactionsStatusComment)
     {
         try
         {
             await _service.ChangeStatus(
                 idTransaction,
-                status
+                status,
+                transactionsStatusComment
             );
             return Ok();
         }

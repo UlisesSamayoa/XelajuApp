@@ -1,8 +1,9 @@
 ﻿@{
     ViewData["Title"] = "Beneficiaries";
+    Layout = "_Layout";
 }
-<link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@* <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> *@
 
 <style>
     :root {
@@ -86,17 +87,35 @@
                     </div>
                     <input type="hidden" id="IdClient_fk" />
                 </div>
-                <label>First Name</label>
-                <input id="FirstName" class="form-control mb-2" placeholder="First Name" required />
-                <label>Last Name</label>
-                <input id="LastName" class="form-control mb-2" placeholder="Last Name" required />
-                <label>Document Type</label>
-                <select name="IdDocumentType" id="IdDocumentType" class="form-control mb-2">
-                </select>
-                <label>Document Number</label>
-                <input id="DocumentNumber" class="form-control mb-2" placeholder="Document Number" />
-                <label>Country</label>
-                <select name="Country" id="Country" class="form-control mb-2"></select>
+                <div class="row">
+                    <div class="col-6">
+                        <label>First Name</label>
+                        <input id="FirstName" class="form-control mb-2" placeholder="First Name" required />
+                    </div>
+                    <div class="col-6">
+                        <label>Last Name</label>
+                        <input id="LastName" class="form-control mb-2" placeholder="Last Name" required />
+                    </div>
+                    <div class="col-6">
+                        <label>Document Type</label>
+                        <select name="IdDocumentType" id="IdDocumentType" class="form-control mb-2">
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label>Document Number</label>
+                        <input id="DocumentNumber" class="form-control mb-2" placeholder="Document Number" />
+                    </div>
+                    <div class="col-6">
+                        <label>Country</label>
+                        <select name="Country" id="Country" class="form-control mb-2"></select>
+                    </div>
+                    <div class="col-6">
+                        <label>Phone</label>
+                        <input name="Phone" id="Phone" class="form-control mb-2" placeholder="Phone" />
+                    </div>
+                </div>
+                <label>Address</label>
+                <textarea name="Address" class="form-control mb-2" placeholder="Address"></textarea>
             </form>
             <div class="modal-footer">
                 <button class="btn btn-custom" id="btnSaveBeneficiarie">
@@ -131,8 +150,8 @@
     </div>
 </div>
 @section Scripts {
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+@* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script> *@
 <script>
 
     let table;
@@ -141,8 +160,11 @@
         table = loadTable();
             loadCountriesDropdown('#Country');
             loadDocumentsTypesDropdown('#IdDocumentType');
+                 applyPhoneMask('#Phone');
     });
-
+        function applyPhoneMask(selector) {
+                Inputmask("(999)-999-9999").mask(selector);
+            }
     function loadTable() {
         return $('#tblBeneficiaries').DataTable({
             ajax: {
@@ -176,13 +198,15 @@
     }
 
     $('#btnSaveBeneficiarie').click(function () {
-
+        
         let data = {
             firstName: $('#FirstName').val(),
             lastName: $('#LastName').val(),
             idDocumentType: $('#IdDocumentType').val(),
             documentNumber: $('#DocumentNumber').val(),
             country: $('#Country').val(),
+            address: $('textarea[name="Address"]').val().trim(),
+            phone: $('#Phone').val(),
             idClient_fk: $('#IdClient_fk').val()
         };
                 if (!data.idClient_fk) {
@@ -209,6 +233,14 @@
                Swal.fire('Error', 'Country is required', 'error');
                return;
              }
+                 if (!data.phone) {
+                   Swal.fire('Error', 'Phone is required', 'error');
+                   return;
+                 }
+                     if (!data.address) {
+                   Swal.fire('Error', 'Address is required', 'error');
+                   return;
+                 }
         
 
         $.ajax({
@@ -343,7 +375,7 @@
                     success: function (data) {
                         let select = $(selectId);
                         select.empty();
-                        select.append(`<option value="">Select country</option>`);
+                        select.append(`<option value="">Select DocumentType</option>`);
                         data.forEach(c => {
                             select.append(`
                                 <option value="${c.idDocumentType}">

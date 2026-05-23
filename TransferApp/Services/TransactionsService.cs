@@ -90,7 +90,7 @@ public class TransactionsService
         return fullPath;
     }
 
-    public async Task ChangeStatus(int idTransaction, string status)
+    public async Task ChangeStatus(int idTransaction, string status, string transactionsStatusComment)
     {
         if (
             status != "Completed" &&
@@ -105,7 +105,8 @@ public class TransactionsService
 
         await _repo.ChangeStatus(
             idTransaction,
-            status
+            status,
+            transactionsStatusComment
         );
     }
 

@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Update Client";
+    Layout = "_Layout";
 }
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -95,10 +96,14 @@
 </div>
 
 <script>
+    function applyPhoneMask(selector) {
+            Inputmask("(999)-999-9999").mask(selector);
+        }
     const id = window.location.pathname.split('/').pop();
         $(document).ready(function () {
         loadClient();
         loadCountriesDropdown('#Country');
+        applyPhoneMask('#Phone');
     });
         const documentTypeMap = {
         "DUI": "1",

@@ -75,7 +75,7 @@
 
                 <div class="col-md-6 mb-3">
                     <label>Phone</label>
-                    <input type="text" id="Phone" class="form-control"  />
+                    <input type="text" name="Phone" id="Phone" class="form-control" />
                 </div>
                 <div class="col-md-12">
                     <label class="form-label">TransactionType</label>
@@ -141,7 +141,11 @@
             Swal.fire('Error', 'Failed to load company', 'error');
         }
     });
+     applyPhoneMask('#Phone');
     });
+    function applyPhoneMask(selector) {
+            Inputmask("(999)-999-9999").mask(selector);
+        }
         $('#btnUpdate').click(function () {
             let data = {
                 IdCompany: id,

@@ -43,6 +43,7 @@
         public string JustifyDetails { get; set; }
         public string TransactionFile { get; set; }
         public string TransactionStatus { get; set; }
+        public string TransactionsStatusComment { get; set; }
 
         //OTROS
         public bool IsSimpleTransaction { get; set; }

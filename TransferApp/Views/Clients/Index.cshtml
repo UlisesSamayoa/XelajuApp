@@ -1,9 +1,10 @@
 ﻿@{
     ViewData["Title"] = "Clients";
+    Layout = "_Layout";
 }
 
-<link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@* <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> *@
 
 <style>
     :root {
@@ -113,7 +114,7 @@
                         <label>Expiration Date</label>
                         <input type="date" name="ExpirationDate" class="form-control mb-2" />
                         <label>Phone</label>
-                        <input name="Phone" class="form-control mb-2" placeholder="Phone" />
+                        <input name="Phone" id="Phone" class="form-control mb-2" placeholder="Phone" />
                         <label>Country</label>
                         <select name="Country" id="Country" class="form-control mb-2"></select>
                         <label>Address</label>
@@ -172,8 +173,9 @@
 </div>
 @section Scripts {
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    @* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js"></script> *@
 
     <script>
         let table;
@@ -181,8 +183,11 @@
             table = loadClients();
             loadCountriesDropdown('#Country');
             loadDocumentsTypesDropdown('#IdDocumentType');
+            applyPhoneMask('#Phone');
         });
-
+        function applyPhoneMask(selector) {
+            Inputmask("(999)-999-9999").mask(selector);
+        }
           function loadClients() {
                 return $('#tblClients').DataTable({
                 ajax: {

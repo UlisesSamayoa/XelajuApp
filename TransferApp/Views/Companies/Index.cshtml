@@ -1,10 +1,11 @@
 ﻿@{
     ViewData["Title"] = "Companies";
+    Layout = "_Layout";
 }
 
 <!-- LIBS -->
-<link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@* <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> *@
 
 <style>
     :root {
@@ -147,7 +148,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Phone</label>
-                            <input name="Phone" class="form-control mb-2" placeholder="Phone" />
+                            <input name="Phone" id="Phone" class="form-control mb-2" placeholder="Phone" />
                         </div>
                     </div>
                     <div class="col-md-12">
@@ -168,15 +169,10 @@
 
 @section Scripts {
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    @* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script> *@
 
     <script>
-        // let countries = [
-        //     { id:1, name:"Mexico" },
-        //     { id:2, name:"Honduras" },
-        //     { id:3, name:"El Salvador" }
-        // ];
         let table;
         $(document).ready(function () {
             table = loadTable();
@@ -185,12 +181,12 @@
             $('#filterCountry').on('keyup', function () {
                 table.column(2).search(this.value).draw();
             });
-            // countries.forEach(x =>
-            //     $('#Country').append(`<option value="${x.id}">${x.name}</option>`)
-            // );
              loadCountriesDropdown('#Country');
+                  applyPhoneMask('#Phone');
         });
-
+            function applyPhoneMask(selector) {
+                Inputmask("(999)-999-9999").mask(selector);
+            }
          function loadTable() {
             return $('#tblCompanies').DataTable({
                 ajax: {

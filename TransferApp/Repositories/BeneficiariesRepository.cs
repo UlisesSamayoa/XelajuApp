@@ -34,6 +34,8 @@ public class BeneficiariesRepository
                 DocumentTypeName = rd["DocumentTypeName"].ToString(),
                 DocumentNumber = rd["DocumentNumber"].ToString(),
                 Country = rd["Country"].ToString(),
+                Address = rd["Address"].ToString(),
+                Phone = rd["Phone"].ToString(),
                 Status = (int)rd["Status"],
                 ParentClientName = rd["ParentClientName"]?.ToString(),
                 IdClient_fk = rd["IdClient_fk"] != DBNull.Value ? (int)rd["IdClient_fk"] : 0,
@@ -65,6 +67,8 @@ public class BeneficiariesRepository
                 IdDocumentType = rd["IdDocumentType"].ToString(),
                 DocumentNumber = rd["DocumentNumber"].ToString(),
                 Country = rd["Country"].ToString(),
+                Address = rd["Address"].ToString(),
+                Phone = rd["Phone"].ToString(),
                 Status = (int)rd["Status"],
                 ParentClientName = rd["ParentClientName"]?.ToString(),
                 IdClient_fk = rd["IdClient_fk"] != DBNull.Value ? (int)rd["IdClient_fk"] : 0,
@@ -104,6 +108,8 @@ public class BeneficiariesRepository
         cmd.Parameters.AddWithValue("@IdDocumentType", m.IdDocumentType);
         cmd.Parameters.AddWithValue("@DocumentNumber", m.DocumentNumber);
         cmd.Parameters.AddWithValue("@Country", m.Country);
+        cmd.Parameters.AddWithValue("@Address", m.Address);
+        cmd.Parameters.AddWithValue("@Phone", m.Phone);
         cmd.Parameters.AddWithValue("@UserC", m.UserC);
         cmd.Parameters.AddWithValue("@IdClient_fk", m.IdClient_fk);
         await conn.OpenAsync();
@@ -126,6 +132,8 @@ public class BeneficiariesRepository
         cmd.Parameters.AddWithValue("@IdDocumentType", m.IdDocumentType);
         cmd.Parameters.AddWithValue("@DocumentNumber", m.DocumentNumber);
         cmd.Parameters.AddWithValue("@Country", m.Country);
+        cmd.Parameters.AddWithValue("@Address", m.Address);
+        cmd.Parameters.AddWithValue("@Phone", m.Phone);
         cmd.Parameters.AddWithValue("@UserU", m.UserU);
         cmd.Parameters.AddWithValue("@IdClient_fk", m.IdClient_fk);
 
@@ -168,6 +176,8 @@ public class BeneficiariesRepository
                 LastName = rd["LastName"].ToString(),
                 DocumentNumber = rd["DocumentNumber"].ToString(),
                 Country = rd["Country"].ToString(),
+                Address = rd["Address"].ToString(),
+                Phone = rd["Phone"].ToString(),
                 IdDocumentType = rd["IdDocumentType"].ToString(),
                 CountryName = rd["CountryName"].ToString()
             });
@@ -182,13 +192,13 @@ public class BeneficiariesRepository
     {
         using var conn = _db.CreateConnection();
 
-        using var cmd =new SqlCommand("sp_ValidateBeneficiaryByClient",conn);
+        using var cmd = new SqlCommand("sp_ValidateBeneficiaryByClient", conn);
 
-        cmd.CommandType =CommandType.StoredProcedure;
-        cmd.Parameters.AddWithValue("@IdBeneficiarie",idBeneficiarie);
-        cmd.Parameters.AddWithValue("@IdClient",idClient);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@IdBeneficiarie", idBeneficiarie);
+        cmd.Parameters.AddWithValue("@IdClient", idClient);
         await conn.OpenAsync();
-        var result =Convert.ToInt32(await cmd.ExecuteScalarAsync());
+        var result = Convert.ToInt32(await cmd.ExecuteScalarAsync());
         return result > 0;
     }
 }

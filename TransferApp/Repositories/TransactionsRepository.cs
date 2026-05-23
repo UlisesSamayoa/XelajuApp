@@ -210,13 +210,14 @@ public class TransactionsRepository
         await cmd.ExecuteNonQueryAsync();
     }
 
-    public async Task ChangeStatus(int idTransaction, string status)
+    public async Task ChangeStatus(int idTransaction, string status, string TransactionsStatusComment)
     {
         using var conn = _db.CreateConnection();
         using var cmd = new SqlCommand("sp_Transactions_ChangeStatus", conn);
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@IdTransaction", idTransaction);
         cmd.Parameters.AddWithValue("@Status", status);
+        cmd.Parameters.AddWithValue("@TransactionsStatusComment", TransactionsStatusComment);
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
 
