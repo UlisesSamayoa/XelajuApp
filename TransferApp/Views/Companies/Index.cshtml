@@ -110,7 +110,8 @@
                     <th>Swift</th>
                     <th>Country</th>
                     <th>Phone</th>
-                    <th>TransactionType</th>
+                    <th>Transaction Type</th>
+                    <th>Contact Person</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -155,7 +156,22 @@
                         <label class="form-label">TransactionType</label>
                         <select name="TransactionType" id="TransactionType" class="form-control mb-2" required></select>
                     </div>
-                    
+                    <br />
+                    <hr />
+                    <div class="row">
+                        <div class="col-4">
+                            <label>Contact person</label>
+                            <input name="ContactPerson" id="ContactPerson" class="form-control mb-2" placeholder="Contact Person" />
+                        </div>
+                        <div class="col-4">
+                            Position
+                            <input name="Position" id="Position" class="form-control mb-2" placeholder="Position" />
+                        </div>
+                        <div class="col-4">
+                            <label>Phone Contact person</label>
+                            <input name="PhoneContactPerson" id="PhoneContactPerson" class="form-control mb-2" placeholder="Phone Contact Person" />
+                        </div>
+                    </div>
                 </form>
             </div>
 
@@ -183,6 +199,7 @@
             });
              loadCountriesDropdown('#Country');
                   applyPhoneMask('#Phone');
+                      applyPhoneMask('#PhoneContactPerson');
         });
             function applyPhoneMask(selector) {
                 Inputmask("(999)-999-9999").mask(selector);
@@ -200,6 +217,7 @@
                     { data: 'country' },
                     { data: 'phone' },
                         { data: 'transactionTypeName' },
+                        { data: 'contactPerson' },
                     {
                         data: 'idCompany',
                         render: id => `
@@ -234,6 +252,9 @@
                 SwiftCode: $('input[name="SwiftCode"]').val(),
                 Phone: $('input[name="Phone"]').val(),
                 TransactionType: $('#TransactionType').val(),
+                    PhoneContactPerson: $('#PhoneContactPerson').val(),
+                ContactPerson: $('#ContactPerson').val(),
+                Position: $('#Position').val(),
                 UserC: "admin"
             };
 

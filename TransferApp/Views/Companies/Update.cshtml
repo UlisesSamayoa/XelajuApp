@@ -81,6 +81,26 @@
                     <label class="form-label">TransactionType</label>
                     <select name="TransactionType" id="TransactionType" class="form-control mb-2" required></select>
                 </div>
+                <div class="col-md-12">
+                    <br />
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="row">
+                        <div class="col-4">
+                            <label>Contact person</label>
+                            <input name="ContactPerson" id="ContactPerson" class="form-control mb-2" placeholder="Contact Person" />
+                        </div>
+                        <div class="col-4">
+                            Position
+                            <input name="Position" id="Position" class="form-control mb-2" placeholder="Position" />
+                        </div>
+                        <div class="col-4">
+                            <label>Phone Contact person</label>
+                            <input name="PhoneContactPerson" id="PhoneContactPerson" class="form-control mb-2" placeholder="Phone Contact Person" />
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="mt-3 d-flex gap-2">
@@ -133,6 +153,9 @@
             $('#Name').val(data.name);
             $('#SwiftCode').val(data.swiftCode);
             $('#Phone').val(data.phone);
+            $('#Position').val(data.position);
+            $('#ContactPerson').val(data.contactPerson);
+            $('#PhoneContactPerson').val(data.phoneContactPerson);
             loadCountriesDropdown('#Country', data.idCountry);
             loadCompaniesDropdown('#TransactionType',data.transactionType);
         },
@@ -142,6 +165,7 @@
         }
     });
      applyPhoneMask('#Phone');
+     applyPhoneMask('#PhoneContactPerson');
     });
     function applyPhoneMask(selector) {
             Inputmask("(999)-999-9999").mask(selector);
@@ -155,6 +179,9 @@
                 SwiftCode: $('#SwiftCode').val(),
                 Phone: $('#Phone').val(),
                 TransactionType: $('#TransactionType').val(),
+                ContactPerson: $('#ContactPerson').val(),
+                PhoneContactPerson: $('#PhoneContactPerson').val(),
+                Position: $('#Position').val(),
                 UserU: "admin"
             };
              if (!data.Name) {

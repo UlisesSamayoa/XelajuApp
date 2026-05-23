@@ -24,6 +24,9 @@ public class CompanyRepository
             cmd.Parameters.AddWithValue("@Country", model.Country);
             cmd.Parameters.AddWithValue("@IdCountry", model.IdCountry);
             cmd.Parameters.AddWithValue("@Phone", model.Phone);
+            cmd.Parameters.AddWithValue("@ContactPerson", model.ContactPerson);
+            cmd.Parameters.AddWithValue("@PhoneContactPerson", model.PhoneContactPerson);
+            cmd.Parameters.AddWithValue("@Position", model.Position);
             cmd.Parameters.AddWithValue("@TransactionType", model.TransactionType);
             cmd.Parameters.AddWithValue("@UserC", model.UserC);
 
@@ -58,6 +61,9 @@ public class CompanyRepository
                 Country = reader["Country"].ToString(),
                 IdCountry = reader["IdCountry"].ToString(),
                 Phone = reader["Phone"].ToString(),
+                ContactPerson = reader["ContactPerson"].ToString(),
+                PhoneContactPerson = reader["PhoneContactPerson"].ToString(),
+                Position = reader["Position"].ToString(),
                 TransactionType = (int)reader["TransactionType"],
                 TransactionTypeName = reader["TransactionTypeName"].ToString(),
                 Status = (int)reader["Status"]
@@ -89,7 +95,10 @@ public class CompanyRepository
                 SwiftCode = reader["SwiftCode"].ToString(),
                 Phone = reader["Phone"].ToString(),
                 TransactionType = (int)reader["TransactionType"],
-                TransactionTypeName = reader["TransactionTypeName"].ToString()
+                TransactionTypeName = reader["TransactionTypeName"].ToString(),
+                ContactPerson = reader["ContactPerson"].ToString(),
+                PhoneContactPerson = reader["PhoneContactPerson"].ToString(),
+                Position = reader["Position"].ToString()
             };
         }
 
@@ -109,6 +118,9 @@ public class CompanyRepository
             cmd.Parameters.AddWithValue("@IdCountry", model.IdCountry);
             cmd.Parameters.AddWithValue("@TransactionType", model.TransactionType);
             cmd.Parameters.AddWithValue("@Phone", model.Phone);
+            cmd.Parameters.AddWithValue("@ContactPerson", model.ContactPerson);
+            cmd.Parameters.AddWithValue("@PhoneContactPerson", model.PhoneContactPerson);
+            cmd.Parameters.AddWithValue("@Position", model.Position);
             cmd.Parameters.AddWithValue("@UserU", model.UserU);
             await conn.OpenAsync();
             await cmd.ExecuteNonQueryAsync();

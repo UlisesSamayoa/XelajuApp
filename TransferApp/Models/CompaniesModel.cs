@@ -10,6 +10,9 @@
         public string Phone { get; set; }
         public int TransactionType { get; set; }
         public string? TransactionTypeName { get; set; }
+        public string ContactPerson { get; set; }
+        public string PhoneContactPerson { get; set; }
+        public string Position { get; set; }
         public int Status { get; set; }
         public DateTime DateC { get; set; }
         public string UserC { get; set; }
