@@ -18,6 +18,10 @@
         background: var(--bg);
     }
 
+    .tmin-w {
+        min-width: 150px !important;
+        white-space: nowrap;
+    }
     .card-custom {
         border-radius: 15px;
         box-shadow: 0 10px 25px rgba(0,0,0,0.08);
@@ -112,6 +116,7 @@
                     <th>Phone</th>
                     <th>Transaction Type</th>
                     <th>Contact Person</th>
+                    <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -182,7 +187,60 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="modalChangeStatus">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title">
+                    <i class="bi bi-arrow-repeat"></i>
+                    Change Company Status
+                </h5>
+                <button class="btn-close" data-bs-dismiss="modal">
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="ChangeStatus_IdCompany" />
+                <div class="mb-3">
+                    <label class="form-label">
+                        Current Status
+                    </label>
+                    <input type="text" id="ChangeStatus_Current" class="form-control" readonly />
+                </div>
 
+                <div class="mb-3">
+                    <label class="form-label">
+                        New Status
+                    </label>
+                    <select id="ChangeStatus_New" class="form-control">
+                        <option value="">
+                            Select Status
+                        </option>
+                        <option value="Excellent">
+                            Excellent
+                        </option>
+                        <option value="Suspicious">
+                            Suspicious
+                        </option>
+                        <option value="Rejected">
+                            Rejected
+                        </option>
+                    </select>
+                </div>
+                <label>Justify</label>
+                <input name="statusCompany" id="statusCompany" class="form-control mb-2" placeholder="Justify" />
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal"> Cancel </button>
+
+                <button class="btn btn-warning" id="btnSaveCompanyStatus">
+                    <i class="bi bi-floppy-fill"></i> Save Status
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
 @section Scripts {
 
     @* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -218,18 +276,72 @@
                     { data: 'phone' },
                         { data: 'transactionTypeName' },
                         { data: 'contactPerson' },
+                            {
+                        data: 'statusCompany',
+                        render: function (data) {
+
+                            let badgeClass = 'bg-secondary';
+                            let icon = 'bi-question-circle';
+
+                            switch (data) {
+
+                                    case 'Excellent':
+                                    badgeClass = 'bg-success';
+                                    icon = 'bi-check-circle-fill';
+                                    break;
+
+                                    case 'Suspicious':
+                                    badgeClass = 'bg-warning text-dark';
+                                    icon = 'bi-clock-fill';
+                                    break;
+
+                                    case 'Rejected':
+                                    badgeClass = 'bg-danger';
+                                    icon = 'bi-x-circle-fill';
+                                    break;
+                            }
+
+                            return `
+                                <span class="badge ${badgeClass}"
+                                      style="
+                                        padding:8px 12px;
+                                        font-size:13px;
+                                        border-radius:20px;
+                                        min-width:110px;
+                                        display:inline-block;
+                                        text-align:center;
+                                      ">
+                                    <i class="bi ${icon}"></i>
+                                    ${data}
+                                </span>
+                            `;
+                        }
+                    },
                     {
-                        data: 'idCompany',
-                        render: id => `
-                        <div class="d-flex gap-2">
-                            <a href="/Companies/Update/${id}" class="btn btn-sm btn-warning">
-                                <i class="bi bi-pencil-fill"></i>
-                            </a>
-                            <button class="btn btn-sm btn-danger" onclick="deleteItem(${id})">
-                                <i class="bi bi-trash-fill"></i>
-                            </button>
-                        </div>`
-                    }
+                     className: 'tmin-w',
+                      render: function (data, type, row) {
+                             return `
+                                <div class="d-flex gap-2">
+
+                                    <button class="btn btn-warning btn-sm"
+                                        onclick="openChangeStatusModal(${row.idCompany}, '${row.statusCompany}')">
+                                        <i class="bi bi-arrow-repeat"></i>
+                                    </button>
+
+                                    <a href="/Companies/Update/${row.idCompany}"
+                                        class="btn btn-sm btn-warning">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+
+                                    <button class="btn btn-sm btn-danger"
+                                        onclick="deleteItem(${row.idCompany})">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+
+                                </div>
+                                `;
+                        }
+                      }
                 ],
                 language: {
                     emptyTable: "No Companies available yet",
@@ -408,6 +520,81 @@
         });
         
     }
+
+
+        function openChangeStatusModal(id, currentStatus) {
+
+                $('#ChangeStatus_IdCompany').val(id);
+
+                $('#ChangeStatus_Current').val(currentStatus);
+
+                $('#ChangeStatus_New').val('');
+
+                $('#modalChangeStatus').modal('show');
+            }
+                    $('#btnSaveCompanyStatus').click(function () {
+
+                    let idCompany =$('#ChangeStatus_IdCompany').val();
+
+                let status =$('#ChangeStatus_New').val();
+                        let statusCompanyComment =$('#statusCompany').val();
+
+                if (!status) {
+
+                    Swal.fire(
+                        'Error',
+                        'Select a status',
+                        'error'
+                    );
+
+                    return;
+                }
+
+                Swal.fire({
+                    title: 'Saving...',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+
+                $.ajax({
+
+                    url: '/Companies/ChangeStatus',
+
+                    method: 'POST',
+
+                    data: {
+                                idCompany: idCompany,
+                        status: status,
+                                        statusCompanyComment:statusCompanyComment
+                    },
+
+                    success: function () {
+
+                        $('#modalChangeStatus')
+                            .modal('hide');
+
+                        $('#tblTx')
+                            .DataTable()
+                            .ajax.reload();
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Status updated',
+                            timer: 1200,
+                            showConfirmButton: false
+                        });
+                    },
+
+                    error: function (err) {
+
+                        Swal.fire(
+                            'Error',
+                            err.responseText,
+                            'error'
+                        );
+                    }
+                });
+            });
     </script>
 
 }

@@ -28,10 +28,12 @@ public class CompanyRepository
             cmd.Parameters.AddWithValue("@PhoneContactPerson", model.PhoneContactPerson);
             cmd.Parameters.AddWithValue("@Position", model.Position);
             cmd.Parameters.AddWithValue("@TransactionType", model.TransactionType);
+            cmd.Parameters.AddWithValue("@StatusCompany", model.StatusCompany);
             cmd.Parameters.AddWithValue("@UserC", model.UserC);
 
             await conn.OpenAsync();
             await cmd.ExecuteNonQueryAsync();
+            await conn.CloseAsync();
         }
         catch (SqlException ex)
         {
@@ -66,10 +68,11 @@ public class CompanyRepository
                 Position = reader["Position"].ToString(),
                 TransactionType = (int)reader["TransactionType"],
                 TransactionTypeName = reader["TransactionTypeName"].ToString(),
+                StatusCompany = reader["StatusCompany"].ToString(),
                 Status = (int)reader["Status"]
             });
         }
-
+        await conn.CloseAsync();
         return list;
     }
     public async Task<CompaniesModel> GetById(int id)
@@ -98,10 +101,11 @@ public class CompanyRepository
                 TransactionTypeName = reader["TransactionTypeName"].ToString(),
                 ContactPerson = reader["ContactPerson"].ToString(),
                 PhoneContactPerson = reader["PhoneContactPerson"].ToString(),
-                Position = reader["Position"].ToString()
+                Position = reader["Position"].ToString(),
+                StatusCompany = reader["StatusCompany"].ToString()
             };
         }
-
+        await conn.CloseAsync();
         return null;
     }
     public async Task Update(CompaniesModel model)
@@ -121,9 +125,11 @@ public class CompanyRepository
             cmd.Parameters.AddWithValue("@ContactPerson", model.ContactPerson);
             cmd.Parameters.AddWithValue("@PhoneContactPerson", model.PhoneContactPerson);
             cmd.Parameters.AddWithValue("@Position", model.Position);
+            cmd.Parameters.AddWithValue("@StatusCompany", model.StatusCompany);
             cmd.Parameters.AddWithValue("@UserU", model.UserU);
             await conn.OpenAsync();
             await cmd.ExecuteNonQueryAsync();
+            await conn.CloseAsync();
         }
         catch (SqlException ex)
         {
@@ -143,6 +149,7 @@ public class CompanyRepository
 
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
     public async Task<List<CompaniesModel>> GetByCountry(int countryId)
     {
@@ -165,7 +172,7 @@ public class CompanyRepository
                 Name = rd["Name"].ToString()
             });
         }
-
+        await conn.CloseAsync();
         return list;
     }
 
@@ -196,8 +203,20 @@ public class CompanyRepository
             });
         }
 
-
+        await conn.CloseAsync();
         return list;
+    }
+    public async Task ChangeStatus(int idCompany, string status, string StatusCompanyComment)
+    {
+        using var conn = _db.CreateConnection();
+        using var cmd = new SqlCommand("sp_Companies_ChangeStatus", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@IdCompany", idCompany);
+        cmd.Parameters.AddWithValue("@Status", status);
+        cmd.Parameters.AddWithValue("@StatusCompanyComment", StatusCompanyComment);
+        await conn.OpenAsync();
+        await cmd.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
 
 }

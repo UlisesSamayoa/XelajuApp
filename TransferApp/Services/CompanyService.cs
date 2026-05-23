@@ -42,4 +42,25 @@ public class CompanyService
     {
         return await _repo.GetByTransactionType(transactionType);
     }
+
+    public async Task ChangeStatus(int idCompany, string status, string StatusCompanyComment)
+    {
+        if (
+            status != "Excellent" &&
+            status != "Suspicious" &&
+            status != "Rejected"
+        )
+        {
+            throw new Exception(
+                "Invalid status"
+            );
+        }
+
+        await _repo.ChangeStatus(
+            idCompany,
+            status,
+            StatusCompanyComment
+        );
+    }
+
 }

@@ -83,4 +83,23 @@ public class CompaniesController : Controller
 
         return Ok(result);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> ChangeStatus(int idCompany, string status, string StatusCompanyComment)
+    {
+        try
+        {
+            await _service.ChangeStatus(
+                idCompany,
+                status,
+                StatusCompanyComment
+            );
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
 }
