@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Connections;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using System.Data;
 using TransferApp.Data;
 using TransferApp.Models;
@@ -36,7 +35,7 @@ public class ReviewsRepository
                 Status = (int)reader["Status"]
             });
         }
-
+        await conn.CloseAsync();
         return list;
     }
 
@@ -62,7 +61,7 @@ public class ReviewsRepository
                 Status = (int)reader["Status"]
             };
         }
-
+        await conn.CloseAsync();
         return null;
     }
 
@@ -80,6 +79,7 @@ public class ReviewsRepository
 
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
 
     public async Task Update(ReviewsModel model)
@@ -97,6 +97,7 @@ public class ReviewsRepository
 
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
 
     public async Task Delete(int id, string userU)
@@ -111,5 +112,6 @@ public class ReviewsRepository
 
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
 }

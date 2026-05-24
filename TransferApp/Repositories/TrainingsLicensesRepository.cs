@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Connections;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using System.Data;
 using TransferApp.Data;
 using TransferApp.Models;
@@ -35,7 +34,7 @@ public class TrainingsLicensesRepository
                 Status = (int)reader["Status"]
             });
         }
-
+        await conn.CloseAsync();
         return list;
     }
 
@@ -61,7 +60,7 @@ public class TrainingsLicensesRepository
                 Status = (int)reader["Status"]
             };
         }
-
+        await conn.CloseAsync();
         return null;
     }
 
@@ -79,6 +78,7 @@ public class TrainingsLicensesRepository
 
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
 
     public async Task Update(TrainingsLicensesModel model)
@@ -96,6 +96,7 @@ public class TrainingsLicensesRepository
 
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
 
     public async Task Delete(int id, string userU)
@@ -110,5 +111,6 @@ public class TrainingsLicensesRepository
 
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
 }

@@ -35,7 +35,7 @@ public class TransactionsTypesRepository
                 Status = (int)rd["Status"]
             });
         }
-
+        await conn.CloseAsync();
         return list;
     }
 
@@ -62,7 +62,7 @@ public class TransactionsTypesRepository
                 Status = (int)rd["Status"],
             };
         }
-
+        await conn.CloseAsync();
         return null;
     }
 
@@ -117,7 +117,7 @@ public class TransactionsTypesRepository
                 Status = (int)rd["Status"]
             });
         }
-
+        await conn.CloseAsync();
         return list;
     }
 
@@ -136,6 +136,7 @@ public class TransactionsTypesRepository
 
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
 
     public async Task Update(TransactionsTypesModel m)
@@ -154,6 +155,7 @@ public class TransactionsTypesRepository
 
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
 
     public async Task Delete(int id, string user)
@@ -168,6 +170,7 @@ public class TransactionsTypesRepository
 
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
     public async Task<List<TransactionsTypesModel>> GetAllTypes()
     {
@@ -189,6 +192,7 @@ public class TransactionsTypesRepository
                 NumberT = Convert.ToInt32(rd["NumberT"])
             });
         }
+        await conn.CloseAsync();
         return list;
     }
 }

@@ -77,7 +77,7 @@ public class TransactionsRepository
                 Status = rd["Status"] != DBNull.Value ? Convert.ToInt32(rd["Status"]) : 0
             });
         }
-
+        await conn.CloseAsync();
         return list;
     }
 
@@ -121,6 +121,7 @@ public class TransactionsRepository
 
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
 
     public async Task Delete(int id, string user)
@@ -135,6 +136,7 @@ public class TransactionsRepository
 
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
 
     public async Task<TransactionsModel> GetById(int id)
@@ -182,7 +184,7 @@ public class TransactionsRepository
                 TransactionStatus = rd["TransactionStatus"] != DBNull.Value ? rd["TransactionStatus"].ToString() : string.Empty
             };
         }
-
+        await conn.CloseAsync();
         return null;
     }
     public async Task CreateSimple(SimpleTransactionsModel m)
@@ -208,6 +210,7 @@ public class TransactionsRepository
 
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
 
     public async Task ChangeStatus(int idTransaction, string status, string TransactionsStatusComment)
@@ -220,7 +223,7 @@ public class TransactionsRepository
         cmd.Parameters.AddWithValue("@TransactionsStatusComment", TransactionsStatusComment);
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
-
+        await conn.CloseAsync();
     }
 
 }
