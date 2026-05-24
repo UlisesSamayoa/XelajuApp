@@ -69,6 +69,7 @@ public class CompanyRepository
                 TransactionType = (int)reader["TransactionType"],
                 TransactionTypeName = reader["TransactionTypeName"].ToString(),
                 StatusCompany = reader["StatusCompany"].ToString(),
+                StatusCompanyComment = reader["StatusCompanyComment"].ToString(),
                 Status = (int)reader["Status"]
             });
         }
@@ -102,7 +103,8 @@ public class CompanyRepository
                 ContactPerson = reader["ContactPerson"].ToString(),
                 PhoneContactPerson = reader["PhoneContactPerson"].ToString(),
                 Position = reader["Position"].ToString(),
-                StatusCompany = reader["StatusCompany"].ToString()
+                StatusCompany = reader["StatusCompany"].ToString(),
+                StatusCompanyComment = reader["StatusCompanyComment"].ToString()
             };
         }
         await conn.CloseAsync();
@@ -126,6 +128,7 @@ public class CompanyRepository
             cmd.Parameters.AddWithValue("@PhoneContactPerson", model.PhoneContactPerson);
             cmd.Parameters.AddWithValue("@Position", model.Position);
             cmd.Parameters.AddWithValue("@StatusCompany", model.StatusCompany);
+            cmd.Parameters.AddWithValue("@StatusCompanyComment", model.StatusCompanyComment);
             cmd.Parameters.AddWithValue("@UserU", model.UserU);
             await conn.OpenAsync();
             await cmd.ExecuteNonQueryAsync();

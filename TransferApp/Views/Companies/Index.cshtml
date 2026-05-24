@@ -537,18 +537,24 @@
                     let idCompany =$('#ChangeStatus_IdCompany').val();
 
                 let status =$('#ChangeStatus_New').val();
-                        let statusCompanyComment =$('#statusCompany').val();
+                let statusCompanyComment =$('#statusCompany').val();
 
                 if (!status) {
-
                     Swal.fire(
                         'Error',
                         'Select a status',
                         'error'
                     );
-
                     return;
                 }
+                    if (!statusCompanyComment) {
+                        Swal.fire(
+                            'Error',
+                            'Justify is required',
+                            'error'
+                        );
+                        return;
+                    }
 
                 Swal.fire({
                     title: 'Saving...',
@@ -573,7 +579,7 @@
                         $('#modalChangeStatus')
                             .modal('hide');
 
-                        $('#tblTx')
+                            $('#tblCompanies')
                             .DataTable()
                             .ajax.reload();
 

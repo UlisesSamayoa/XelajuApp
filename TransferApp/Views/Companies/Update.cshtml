@@ -62,49 +62,45 @@
                     <label>Name</label>
                     <input type="text" id="Name" class="form-control" />
                 </div>
-
                 <div class="col-md-6 mb-3">
                     <label>Country</label>
                     <select name="Country" id="Country" class="form-control mb-2" required></select>
                 </div>
-
                 <div class="col-md-6 mb-3">
                     <label>Swift Code</label>
                     <input type="text" id="SwiftCode" class="form-control" />
                 </div>
-
                 <div class="col-md-6 mb-3">
                     <label>Phone</label>
                     <input type="text" name="Phone" id="Phone" class="form-control" />
                 </div>
-                <div class="col-md-12">
+                <div class="col-md-12 mb-3">
                     <label class="form-label">TransactionType</label>
                     <select name="TransactionType" id="TransactionType" class="form-control mb-2" required></select>
                 </div>
-                <div class="col-md-12">
-                    <br />
-                </div>
-                <div class="col-12">
+                <div class="col-12 mb-3">
                     <label>Status Company</label>
                     <select id="StatusCompany" name="StatusCompany" class="form-control">
                         <option value="Excellent">Excellent</option>
                         <option value="Suspicious">Suspicious</option>
                         <option value="Rejected">Rejected</option>
                     </select>
-                    <br />
                 </div>
-                <hr />
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Last justification for change of status</label>
+                    <input name="StatusCompanyComment" id="StatusCompanyComment" class="form-control mb-2" />
+                </div>
                 <div class="row">
                     <div class="row">
-                        <div class="col-4">
+                        <div class="col-4 mb-3">
                             <label>Contact person</label>
                             <input name="ContactPerson" id="ContactPerson" class="form-control mb-2" placeholder="Contact Person" />
                         </div>
-                        <div class="col-4">
+                        <div class="col-4 mb-3">
                             Position
                             <input name="Position" id="Position" class="form-control mb-2" placeholder="Position" />
                         </div>
-                        <div class="col-4">
+                        <div class="col-4 mb-3">
                             <label>Phone Contact person</label>
                             <input name="PhoneContactPerson" id="PhoneContactPerson" class="form-control mb-2" placeholder="Phone Contact Person" />
                         </div>
@@ -166,6 +162,7 @@
             $('#ContactPerson').val(data.contactPerson);
             $('#PhoneContactPerson').val(data.phoneContactPerson);
             $('#StatusCompany').val(data.statusCompany);
+            $('#StatusCompanyComment').val(data.statusCompanyComment);
             loadCountriesDropdown('#Country', data.idCountry);
             loadCompaniesDropdown('#TransactionType',data.transactionType);
         },
@@ -192,6 +189,8 @@
                 ContactPerson: $('#ContactPerson').val(),
                 PhoneContactPerson: $('#PhoneContactPerson').val(),
                 Position: $('#Position').val(),
+                StatusCompany: $('#StatusCompany').val(),
+                StatusCompanyComment: $('#StatusCompanyComment').val(),
                 UserU: "admin"
             };
              if (!data.Name) {
