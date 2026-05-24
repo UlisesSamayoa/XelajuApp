@@ -33,7 +33,7 @@ public class DocumentsTypesRepository
                 Status = (int)rd["Status"]
             });
         }
-
+        await conn.CloseAsync();
         return list;
     }
 
@@ -58,7 +58,7 @@ public class DocumentsTypesRepository
                 Status = (int)rd["Status"]
             };
         }
-
+        await conn.CloseAsync();
         return null;
     }
 
@@ -75,6 +75,7 @@ public class DocumentsTypesRepository
 
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
 
     public async Task Update(DocumentsTypes m)
@@ -91,6 +92,7 @@ public class DocumentsTypesRepository
 
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
 
     public async Task Delete(int id, string user)
@@ -105,5 +107,6 @@ public class DocumentsTypesRepository
 
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
 }

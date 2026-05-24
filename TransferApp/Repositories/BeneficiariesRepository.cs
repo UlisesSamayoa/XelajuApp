@@ -42,7 +42,7 @@ public class BeneficiariesRepository
                 CountryName = rd["CountryName"].ToString()
             });
         }
-
+        await conn.CloseAsync();
         return list;
     }
 
@@ -75,7 +75,7 @@ public class BeneficiariesRepository
                 CountryName = rd["CountryName"].ToString()
             };
         }
-
+        await conn.CloseAsync();
         return null;
     }
 
@@ -115,7 +115,7 @@ public class BeneficiariesRepository
         await conn.OpenAsync();
 
         var result = await cmd.ExecuteScalarAsync();
-
+        await conn.CloseAsync();
         return Convert.ToInt32(result);
     }
 
@@ -139,6 +139,7 @@ public class BeneficiariesRepository
 
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
 
     public async Task Delete(int id, string user)
@@ -153,6 +154,7 @@ public class BeneficiariesRepository
 
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
     public async Task<List<BeneficiariesModel>> GetByClient(int clientId)
     {
@@ -182,7 +184,7 @@ public class BeneficiariesRepository
                 CountryName = rd["CountryName"].ToString()
             });
         }
-
+        await conn.CloseAsync();
         return list;
     }
 
@@ -199,6 +201,7 @@ public class BeneficiariesRepository
         cmd.Parameters.AddWithValue("@IdClient", idClient);
         await conn.OpenAsync();
         var result = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+        await conn.CloseAsync();
         return result > 0;
     }
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Connections;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using System.Data;
 using TransferApp.Data;
 using TransferApp.Models;
@@ -53,6 +52,7 @@ public class ClientsRepository
         //    };
         //    list.Add(client);
         //}
+        await conn.CloseAsync();
         return list;
     }
 
@@ -67,7 +67,7 @@ public class ClientsRepository
 
         await conn.OpenAsync();
         using var reader = await cmd.ExecuteReaderAsync();
-
+        await conn.CloseAsync();
         return await reader.ReadAsync() ? Map(reader) : null;
     }
 
@@ -95,7 +95,7 @@ public class ClientsRepository
         await conn.OpenAsync();
 
         var result = await cmd.ExecuteScalarAsync();
-
+        await conn.CloseAsync();
         return Convert.ToInt32(result);
     }
 
@@ -111,6 +111,7 @@ public class ClientsRepository
 
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
 
     public async Task Delete(int id, string user)
@@ -124,6 +125,7 @@ public class ClientsRepository
 
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
 
     //private ClientsModel Map(SqlDataReader r) => new()
@@ -162,7 +164,7 @@ public class ClientsRepository
             CountryName = reader["CountryName"] != DBNull.Value ? reader["CountryName"].ToString() : string.Empty,
         };
     }
-    
+
 
     private void AddParams(SqlCommand cmd, ClientsModel m, bool isCreate)
     {
@@ -237,7 +239,7 @@ public class ClientsRepository
                 FullName = rd["FirstName"].ToString() + ' ' + rd["LastName"].ToString()
             });
         }
-
+        await conn.CloseAsync();
         return list;
     }
 
@@ -249,6 +251,7 @@ public class ClientsRepository
         cmd.Parameters.AddWithValue("@DocumentNumber", documentNumber);
         await conn.OpenAsync();
         var result = await cmd.ExecuteScalarAsync();
+        await conn.CloseAsync();
         return Convert.ToBoolean(result);
     }
 }

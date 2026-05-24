@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Connections;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using System.Data;
 using TransferApp.Data;
 using TransferApp.Models;
@@ -34,7 +33,7 @@ public class CountryRepository
                 Currency = reader["Currency"].ToString()
             });
         }
-
+        await conn.CloseAsync();
         return list;
     }
 
@@ -54,6 +53,7 @@ public class CountryRepository
 
             await conn.OpenAsync();
             await cmd.ExecuteNonQueryAsync();
+            await conn.CloseAsync();
         }
         catch (SqlException ex)
         {
@@ -82,7 +82,7 @@ public class CountryRepository
                 Currency = reader["Currency"].ToString()
             };
         }
-
+        await conn.CloseAsync();
         return null;
     }
 
@@ -103,6 +103,7 @@ public class CountryRepository
 
             await conn.OpenAsync();
             await cmd.ExecuteNonQueryAsync();
+            await conn.CloseAsync();
         }
         catch (SqlException ex)
         {
@@ -122,5 +123,6 @@ public class CountryRepository
 
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
 }
