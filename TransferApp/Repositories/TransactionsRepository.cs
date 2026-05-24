@@ -81,19 +81,58 @@ public class TransactionsRepository
         return list;
     }
 
-    public async Task Create(TransactionsModel m)
+    //public async Task Create(TransactionsModel m)
+    //{
+    //    using var conn = _db.CreateConnection();
+    //    using var cmd = new SqlCommand("sp_CreateTransaction", conn);
+
+    //    cmd.CommandType = CommandType.StoredProcedure;
+
+    //    cmd.Parameters.AddWithValue("@TransactionType", m.TransactionType);
+    //    cmd.Parameters.AddWithValue("@Amount", m.Amount);
+    //    cmd.Parameters.AddWithValue("@Commission", m.Commission);
+    //    cmd.Parameters.AddWithValue("@TotalAmount", m.TotalAmount);
+    //    cmd.Parameters.AddWithValue("@ReferenceNumber", m.ReferenceNumber);
+
+    //    cmd.Parameters.AddWithValue("@SenderCountry", m.SenderCountry);
+    //    cmd.Parameters.AddWithValue("@SenderCompany", m.SenderCompany);
+    //    cmd.Parameters.AddWithValue("@SenderCurrency", m.SenderCurrency);
+    //    cmd.Parameters.AddWithValue("@SenderName", m.SenderName);
+    //    cmd.Parameters.AddWithValue("@SenderDocumentType", m.SenderDocumentType);
+    //    cmd.Parameters.AddWithValue("@SenderDocumentNumber", m.SenderDocumentNumber);
+    //    cmd.Parameters.AddWithValue("@SenderPhone", m.SenderPhone ?? "");
+    //    cmd.Parameters.AddWithValue("@SenderAddress", m.SenderAddress ?? "");
+
+    //    cmd.Parameters.AddWithValue("@ReceiverCountry", m.ReceiverCountry);
+    //    cmd.Parameters.AddWithValue("@ReceiverCompany", m.ReceiverCompany);
+    //    cmd.Parameters.AddWithValue("@ReceiverCurrency", m.ReceiverCurrency);
+    //    cmd.Parameters.AddWithValue("@ReceiverName", m.ReceiverName);
+    //    cmd.Parameters.AddWithValue("@ReceiverDocumentType", m.ReceiverDocumentType);
+    //    cmd.Parameters.AddWithValue("@ReceiverDocumentNumber", m.ReceiverDocumentNumber);
+    //    cmd.Parameters.AddWithValue("@ReceiverPhone", m.ReceiverPhone ?? "");
+    //    cmd.Parameters.AddWithValue("@ReceiverAddress", m.ReceiverAddress ?? "");
+    //    //LLAVE
+    //    cmd.Parameters.AddWithValue("@IdClient_fk", m.IdClient_fk);
+    //    cmd.Parameters.AddWithValue("@IdBeneficiarie_fk", m.IdBeneficiarie_fk);
+
+    //    cmd.Parameters.AddWithValue("@JustifyDetails", m.JustifyDetails ?? "");
+    //    cmd.Parameters.AddWithValue("@TransactionFile", m.TransactionFile ?? "");
+    //    cmd.Parameters.AddWithValue("@UserC", m.UserC);
+
+    //    await conn.OpenAsync();
+    //    await cmd.ExecuteNonQueryAsync();
+    //    await conn.CloseAsync();
+    //}
+    public async Task<int> Create(TransactionsModel m)
     {
         using var conn = _db.CreateConnection();
         using var cmd = new SqlCommand("sp_CreateTransaction", conn);
-
         cmd.CommandType = CommandType.StoredProcedure;
-
         cmd.Parameters.AddWithValue("@TransactionType", m.TransactionType);
         cmd.Parameters.AddWithValue("@Amount", m.Amount);
         cmd.Parameters.AddWithValue("@Commission", m.Commission);
         cmd.Parameters.AddWithValue("@TotalAmount", m.TotalAmount);
         cmd.Parameters.AddWithValue("@ReferenceNumber", m.ReferenceNumber);
-
         cmd.Parameters.AddWithValue("@SenderCountry", m.SenderCountry);
         cmd.Parameters.AddWithValue("@SenderCompany", m.SenderCompany);
         cmd.Parameters.AddWithValue("@SenderCurrency", m.SenderCurrency);
@@ -102,7 +141,6 @@ public class TransactionsRepository
         cmd.Parameters.AddWithValue("@SenderDocumentNumber", m.SenderDocumentNumber);
         cmd.Parameters.AddWithValue("@SenderPhone", m.SenderPhone ?? "");
         cmd.Parameters.AddWithValue("@SenderAddress", m.SenderAddress ?? "");
-
         cmd.Parameters.AddWithValue("@ReceiverCountry", m.ReceiverCountry);
         cmd.Parameters.AddWithValue("@ReceiverCompany", m.ReceiverCompany);
         cmd.Parameters.AddWithValue("@ReceiverCurrency", m.ReceiverCurrency);
@@ -111,17 +149,17 @@ public class TransactionsRepository
         cmd.Parameters.AddWithValue("@ReceiverDocumentNumber", m.ReceiverDocumentNumber);
         cmd.Parameters.AddWithValue("@ReceiverPhone", m.ReceiverPhone ?? "");
         cmd.Parameters.AddWithValue("@ReceiverAddress", m.ReceiverAddress ?? "");
-        //LLAVE
         cmd.Parameters.AddWithValue("@IdClient_fk", m.IdClient_fk);
         cmd.Parameters.AddWithValue("@IdBeneficiarie_fk", m.IdBeneficiarie_fk);
-
         cmd.Parameters.AddWithValue("@JustifyDetails", m.JustifyDetails ?? "");
         cmd.Parameters.AddWithValue("@TransactionFile", m.TransactionFile ?? "");
+        cmd.Parameters.AddWithValue("@Justify_AgentName", m.Justify_AgentName ?? "");
+        cmd.Parameters.AddWithValue("@Justify_DateError", m.Justify_DateError == null ? (object)DBNull.Value : m.Justify_DateError);
         cmd.Parameters.AddWithValue("@UserC", m.UserC);
-
         await conn.OpenAsync();
-        await cmd.ExecuteNonQueryAsync();
+        var result = await cmd.ExecuteScalarAsync();
         await conn.CloseAsync();
+        return Convert.ToInt32(result);
     }
 
     public async Task Delete(int id, string user)

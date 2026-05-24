@@ -67,8 +67,8 @@ public class ClientsRepository
 
         await conn.OpenAsync();
         using var reader = await cmd.ExecuteReaderAsync();
-        await conn.CloseAsync();
         return await reader.ReadAsync() ? Map(reader) : null;
+        await conn.CloseAsync();
     }
 
     //public async Task Create(ClientsModel model)

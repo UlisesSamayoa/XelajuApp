@@ -11,39 +11,41 @@
         public decimal Commission { get; set; }
         public decimal TotalAmount { get; set; }
         public DateTime? TransactionDate { get; set; }
-        public string ReferenceNumber { get; set; }
+        public string ReferenceNumber { get; set; } = string.Empty;
         //SENDER
         public int SenderClientId { get; set; }
-        public string SenderCountry { get; set; }
+        public string SenderCountry { get; set; } = string.Empty;
         public string? SenderCountryName { get; set; }
         public int SenderCompany { get; set; }
-        public string SenderCompanyName { get; set; }
+        public string SenderCompanyName { get; set; } = string.Empty;
         public int SenderCurrency { get; set; }
-        public string SenderCurrencyName { get; set; }
-        public string SenderName { get; set; }
+        public string SenderCurrencyName { get; set; } = string.Empty;
+        public string SenderName { get; set; } = string.Empty;
         public int SenderDocumentType { get; set; }
-        public string SenderDocumentNumber { get; set; }
-        public string SenderPhone { get; set; }
-        public string SenderAddress { get; set; }
+        public string SenderDocumentNumber { get; set; } = string.Empty;
+        public string SenderPhone { get; set; } = string.Empty;
+        public string SenderAddress { get; set; } = string.Empty;
 
         //RECEIVER
         public int ReceiverClientId { get; set; }
-        public string ReceiverCountry { get; set; }
+        public string ReceiverCountry { get; set; } = string.Empty;
         public string? ReceiverCountryName { get; set; }
         public int ReceiverCompany { get; set; }
-        public string ReceiverCompanyName { get; set; }
+        public string ReceiverCompanyName { get; set; } = string.Empty;
         public int ReceiverCurrency { get; set; }
-        public string ReceiverCurrencyName { get; set; }
-        public string ReceiverName { get; set; }
+        public string ReceiverCurrencyName { get; set; } = string.Empty;
+        public string ReceiverName { get; set; } = string.Empty;
         public int ReceiverDocumentType { get; set; }
-        public string ReceiverDocumentNumber { get; set; }
+        public string ReceiverDocumentNumber { get; set; } = string.Empty;
         public string? ReceiverPhone { get; set; }
         public string? ReceiverAddress { get; set; }
 
-        public string JustifyDetails { get; set; }
-        public string TransactionFile { get; set; }
-        public string TransactionStatus { get; set; }
-        public string TransactionsStatusComment { get; set; }
+        public string JustifyDetails { get; set; } = string.Empty;
+        public string TransactionFile { get; set; } = string.Empty;
+        public string TransactionStatus { get; set; } = string.Empty;
+        public string TransactionsStatusComment { get; set; } = string.Empty;
+        public string Justify_AgentName { get; set; } = string.Empty;
+        public DateTime Justify_DateError { get; set; }
 
         //OTROS
         public bool IsSimpleTransaction { get; set; }

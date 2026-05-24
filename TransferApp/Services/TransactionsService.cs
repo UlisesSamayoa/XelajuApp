@@ -1,29 +1,68 @@
 ﻿using TransferApp.Models;
+using TransferApp.Repositories;
 
 public class TransactionsService
 {
     private readonly TransactionsRepository _repo;
+    private readonly TransactionAttachmentRepository _repoAttach;
 
-    public TransactionsService(TransactionsRepository repo)
+    public TransactionsService(TransactionsRepository repo, TransactionAttachmentRepository repoAttach)
     {
         _repo = repo;
+        _repoAttach = repoAttach;
     }
 
     public async Task<List<TransactionsModel>> GetAll() => await _repo.GetAll();
-    //public async Task Create(TransactionsModel m, IFormFile ImgJustify) => await _repo.Create(m);
-    public async Task Create(TransactionsModel m, IFormFile ImgJustify)
+    //public async Task Create(TransactionsModel m, IFormFile ImgJustify)
+    //{
+    //    string ruta = SaveTransactionFile(
+    //        ImgJustify,
+    //        m.TransactionType,
+    //        m.SenderDocumentNumber,
+    //        m.ReferenceNumber
+    //    );
+
+    //    m.TransactionFile = ruta;
+
+    //    await _repo.Create(m);
+    //}
+    public async Task Create(TransactionsModel m, List<IFormFile> ImgJustify)
     {
-        string ruta = SaveTransactionFile(
-            ImgJustify,
-            m.TransactionType,
-            m.SenderDocumentNumber,
-            m.ReferenceNumber
-        );
-
-        m.TransactionFile = ruta;
-
-        await _repo.Create(m);
+        int idTransaction = await _repo.Create(m);
+        if (ImgJustify != null && ImgJustify.Any())
+        {
+            foreach (var file in ImgJustify)
+            {
+                string filePath = SaveTransactionFile(
+                    file,
+                    m.TransactionType,
+                    m.SenderDocumentNumber,
+                    m.ReferenceNumber
+                );
+                try
+                {
+                    await _repoAttach.CreateAttachment(
+                        new TransactionAttachmentModel
+                        {
+                            IdTransaction = idTransaction,
+                            FileName = Path.GetFileName(filePath),
+                            OriginalFileName = file.FileName,
+                            FileExtension = Path.GetExtension(file.FileName),
+                            ContentType = file.ContentType,
+                            FilePath = filePath,
+                            AttachmentType = "TRANSACTION_DOCUMENT",
+                            FileSize = file.Length,
+                            CreatedBy = m.UserC
+                        });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message + ex.StackTrace);
+                }
+            }
+        }
     }
+
     public async Task Delete(int id, string user) => await _repo.Delete(id, user);
     public async Task<TransactionsModel> GetById(int id)
     {
@@ -108,6 +147,16 @@ public class TransactionsService
             status,
             transactionsStatusComment
         );
+    }
+
+    public async Task<long> CreateAttachment(TransactionAttachmentModel model)
+    {
+        return await _repoAttach.CreateAttachment(model);
+    }
+
+    public async Task<List<TransactionAttachmentModel>> GetAttachments(int idTransaction)
+    {
+        return await _repoAttach.GetAttachments(idTransaction);
     }
 
 }

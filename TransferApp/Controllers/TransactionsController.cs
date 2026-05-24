@@ -50,9 +50,7 @@ public class TransactionsController : Controller
         }
     }
     [HttpPost]
-    public async Task<IActionResult> Create(
-    [FromForm] TransactionsModel m,
-    IFormFile ImgJustify)
+    public async Task<IActionResult> Create([FromForm] TransactionsModel m, List<IFormFile> ImgJustify)
     {
         try
         {
@@ -71,8 +69,7 @@ public class TransactionsController : Controller
                 });
             }
 
-            // BENEFICIARIO
-            //bool validBeneficiary =await _beneficiaries.ValidateBeneficiaryByClient(m.IdClient_fk,m.IdBeneficiarie_fk ?? 0);
+            // BENEFICIARIO            
             bool validBeneficiary = await _beneficiaries.ValidateBeneficiaryByClient(m.IdBeneficiarie_fk, m.IdClient_fk);
             if (!validBeneficiary)
             {
@@ -92,11 +89,9 @@ public class TransactionsController : Controller
 
             if (amountExceeded || txExceeded)
             {
+                bool noFiles = ImgJustify == null || !ImgJustify.Any();
                 if (
-                    string.IsNullOrWhiteSpace(
-                        m.JustifyDetails)
-                    ||
-                    ImgJustify == null)
+                    string.IsNullOrWhiteSpace(m.JustifyDetails) || noFiles)
                 {
                     return BadRequest(new
                     {

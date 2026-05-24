@@ -259,9 +259,31 @@
                     <input id="JustifyDetails" class="form-control mb-2" placeholder="Address" />
                 </div>
                 <hr />
-                <input type="file" class="form-control" onchange="previewImage(this)" id="ImgJustify" />
-                <img id="imgPreview" class="img-preview" />
-
+                @* <input type="file" class="form-control" onchange="previewImage(this)" id="ImgJustify" />
+                <img id="imgPreview" class="img-preview" /> *@
+                <label id="justifyCounter">0 / 5 files</label>
+                <div id="justifyContainer">
+                    <div class="justify-item row mb-2">
+                        <div class="col-11">
+                            <input type="file" name="ImgJustify" class="form-control justify-file" />
+                        </div>
+                        <div class="col-1">
+                            <button type="button" class="btn btn-success" onclick="addJustifyFile()">
+                                <i class="bi bi-plus-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <label class="form-label">Justify Agent Name</label>
+                        <input id="Justify_AgentName" type="text" class="form-control mb-2" placeholder="Agent name" />
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Justify Date</label>
+                        <input id="Justify_DateError" type="datetime-local" class="form-control mb-2"/>
+                    </div>
+                </div>
             </form>
             <div class="modal-footer">
                 <button class="btn btn-success" id="btnSaveTx"><i class="bi bi-floppy-fill"></i> Save</button>
@@ -2225,12 +2247,31 @@
             return result.isConfirmed;
         }
 
-        function validateAMLRequiredFields(){
-            let justify =
-                $('#JustifyDetails').val().trim();
+        // function validateAMLRequiredFields(){
+        //     let justify =
+        //         $('#JustifyDetails').val().trim();
 
-            let file = $('#ImgJustify')[0].files[0];
-            if(!justify){
+        //     let file = $('#ImgJustify')[0].files[0];
+        //     if(!justify){
+        //         Swal.fire(
+        //             'AML Validation',
+        //             'Justify Details is required',
+        //             'warning');
+        //         $('#JustifyDetails').focus();
+        //         return false;
+        //     }
+        //     if(!file){
+        //         Swal.fire(
+        //             'AML Validation',
+        //             'Justification image is required',
+        //             'warning');
+        //         return false;
+        //     }
+        //     return true;
+        // }
+        function validateAMLRequiredFields() {
+            let justify =$('#JustifyDetails').val().trim();
+            if (!justify) {
                 Swal.fire(
                     'AML Validation',
                     'Justify Details is required',
@@ -2238,15 +2279,23 @@
                 $('#JustifyDetails').focus();
                 return false;
             }
-            if(!file){
+            let hasFiles = false;
+            $('.justify-file').each(function () {
+                if (this.files.length > 0) {
+                    hasFiles = true;
+                    return false;
+                }
+            });
+            if (!hasFiles) {
                 Swal.fire(
                     'AML Validation',
-                    'Justification image is required',
+                    'At least one attachment is required',
                     'warning');
                 return false;
             }
             return true;
         }
+
         $('#Amount').on('keyup change', function(){
             calculateCommission();
         });
@@ -2289,125 +2338,59 @@
           }
             saveTransaction();
         });
-        function previewImage(input){
-            if(input.files && input.files[0]){
-                let reader = new FileReader();
-                reader.onload = function(e){
+        // function previewImage(input){
+        //     if(input.files && input.files[0]){
+        //         let reader = new FileReader();
+        //         reader.onload = function(e){
 
-                    $('#imgPreview')
-                        .attr('src', e.target.result)
-                        .show();
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
+        //             $('#imgPreview')
+        //                 .attr('src', e.target.result)
+        //                 .show();
+        //         };
+        //         reader.readAsDataURL(input.files[0]);
+        //     }
+        // }
         function saveTransaction(){
             let formData = new FormData();
-            formData.append(
-                'TransactionType',
-                $('#TransactionType').val());
+            formData.append('TransactionType',$('#TransactionType').val());
+            formData.append('Amount',$('#Amount').val());
+            formData.append('Commission',$('#Commission').val());
+            formData.append('TotalAmount',$('#TotalAmount').val());
+            formData.append('ReferenceNumber',$('#ReferenceNumber').val());
+            formData.append('SenderCountry',$('#SenderCountry').val());
+            formData.append('SenderCompany',$('#SenderCompany').val());
+            formData.append('SenderCurrency',$('#SenderCurrency').val());
+            formData.append('SenderName',$('#SenderName').val());
+            formData.append('SenderDocumentType',$('#SenderDocumentType').val());
+            formData.append('SenderDocumentNumber',$('#SenderDocumentNumber').val());
+            formData.append('SenderPhone',$('#SenderPhone').val());
+            formData.append('SenderAddress',$('#SenderAddress').val());
+            formData.append('ReceiverCountry',$('#ReceiverCountry').val());
+            formData.append('ReceiverCompany',$('#ReceiverCompany').val());
+            formData.append('ReceiverCurrency',$('#ReceiverCurrency').val());
+            formData.append('ReceiverName',$('#ReceiverName').val());
+            formData.append('ReceiverDocumentType',$('#ReceiverDocumentType').val());
+            formData.append('ReceiverDocumentNumber',$('#ReceiverDocumentNumber').val());
+            formData.append('ReceiverPhone',$('#ReceiverPhone').val());
+            formData.append('ReceiverAddress',$('#ReceiverAddress').val());
+            formData.append('JustifyDetails',$('#JustifyDetails').val());
+            formData.append('Justify_AgentName',$('#Justify_AgentName').val());
+            formData.append('Justify_DateError',$('#Justify_DateError').val());
+            formData.append('IdClient_fk',selectedClientId);
+            formData.append('IdBeneficiarie_fk',selectedBeneficiaryId);
+            formData.append('UserC','admin');
 
-            formData.append(
-                'Amount',
-                $('#Amount').val());
-
-            formData.append(
-                'Commission',
-                $('#Commission').val());
-            formData.append(
-                'TotalAmount',
-                $('#TotalAmount').val());
-
-            formData.append(
-                'ReferenceNumber',
-                $('#ReferenceNumber').val());
-
-            formData.append(
-                'SenderCountry',
-                $('#SenderCountry').val());
-
-            formData.append(
-                'SenderCompany',
-                $('#SenderCompany').val());
-
-            formData.append(
-                'SenderCurrency',
-                $('#SenderCurrency').val());
-
-            formData.append(
-                'SenderName',
-                $('#SenderName').val());
-
-            formData.append(
-                'SenderDocumentType',
-                $('#SenderDocumentType').val());
-
-            formData.append(
-                'SenderDocumentNumber',
-                $('#SenderDocumentNumber').val());
-
-            formData.append(
-                'SenderPhone',
-                $('#SenderPhone').val());
-
-            formData.append(
-                'SenderAddress',
-                $('#SenderAddress').val());
-
-            formData.append(
-                'ReceiverCountry',
-                $('#ReceiverCountry').val());
-
-            formData.append(
-                'ReceiverCompany',
-                $('#ReceiverCompany').val());
-
-            formData.append(
-                'ReceiverCurrency',
-                $('#ReceiverCurrency').val());
-
-            formData.append(
-                'ReceiverName',
-                $('#ReceiverName').val());
-
-            formData.append(
-                'ReceiverDocumentType',
-                $('#ReceiverDocumentType').val());
-
-            formData.append(
-                'ReceiverDocumentNumber',
-                $('#ReceiverDocumentNumber').val());
-
-            formData.append(
-                'ReceiverPhone',
-                $('#ReceiverPhone').val());
-
-            formData.append(
-                'ReceiverAddress',
-                $('#ReceiverAddress').val());
-
-            formData.append(
-                'JustifyDetails',
-                $('#JustifyDetails').val());
-
-            formData.append(
-                'IdClient_fk',
-                selectedClientId);
-
-            formData.append(
-                'IdBeneficiarie_fk',
-                selectedBeneficiaryId);
-
-            formData.append(
-                'UserC',
-                'admin');
-
-            let file =$('#ImgJustify')[0].files[0];
-            if(file){
-                formData.append(
-                    'ImgJustify',
-                    file);
-            }
+            // let file =$('#ImgJustify')[0].files[0];
+            // if(file){
+            //     formData.append(
+            //         'ImgJustify',
+            //         file);
+            // }
+            $('.justify-file').each(function () {
+                if (this.files.length > 0) {
+                    formData.append('ImgJustify',this.files[0]);
+                }
+            });
             Swal.fire({
                 title:'Saving...',
                 allowOutsideClick:false,
@@ -2536,6 +2519,41 @@
                 .text('(0)');
 
             toggleBeneficiariesActions();
+        }
+
+                const MAX_JUSTIFY_FILES = 5;
+
+        function addJustifyFile() {
+            let total = $('.justify-item').length;
+            if (total >= MAX_JUSTIFY_FILES) {
+                $('#btnAddJustify').prop('disabled', true);
+                return;
+            }
+            let html = `
+                <div class="justify-item row mb-2">
+                    <div class="col-11">
+                        <input type="file" name="ImgJustify" class="form-control justify-file" />
+                    </div>
+                    <div class="col-1">
+                        <button type="button" class="btn btn-danger" onclick="removeJustifyFile(this)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            $('#justifyContainer').append(html);
+            validateJustifyLimit();
+        }
+
+        function removeJustifyFile(btn) {
+            $(btn).closest('.justify-item').remove();
+            validateJustifyLimit();
+        }
+
+        function validateJustifyLimit() {
+            let total =$('.justify-item').length;
+            $('#btnAddJustify').prop('disabled',total >= MAX_JUSTIFY_FILES);
+            $('#justifyCounter').text(`${total} / ${MAX_JUSTIFY_FILES} files`);
         }
         //         function viewTx(id){
 
