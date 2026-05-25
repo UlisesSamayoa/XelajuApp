@@ -183,15 +183,25 @@
                                 <label class="form-label">Sender Name *</label>
                                 <input id="SenderName" class="form-control mb-2" placeholder="Sender Name" />
                             </div>
-                            <div class="col-3">
+                            <div class="col-4">
                                 <label class="form-label">Sender DocumentType *</label>
                                 <select id="SenderDocumentType" class="form-control mb-2"></select>
                             </div>
-                            <div class="col-3">
+                            <div class="col-4">
                                 <label class="form-label">Sender Document Number *</label>
                                 <input id="SenderDocumentNumber" class="form-control mb-2" placeholder="Document" />
                             </div>
-                            <div class="col-2">
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <label class="form-label">Issue Date</label>
+                                <input type="date" id="IssueDate" class="form-control mb-2" />
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label">Expiration Date *</label>
+                                <input type="date" id="ExpirationDate" class="form-control mb-2" />
+                            </div>
+                            <div class="col-4">
                                 <label class="form-label">Sender Phone *</label>
                                 <input id="SenderPhone" class="form-control mb-2" placeholder="Phone" />
                             </div>
@@ -256,7 +266,7 @@
                 <hr />
                 <div class="col-12">
                     <label class="form-label">Justify Details</label>
-                    <input id="JustifyDetails" class="form-control mb-2" placeholder="Address" />
+                    <input id="JustifyDetails" class="form-control mb-2" placeholder="Justify Details" />
                 </div>
                 <hr />
                 @* <input type="file" class="form-control" onchange="previewImage(this)" id="ImgJustify" />
@@ -349,17 +359,21 @@
                             <input id="C_LastName" class="form-control mb-2" placeholder="Last Name" />
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label>Document Type</label>
                             <select id="C_DocumentType" class="form-control mb-2"></select>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label>Document Number</label>
                             <input id="C_DocumentNumber" class="form-control mb-2" placeholder="Document Number" />
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-6">
+                            <label>Issue Date</label>
+                            <input type="date" id="C_IssueDate" class="form-control mb-2" />
+                        </div>
+                        <div class="col-md-6">
                             <label>Expiration Date</label>
                             <input type="date" id="C_ExpirationDate" class="form-control mb-2" />
                         </div>
@@ -846,15 +860,23 @@
                         <label class="form-label">Client Name *</label>
                         <input id="SimpleTx_SenderName" class="form-control mb-2" placeholder="Client Name" />
                     </div>
-                    <div class="col-3">
+                    <div class="col-4">
                         <label class="form-label">DocumentType *</label>
                         <select id="SimpleTx_SenderDocumentType" class="form-control mb-2"></select>
                     </div>
-                    <div class="col-3">
+                    <div class="col-4">
                         <label class="form-label">Document Number *</label>
                         <input id="SimpleTx_SenderDocumentNumber" class="form-control mb-2" placeholder="Document" />
                     </div>
-                    <div class="col-2">
+                    <div class="col-4">
+                        <label class="form-label">Issue Date</label>
+                        <input type="date" id="SimpleTx_SenderIssueDate" class="form-control mb-2" />
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label">Expiration Date *</label>
+                        <input type="date" id="SimpleTx_SenderExpirationDate" class="form-control mb-2" />
+                    </div>
+                    <div class="col-4">
                         <label class="form-label">Phone *</label>
                         <input id="SimpleTx_SenderPhone" class="form-control mb-2" placeholder="Phone" />
                     </div>
@@ -955,15 +977,23 @@
                         <label class="form-label">Client Name *</label>
                         <input id="MOrder_SenderName" class="form-control mb-2" placeholder="Client Name" />
                     </div>
-                    <div class="col-3">
+                    <div class="col-4">
                         <label class="form-label">DocumentType *</label>
                         <select id="MOrder_SenderDocumentType" class="form-control mb-2"></select>
                     </div>
-                    <div class="col-3">
+                    <div class="col-4">
                         <label class="form-label">Document Number *</label>
                         <input id="MOrder_SenderDocumentNumber" class="form-control mb-2" placeholder="Document" />
                     </div>
-                    <div class="col-2">
+                    <div class="col-4">
+                        <label class="form-label">Issue Date</label>
+                        <input type="date" id="MOrder_SenderIssueDate" class="form-control mb-2" />
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label">Expiration Date *</label>
+                        <input type="date" id="MOrder_SenderExpirationDate" class="form-control mb-2" />
+                    </div>
+                    <div class="col-4">
                         <label class="form-label">Phone *</label>
                         <input id="MOrder_SenderPhone" class="form-control mb-2" placeholder="Phone" />
                     </div>
@@ -1064,18 +1094,30 @@
                         <label class="form-label">Client Name *</label>
                         <input id="PService_SenderName" class="form-control mb-2" placeholder="Client Name" />
                     </div>
-                    <div class="col-3">
+                    <div class="col-4">
                         <label class="form-label">DocumentType *</label>
                         <select id="PService_SenderDocumentType" class="form-control mb-2"></select>
                     </div>
-                    <div class="col-3">
+                    <div class="col-4">
                         <label class="form-label">Document Number *</label>
                         <input id="PService_SenderDocumentNumber" class="form-control mb-2" placeholder="Document" />
                     </div>
-                    <div class="col-2">
+                    <div class="col-4">
+                        <label class="form-label">Issue Date</label>
+                        <input type="date" id="PService_SenderIssueDate" class="form-control mb-2" />
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label">Expiration Date *</label>
+                        <input type="date" id="PService_SenderExpirationDate" class="form-control mb-2" />
+                    </div>
+                    <div class="col-4">
                         <label class="form-label">Phone *</label>
                         <input id="PService_SenderPhone" class="form-control mb-2" placeholder="Phone" />
                     </div>
+                    @* <div class="col-2">
+                        <label class="form-label">Phone *</label>
+                        <input id="PService_SenderPhone" class="form-control mb-2" placeholder="Phone" />
+                    </div> *@
                     <div class="col-12">
                         <label class="form-label">Address *</label>
                         <input id="PService_SenderAddress" class="form-control mb-2" placeholder="Address" />
@@ -1176,17 +1218,20 @@
                             <input id="SimpleTx_C_LastName" class="form-control mb-2" placeholder="Last Name" />
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label>Document Type</label>
                             <select id="SimpleTx_C_DocumentType" class="form-control mb-2"></select>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label>Document Number</label>
                             <input id="SimpleTx_C_DocumentNumber" class="form-control mb-2" placeholder="Document Number" />
                         </div>
-
-                        <div class="col-md-4">
+                        <div class="col-md-6">
+                            <label>Issue Date</label>
+                            <input type="date" id="SimpleTx_C_IssueDate" class="form-control mb-2" />
+                        </div>
+                        <div class="col-md-6">
                             <label>Expiration Date</label>
                             <input type="date" id="SimpleTx_C_ExpirationDate" class="form-control mb-2" />
                         </div>
@@ -1443,7 +1488,7 @@
 
                 ],
 
-                order: [[0, 'desc']],
+                ordering: false,
 
                 language: {
 
@@ -1683,6 +1728,20 @@
                 $('#SenderAddress').val(c.address);
                 $('#SenderDocumentType').val(c.idDocumentType);
                 $('#SenderCountry').val(c.country).trigger('change');
+                if (c.expirationDate) {
+                        let date = new Date(c.expirationDate);
+                        if (!isNaN(date)) {
+                            let formatted = date.toISOString().split('T')[0];
+                            $('#ExpirationDate').val(formatted);
+                        }
+                    }
+                    if (c.issueDate) {
+                        let date = new Date(c.issueDate);
+                        if (!isNaN(date)) {
+                            let formatted = date.toISOString().split('T')[0];
+                            $('#IssueDate').val(formatted);
+                        }
+                    }
                 setTimeout(() => {
                     // loadCompaniesByCountry(c.country, 'Sender');
                     loadCompaniesByTransactionType(3,"SenderCompany");
@@ -1789,7 +1848,21 @@
                         // 🔥 selects
                         $('#SenderDocumentType').val(c.idDocumentType);
                         $('#SenderCountry').val(c.country).trigger('change');
-
+                        if (c.expirationDate) {
+                        let date = new Date(c.expirationDate);
+                        if (!isNaN(date)) {
+                            let formatted = date.toISOString().split('T')[0];
+                            $('#ExpirationDate').val(formatted);
+                        }
+                    }
+                    if (c.issueDate) {
+                        let date = new Date(c.issueDate);
+                        if (!isNaN(date)) {
+                            let formatted = date.toISOString().split('T')[0];
+                            $('#IssueDate').val(formatted);
+                        }
+                    }
+                    loadCompaniesByTransactionType(3,"SenderCompany");
                         // 🔥 cargar dependencias del país
                         setTimeout(() => {
                             // loadCompaniesByCountry(c.country, 'Sender');
@@ -1853,6 +1926,7 @@
                  var _IdDocumentType = $('#C_DocumentType').val();
                  var _DocumentNumber= $('#C_DocumentNumber').val().trim();
                  var _ExpirationDate= $('#C_ExpirationDate').val().trim();
+                 var _IssueDate= $('#C_IssueDate').val().trim();
                  var _Phone= $('#C_Phone').val().trim();
                  var _Country= $('#C_Country').val();
                  var _Address= $('#C_Address').val().trim();
@@ -1896,6 +1970,7 @@
                 formData.append("IdDocumentType", _IdDocumentType);
                 formData.append("DocumentNumber", _DocumentNumber);
                 formData.append("ExpirationDate", _ExpirationDate);
+                formData.append("IssueDate", _IssueDate);
                 formData.append("Phone", _Phone);
                 formData.append("Country", _Country);
                 formData.append("Address", _Address);
@@ -1929,9 +2004,22 @@
                     $('#SenderDocumentNumber').val($('#C_DocumentNumber').val());
                     $('#SenderPhone').val($('#C_Phone').val());
                     $('#SenderAddress').val($('#C_Address').val());
-
                     $('#SenderDocumentType').val($('#C_DocumentType').val());
                     $('#SenderCountry').val($('#C_Country').val()).trigger('change');
+                    if (_ExpirationDate) {
+                        let date = new Date(_ExpirationDate);
+                        if (!isNaN(date)) {
+                            let formatted = date.toISOString().split('T')[0];
+                            $('#ExpirationDate').val(formatted);
+                        }
+                    }
+                    if (_IssueDate) {
+                        let date = new Date(_IssueDate);
+                        if (!isNaN(date)) {
+                            let formatted = date.toISOString().split('T')[0];
+                            $('#IssueDate').val(formatted);
+                        }
+                    }
 
                     setTimeout(() => {
                         // loadCompaniesByCountry($('#C_Country').val(), 'Sender');
@@ -1942,7 +2030,7 @@
                     $('#CantBeneficiariesXClient').text('(0)');
 
                     $('#modalNewClient').modal('hide');
-
+                    limpiarControlesNewCliente()
                     Swal.fire({
                     icon: 'success',
                     title: 'Client created',
@@ -1959,6 +2047,19 @@
             });
 
         });
+
+                function limpiarControlesNewCliente() {
+            $('#C_FirstName').val('');
+            $('#C_LastName').val('');
+            // $('#C_DocumentType').val(null); // o el valor por defecto que uses
+            $('#C_DocumentNumber').val('');
+            $('#C_ExpirationDate').val('');
+            $('#C_IssueDate').val('');
+            $('#C_Phone').val('');
+            // $('#C_Country').val(null);
+            $('#C_Address').val('');
+        }
+
 
         function toggleBeneficiariesActions() {
 
@@ -2502,6 +2603,14 @@
                 function clearTransactionForm(){
 
             $('#formTx')[0].reset();
+            $('#SenderName').val("")
+            $('#SenderDocumentNumber').val("")
+            $('#SenderPhone').val("")
+            $('#SenderAddress').val("")
+            $('#ReceiverAddress').val("")
+            $('#JustifyDetails').val("")
+            $('#Justify_AgentName').val("")
+            $('#Justify_DateError').val("")
 
             $('#imgPreview').hide();
 
@@ -2687,20 +2796,31 @@
 
                 selectedClients[currentPrefix] = c.idClient;
 
-                $('#' + currentPrefix + 'SenderName')
-                    .val(c.firstName + ' ' + c.lastName);
+                $('#' + currentPrefix + 'SenderName').val(c.firstName + ' ' + c.lastName);
 
-                $('#' + currentPrefix + 'SenderDocumentNumber')
-                    .val(c.documentNumber);
+                $('#' + currentPrefix + 'SenderDocumentNumber').val(c.documentNumber);
 
-                $('#' + currentPrefix + 'SenderPhone')
-                    .val(c.phone);
+                $('#' + currentPrefix + 'SenderPhone').val(c.phone);
 
-                $('#' + currentPrefix + 'SenderAddress')
-                    .val(c.address);
+                $('#' + currentPrefix + 'SenderAddress').val(c.address);
 
-                $('#' + currentPrefix + 'SenderDocumentType')
-                    .val(c.idDocumentType);
+                $('#' + currentPrefix + 'SenderDocumentType').val(c.idDocumentType);
+                    // $('#' + currentPrefix + 'SenderIssueDate').val(c.issueDate);
+                    // $('#' + currentPrefix + 'SenderExpirationDate').val(c.expeditionDate);
+                    if (c.expirationDate) {
+                        let date = new Date(c.expirationDate);
+                        if (!isNaN(date)) {
+                            let formatted = date.toISOString().split('T')[0];
+                            $('#' + currentPrefix + 'SenderExpirationDate').val(formatted);
+                        }
+                    }
+                    if (c.issueDate) {
+                        let date = new Date(c.issueDate);
+                        if (!isNaN(date)) {
+                            let formatted = date.toISOString().split('T')[0];
+                            $('#' + currentPrefix + 'SenderIssueDate').val(formatted);
+                        }
+                    }
 
                 $('#SimpleTx_modalSearchClient').modal('hide');
 
@@ -2799,6 +2919,7 @@
             let _IdDocumentType = $('#SimpleTx_C_DocumentType').val();
             let _DocumentNumber = $('#SimpleTx_C_DocumentNumber').val().trim();
             let _ExpirationDate = $('#SimpleTx_C_ExpirationDate').val().trim();
+            let _IssueDate = $('#SimpleTx_C_IssueDate').val().trim();
             let _Phone = $('#SimpleTx_C_Phone').val().trim();
             let _Country = $('#SimpleTx_C_Country').val();
             let _Address = $('#SimpleTx_C_Address').val().trim();
@@ -2820,6 +2941,7 @@
             formData.append("IdDocumentType", _IdDocumentType);
             formData.append("DocumentNumber", _DocumentNumber);
             formData.append("ExpirationDate", _ExpirationDate);
+            formData.append("IssueDate", _IssueDate);
             formData.append("Phone", _Phone);
             formData.append("Country", _Country);
             formData.append("Address", _Address);
@@ -2842,20 +2964,17 @@
 
                     selectedClients[currentPrefix] = res.idClient;
 
-                    $('#' + currentPrefix + 'SenderName')
-                        .val(_FirstName + ' ' + _LastName);
+                    $('#' + currentPrefix + 'SenderName').val(_FirstName + ' ' + _LastName);
 
-                    $('#' + currentPrefix + 'SenderDocumentNumber')
-                        .val(_DocumentNumber);
+                    $('#' + currentPrefix + 'SenderDocumentNumber').val(_DocumentNumber);
 
-                    $('#' + currentPrefix + 'SenderPhone')
-                        .val(_Phone);
+                    $('#' + currentPrefix + 'SenderPhone').val(_Phone);
 
-                    $('#' + currentPrefix + 'SenderAddress')
-                        .val(_Address);
+                    $('#' + currentPrefix + 'SenderAddress').val(_Address);
 
-                    $('#' + currentPrefix + 'SenderDocumentType')
-                        .val(_IdDocumentType);
+                    $('#' + currentPrefix + 'SenderDocumentType').val(_IdDocumentType);
+                    $('#' + currentPrefix + 'SenderIssueDate').val(_IssueDate);
+                    $('#' + currentPrefix + 'SenderExpirationDate').val(_ExpirationDate);
 
                     $('#SimpleTx_modalNewClient').modal('hide');
 

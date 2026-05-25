@@ -100,26 +100,38 @@
                                 <label>Last Name</label>
                                 <input name="LastName" class="form-control mb-2" required placeholder="Last Name" />
                             </div>
+                            <div class="col-md-12">
+                                <label>Document Type</label>
+                                <select name="IdDocumentType" id="IdDocumentType" class="form-control mb-2">
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <label>Document Number</label>
+                                <input name="DocumentNumber" class="form-control mb-2" required placeholder="Document Number" />
+                            </div>
+                            <div class="col-md-6">
+                                <label>Issue Date</label>
+                                <input type="date" name="IssueDate" class="form-control mb-2" />
+                            </div>
+                            <div class="col-md-6">
+                                <label>Expiration Date</label>
+                                <input type="date" name="ExpirationDate" class="form-control mb-2" />
+                            </div>
+                            <div class="col-md-12">
+                                <label>Phone</label>
+                                <input name="Phone" id="Phone" class="form-control mb-2" placeholder="Phone" />
+                            </div>
+                            <div class="col-md-12">
+                                <label>Country</label>
+                                <select name="Country" id="Country" class="form-control mb-2"></select>
+                            </div>
+                            <div class="col-md-12">
+                                <label>Address</label>
+                                <textarea name="Address" class="form-control mb-2" placeholder="Address"></textarea>
+                            </div>
                         </div>
-                        <label>Document Type</label>
-                        @* <select name="IdDocumentType" id="IdDocumentType" class="form-control mb-2">
-                            <option value="1">DUI</option>
-                            <option value="2">Passport</option>
-                            <option value="3">License</option>
-                        </select> *@
-                        <select name="IdDocumentType" id="IdDocumentType" class="form-control mb-2">
-                        </select>
-                        <label>Document Number</label>
-                        <input name="DocumentNumber" class="form-control mb-2" required placeholder="Document Number" />
-                        <label>Expiration Date</label>
-                        <input type="date" name="ExpirationDate" class="form-control mb-2" />
-                        <label>Phone</label>
-                        <input name="Phone" id="Phone" class="form-control mb-2" placeholder="Phone" />
-                        <label>Country</label>
-                        <select name="Country" id="Country" class="form-control mb-2"></select>
-                        <label>Address</label>
-                        <textarea name="Address" class="form-control mb-2" placeholder="Address"></textarea>
-                    </div>
+                </div>
+        
                     <div class="col-md-6 text-center">
                         <label class="mb-2">Client Photo / ID</label>
                         <input type="file" id="fileClient" class="form-control mb-3"
@@ -241,6 +253,7 @@
              var _IdDocumentType = $('#IdDocumentType').val();
              var _DocumentNumber= $('input[name="DocumentNumber"]').val().trim();
              var _ExpirationDate= $('input[name="ExpirationDate"]').val().trim();
+             var _IssueDateDate= $('input[name="IssueDate"]').val().trim();
              var _Phone= $('input[name="Phone"]').val().trim();
              var _Country= $('#Country').val();
              var _Address= $('textarea[name="Address"]').val().trim();
@@ -311,7 +324,12 @@
             }).then(r => {
                 if (!r.isConfirmed) return;
                 $.post('/Clients/Delete?id=' + id, () => {
-                    Swal.fire('Deleted!', '', 'success');
+                    Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted!',
+                            timer: 1200,
+                            showConfirmButton: false
+                        });
                     $('#tblClients').DataTable().ajax.reload();
                 });
             });

@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
-
-namespace TransferApp.Models
+﻿namespace TransferApp.Models
 {
     public class ClientsModel
     {
@@ -13,6 +10,7 @@ namespace TransferApp.Models
         public string DocumentNumber { get; set; }
         public string Address { get; set; }
         public DateTime ExpirationDate { get; set; }
+        public DateTime IssueDate { get; set; }
         public string Phone { get; set; }
         public string Country { get; set; }
         public string Picture { get; set; }

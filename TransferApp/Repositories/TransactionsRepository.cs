@@ -258,7 +258,7 @@ public class TransactionsRepository
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@IdTransaction", idTransaction);
         cmd.Parameters.AddWithValue("@Status", status);
-        cmd.Parameters.AddWithValue("@TransactionsStatusComment", TransactionsStatusComment);
+        cmd.Parameters.AddWithValue("@TransactionsStatusComment", TransactionsStatusComment ?? "");
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
         await conn.CloseAsync();

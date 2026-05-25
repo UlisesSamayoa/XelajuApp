@@ -73,6 +73,12 @@ wwwroot\uploads\clients\1_20260505234943.png
 wwwroot\uploads\clients\33 3_20260424233604.png
 wwwroot\uploads\clients\3_20260424232850.png
 wwwroot\uploads\clients\987654321_20260504230518.jpg
+wwwroot\uploads\clients\Gerson_20260524215036.jpg
+wwwroot\uploads\clients\Pruebas post_20260524212315.jpg
+wwwroot\uploads\clients\Pruebas post_20260524212510.jpg
+wwwroot\uploads\clients\Pruebas post_20260524212900.jpg
+wwwroot\uploads\clients\Pruebas post_20260524212942.jpg
+wwwroot\uploads\clients\Pruebas post_20260524213056.jpg
 wwwroot\uploads\reviews\11_20260422235838.pdf
 wwwroot\uploads\reviews\121212_20260423000347.png
 wwwroot\uploads\reviews\1212_20260423000329.pdf

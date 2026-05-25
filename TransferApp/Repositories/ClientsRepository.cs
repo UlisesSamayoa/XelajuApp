@@ -24,34 +24,6 @@ public class ClientsRepository
         {
             list.Add(Map(reader));
         }
-        //var schemaTable = reader.GetSchemaTable();
-        //foreach (DataRow row in schemaTable.Rows)
-        //{
-        //    Console.WriteLine(row["ColumnName"]);
-        //}
-        //while (await reader.ReadAsync())
-        //{
-        //    var client = new ClientsModel
-        //    {
-        //        IdClient = reader["IdClient"] != DBNull.Value ? Convert.ToInt32(reader["IdClient"]) : 0,
-        //        FirstName = reader["FirstName"] != DBNull.Value ? reader["FirstName"].ToString() : string.Empty,
-        //        LastName = reader["LastName"] != DBNull.Value ? reader["LastName"].ToString() : string.Empty,
-        //        IdDocumentType = reader["IdDocumentType"] != DBNull.Value ? reader["IdDocumentType"].ToString() : string.Empty,
-        //        DocumentNumber = reader["DocumentNumber"] != DBNull.Value ? reader["DocumentNumber"].ToString() : string.Empty,
-        //        Address = reader["Address"] != DBNull.Value ? reader["Address"].ToString() : string.Empty,
-        //        ExpirationDate = reader["ExpirationDate"] != DBNull.Value ? Convert.ToDateTime(reader["ExpirationDate"]) : DateTime.MinValue,
-        //        Phone = reader["Phone"] != DBNull.Value ? reader["Phone"].ToString() : string.Empty,
-        //        Country = reader["Country"] != DBNull.Value ? reader["Country"].ToString() : string.Empty,
-        //        Picture = reader["Picture"] != DBNull.Value ? reader["Picture"].ToString() : string.Empty,
-        //        Status = reader["Status"] != DBNull.Value ? Convert.ToInt32(reader["Status"]) : 0,
-        //        DateC = reader["DateC"] != DBNull.Value ? Convert.ToDateTime(reader["DateC"]) : DateTime.MinValue,
-        //        UserC = reader["UserC"] != DBNull.Value ? reader["UserC"].ToString() : string.Empty,
-        //        DateU = reader["DateU"] != DBNull.Value ? Convert.ToDateTime(reader["DateU"]) : DateTime.MinValue,
-        //        UserU = reader["UserU"] != DBNull.Value ? reader["UserU"].ToString() : string.Empty,
-        //        CountryName = reader["CountryName"] != DBNull.Value ? reader["CountryName"].ToString() : string.Empty
-        //    };
-        //    list.Add(client);
-        //}
         await conn.CloseAsync();
         return list;
     }
@@ -153,6 +125,7 @@ public class ClientsRepository
             DocumentNumber = reader["DocumentNumber"] != DBNull.Value ? reader["DocumentNumber"].ToString() : string.Empty,
             Address = reader["Address"] != DBNull.Value ? reader["Address"].ToString() : string.Empty,
             ExpirationDate = reader["ExpirationDate"] != DBNull.Value ? Convert.ToDateTime(reader["ExpirationDate"]) : DateTime.MinValue,
+            IssueDate = reader["IssueDate"] != DBNull.Value ? Convert.ToDateTime(reader["IssueDate"]) : DateTime.MinValue,
             Phone = reader["Phone"] != DBNull.Value ? reader["Phone"].ToString() : string.Empty,
             Country = reader["Country"] != DBNull.Value ? reader["Country"].ToString() : string.Empty,
             Picture = reader["Picture"] != DBNull.Value ? reader["Picture"].ToString() : string.Empty,
@@ -176,6 +149,7 @@ public class ClientsRepository
         cmd.Parameters.AddWithValue("@ExpirationDate", m.ExpirationDate);
         cmd.Parameters.AddWithValue("@Phone", m.Phone ?? "");
         cmd.Parameters.AddWithValue("@Country", m.Country);
+        cmd.Parameters.AddWithValue("@IssueDate", m.IssueDate == null ? (object)DBNull.Value : m.IssueDate);
         cmd.Parameters.AddWithValue("@Picture", m.Picture ?? "");
 
         if (isCreate)
@@ -236,7 +210,9 @@ public class ClientsRepository
                 Address = rd["Address"].ToString(),
                 IdDocumentType = rd["IdDocumentType"].ToString(),
                 Country = rd["Country"].ToString(),
-                FullName = rd["FirstName"].ToString() + ' ' + rd["LastName"].ToString()
+                FullName = rd["FirstName"].ToString() + ' ' + rd["LastName"].ToString(),
+                ExpirationDate = rd["ExpirationDate"] != DBNull.Value ? Convert.ToDateTime(rd["ExpirationDate"]) : DateTime.MinValue,
+                IssueDate = rd["IssueDate"] != DBNull.Value ? Convert.ToDateTime(rd["IssueDate"]) : DateTime.MinValue,
             });
         }
         await conn.CloseAsync();

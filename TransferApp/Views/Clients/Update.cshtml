@@ -54,7 +54,7 @@
             <input type="hidden" id="IdClient" />
             <div class="row">
                 <div class="col-md-6">
-                    <label>First Name</label>
+                   @*  <label>First Name</label>
                     <input name="FirstName" id="FirstName" class="form-control mb-2" required />
                     <label>Last Name</label>
                     <input name="LastName" id="LastName" class="form-control mb-2" required />
@@ -73,7 +73,46 @@
                     <label>Country</label>
                     <select name="Country" id="Country" class="form-control mb-2"></select>
                     <label>Address</label>
-                    <textarea name="Address" id="Address" class="form-control mb-2"></textarea>
+                    <textarea name="Address" id="Address" class="form-control mb-2"></textarea> *@
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>First Name</label>
+                            <input name="FirstName" id="FirstName" class="form-control mb-2" required placeholder="First Name" />
+                        </div>
+                        <div class="col-md-6">
+                            <label>Last Name</label>
+                            <input name="LastName" id="LastName" class="form-control mb-2" required placeholder="Last Name" />
+                        </div>
+                        <div class="col-md-12">
+                            <label>Document Type</label>
+                            <select name="IdDocumentType" id="IdDocumentType" class="form-control mb-2">
+                            </select>
+                        </div>
+                        <div class="col-md-12">
+                            <label>Document Number</label>
+                            <input name="DocumentNumber" id="DocumentNumber" class="form-control mb-2" required placeholder="Document Number" />
+                        </div>
+                        <div class="col-md-6">
+                            <label>Issue Date</label>
+                            <input type="date" name="IssueDate" id="IssueDate" class="form-control mb-2" />
+                        </div>
+                        <div class="col-md-6">
+                            <label>Expiration Date</label>
+                            <input type="date" name="ExpirationDate" id="ExpirationDate" class="form-control mb-2" />
+                        </div>
+                        <div class="col-md-12">
+                            <label>Phone</label>
+                            <input name="Phone" id="Phone" class="form-control mb-2" placeholder="Phone" />
+                        </div>
+                        <div class="col-md-12">
+                            <label>Country</label>
+                            <select name="Country" id="Country" class="form-control mb-2"></select>
+                        </div>
+                        <div class="col-md-12">
+                            <label>Address</label>
+                            <textarea name="Address" id="Address" class="form-control mb-2" placeholder="Address"></textarea>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-6 text-center">
                     <label>Client Photo / ID</label>
@@ -103,6 +142,7 @@
         $(document).ready(function () {
         loadClient();
         loadCountriesDropdown('#Country');
+        loadDocumentsTypesDropdown('#IdDocumentType');
         applyPhoneMask('#Phone');
     });
         const documentTypeMap = {
@@ -110,7 +150,30 @@
         "Passport": "2",
         "License": "3"
     };
-
+    function loadDocumentsTypesDropdown(selectId, selectedValue = null) {
+            $.ajax({
+                url: '/DocumentsTypes/GetAll',
+                type: 'GET',
+                success: function (data) {
+                    let select = $(selectId);
+                    select.empty();
+                    select.append(`<option value="">Select country</option>`);
+                    data.forEach(c => {
+                        select.append(`
+                            <option value="${c.idDocumentType}">
+                                ${c.name}
+                            </option>
+                        `);
+                    });
+                    if (selectedValue) {
+                        select.val(selectedValue);
+                    }
+                },
+                error: function () {
+                    Swal.fire('Error', 'Failed to load countries', 'error');
+                }
+            });
+        }
         function loadClient() {
 
         $.get('/Clients/GetById?id=' + id, function (d) {
@@ -127,10 +190,18 @@
                     $('#ExpirationDate').val(formatted);
                 }
             }
+            if (d.issueDate) {
+                let date = new Date(d.issueDate);
+                if (!isNaN(date)) {
+                    let formatted = date.toISOString().split('T')[0];
+                    $('#IssueDate').val(formatted);
+                }
+            }
             $('#Phone').val(d.phone);
             // $('#Country').val(d.country);
             $('#Address').val(d.address);
             loadCountriesDropdown('#Country', d.country);
+            loadDocumentsTypesDropdown('#IdDocumentType',d.idDocumentType);
             if (d.picture) {
                 $('#clientPreview').html(`
                     <img src="${d.picture}"
@@ -171,6 +242,7 @@
              var _IdDocumentType = $('#IdDocumentType').val();
              var _DocumentNumber= $('input[name="DocumentNumber"]').val().trim();
              var _ExpirationDate= $('input[name="ExpirationDate"]').val().trim();
+             var _IssueDate = $('input[name="IssueDate"]').val().trim();
              var _Phone= $('input[name="Phone"]').val().trim();
              var _Country= $('#Country').val();
              var _Address= $('textarea[name="Address"]').val().trim();
@@ -215,6 +287,7 @@
         formData.append("IdDocumentType",_IdDocumentType);
         formData.append("DocumentNumber", _DocumentNumber);
         formData.append("ExpirationDate", _ExpirationDate);
+        formData.append("IssueDate", _IssueDate);
         formData.append("Phone", _Phone);
         formData.append("Country", _Country);
         formData.append("Address", _Address);
@@ -236,9 +309,11 @@
             }),
 
             success: res => {
-                 Swal.fire({
-                    icon: 'success',
-                    title: res.message
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Success!',
+                  timer: 1200,
+                  showConfirmButton: false
                 }).then(() => {
                     window.location.href = '/Clients';
                 });
