@@ -36,6 +36,7 @@ public class TransactionsService
                 string filePath = SaveTransactionFile(
                     file,
                     m.TransactionType,
+                    m.SenderName,
                     m.SenderDocumentNumber,
                     m.ReferenceNumber
                 );
@@ -73,19 +74,81 @@ public class TransactionsService
         await _repo.CreateSimple(m);
     }
 
-    private string SaveTransactionFile(IFormFile file, int transactionType, string documentNumber, string referenceNumber)
+    //private string SaveTransactionFile(IFormFile file, int transactionType, string documentNumber, string referenceNumber)
+    //{
+    //    if (file == null)
+    //        return null;
+    //    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".pdf" };
+    //    var ext = Path.GetExtension(file.FileName).ToLower();
+    //    if (!allowedExtensions.Contains(ext))
+    //        throw new Exception("Invalid file type");
+
+    //    //tamaño máximo 5MB
+    //    if (file.Length > 5 * 1024 * 1024)
+    //        throw new Exception("File too large (max 5MB)");
+
+    //    string txPrefix = transactionType switch
+    //    {
+    //        1 => "CC",
+    //        2 => "MO",
+    //        3 => "MT",
+    //        4 => "PS",
+    //        _ => "OT"
+    //    };
+    //    var now = DateTime.Now;
+
+    //    string year = now.Year.ToString();
+    //    string month = now.ToString("MM");
+    //    string day = now.ToString("dd");
+
+    //    //ruta base C:\TransactionFiles, preguntar si sera C
+    //    string basePath = @"C:\TransactionFiles";
+
+    //    //estructura de carpetas
+    //    string folderPath = Path.Combine(
+    //        basePath,
+    //        txPrefix,
+    //        year,
+    //        month,
+    //        day
+    //    );
+
+    //    //crear carpetas si no existen
+    //    if (!Directory.Exists(folderPath))
+    //        Directory.CreateDirectory(folderPath);
+
+    //    //limpiar caracteres
+    //    documentNumber = documentNumber?.Replace("-", "").Replace(" ", "");
+    //    referenceNumber = referenceNumber?.Replace("-", "").Replace(" ", "");
+
+    //    string fileName = $"{now:yyyyMMdd}_{now:HHmmss}_{txPrefix}_{documentNumber}_{referenceNumber}{ext}";
+    //    string fullPath = Path.Combine(folderPath, fileName);
+    //    using (var stream = new FileStream(fullPath, FileMode.Create))
+    //    {
+    //        file.CopyTo(stream);
+    //    }
+    //    return fullPath;
+    //}
+
+    private string SaveTransactionFile(IFormFile file, int transactionType, string clientName, string clientDocument, string referenceNumber)
     {
         if (file == null)
             return null;
-        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".pdf" };
-        var ext = Path.GetExtension(file.FileName).ToLower();
+
+        var allowedExtensions =
+            new[] { ".jpg", ".jpeg", ".png", ".pdf" };
+
+        var ext =
+            Path.GetExtension(file.FileName).ToLower();
+
         if (!allowedExtensions.Contains(ext))
             throw new Exception("Invalid file type");
 
-        //tamaño máximo 5MB
+        // MAX 5MB
         if (file.Length > 5 * 1024 * 1024)
             throw new Exception("File too large (max 5MB)");
 
+        // TX PREFIX
         string txPrefix = transactionType switch
         {
             1 => "CC",
@@ -94,39 +157,73 @@ public class TransactionsService
             4 => "PS",
             _ => "OT"
         };
+
         var now = DateTime.Now;
 
         string year = now.Year.ToString();
         string month = now.ToString("MM");
         string day = now.ToString("dd");
 
-        //ruta base C:\TransactionFiles, preguntar si sera C
+        // BASE PATH
         string basePath = @"C:\TransactionFiles";
 
-        //estructura de carpetas
+        // CLEAN CLIENT DATA
+        clientName = CleanPathValue(clientName);
+        clientDocument = CleanPathValue(clientDocument);
+
+        // CLIENT FOLDER
+        string clientFolder =
+            $"{clientName}_{clientDocument}";
+
+        // FOLDER STRUCTURE
         string folderPath = Path.Combine(
             basePath,
-            txPrefix,
+            clientFolder,
             year,
+            txPrefix,
             month,
             day
         );
 
-        //crear carpetas si no existen
+        // CREATE FOLDERS
         if (!Directory.Exists(folderPath))
             Directory.CreateDirectory(folderPath);
 
-        //limpiar caracteres
-        documentNumber = documentNumber?.Replace("-", "").Replace(" ", "");
-        referenceNumber = referenceNumber?.Replace("-", "").Replace(" ", "");
+        // CLEAN REFERENCE
+        referenceNumber = referenceNumber?
+            .Replace("-", "")
+            .Replace(" ", "");
 
-        string fileName = $"{now:yyyyMMdd}_{now:HHmmss}_{txPrefix}_{documentNumber}_{referenceNumber}{ext}";
-        string fullPath = Path.Combine(folderPath, fileName);
-        using (var stream = new FileStream(fullPath, FileMode.Create))
+        // UNIQUE FILE NAME
+        string fileName =
+            $"{now:yyyyMMdd_HHmmss_fff}_{txPrefix}_{referenceNumber}{ext}";
+
+        string fullPath =
+            Path.Combine(folderPath, fileName);
+
+        using (var stream = new FileStream(
+            fullPath,
+            FileMode.Create))
         {
             file.CopyTo(stream);
         }
+
         return fullPath;
+    }
+
+    private string CleanPathValue(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return "UNKNOWN";
+
+        foreach (char c in Path.GetInvalidFileNameChars())
+        {
+            value = value.Replace(c.ToString(), "");
+        }
+
+        return value
+            .Trim()
+            .Replace(" ", "_");
     }
 
     public async Task ChangeStatus(int idTransaction, string status, string transactionsStatusComment)
