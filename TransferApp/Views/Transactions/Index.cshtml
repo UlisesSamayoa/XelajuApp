@@ -767,8 +767,8 @@
                                                 <label class="form-label">Select Company</label>
                                             </div>
                                             <div class="col-12">
-                                                <button class="btn btn-primary">Search <i class="bi bi-search"></i></button>&nbsp;&nbsp;
-                                                <button class="btn btn-success">New <i class="bi bi-plus-lg"></i></button>
+                                                <button class="btn btn-primary" onclick="loadModalSearchCompany(1)">Search <i class="bi bi-search"></i></button>&nbsp;&nbsp;
+                                                <button class="btn btn-success" onclick="loadModalNewCompany(1)">New <i class="bi bi-plus-lg"></i></button>
                                             </div>
                                         </div>
                                     </div>
@@ -1190,6 +1190,39 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="SimpleTx_modalSearchCompany">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content modal-search">
+
+            <!-- HEADER -->
+            <div class="modal-header modal-search-header">
+                <h5><i class="bi bi-search"></i> Search Company</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- BODY -->
+            <div class="modal-body">
+
+                <input id="SimpleTx_searchClientInput"
+                       class="form-control mb-3 search-input"
+                       placeholder="Search by name or document..." />
+
+                <table id="SimpleTx_tblSearchClient" class="table table-hover w-100">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Document</th>
+                            <th>Phone</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="modalChangeStatus">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
@@ -1238,6 +1271,79 @@
                 <button class="btn btn-warning" id="btnSaveTransactionStatus"> <i class="bi bi-floppy-fill"></i> Save Status
                 </button>
 
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="SimpleTx_modalNewCompany">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content card-custom modal-new">
+
+            <div class="modal-header bg-success text-white">
+                <h5><i class="bi bi-person-plus-fill"></i> New company</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <form id="SimpleTx_formNewClient">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>First Name</label>
+                            <input id="SimpleTx_C_FirstName" class="form-control mb-2" placeholder="First Name" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Last Name</label>
+                            <input id="SimpleTx_C_LastName" class="form-control mb-2" placeholder="Last Name" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Document Type</label>
+                            <select id="SimpleTx_C_DocumentType" class="form-control mb-2"></select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Document Number</label>
+                            <input id="SimpleTx_C_DocumentNumber" class="form-control mb-2" placeholder="Document Number" />
+                        </div>
+                        <div class="col-md-6">
+                            <label>Issue Date</label>
+                            <input type="date" id="SimpleTx_C_IssueDate" class="form-control mb-2" />
+                        </div>
+                        <div class="col-md-6">
+                            <label>Expiration Date</label>
+                            <input type="date" id="SimpleTx_C_ExpirationDate" class="form-control mb-2" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Phone</label>
+                            <input id="SimpleTx_C_Phone" class="form-control mb-2" placeholder="Phone" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Country</label>
+                            <select id="SimpleTx_C_Country" class="form-control mb-2"></select>
+                        </div>
+
+                        <div class="col-12">
+                            <label>Address</label>
+                            <input id="SimpleTx_C_Address" class="form-control mb-2" placeholder="Address" />
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-success" id="SimpleTx_btnSaveNewClient">
+                    <i class="bi bi-floppy-fill"></i> Save Client
+                </button>
             </div>
 
         </div>
