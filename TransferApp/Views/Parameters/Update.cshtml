@@ -41,28 +41,37 @@
         <form id="formUpdate">
 
             <input type="hidden" id="IdParameters" value="@ViewBag.Id" />
-
-            <div class="form-check form-switch mb-3">
-                <input class="form-check-input" type="checkbox" id="LastMonth" />
-                <label class="form-check-label">
-                    Use Current Month
-                </label>
-
+            <input type="hidden" id="CantOriginal"/>
+            <div class="row">
+                <div class="col-3">
+                    <div class="form-check form-switch mb-3">
+                        <br />
+                        <input class="form-check-input" type="checkbox" id="LastMonth" />
+                        <label class="form-check-label">
+                            Use Current Month
+                        </label>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <label class="form-label"> Count Days</label>
+                    <input id="CountDays" type="number" class="form-control mb-3" />
+                </div>
+                <div class="col-3">
+                    <label class="form-label"> Max Transactions</label>
+                    <input id="MaxTransactions" type="number" class="form-control mb-3" />
+                </div>
+                <div class="col-3">
+                    <label class="form-label">
+                        Max Amount
+                    </label>
+                    <input id="MaxAmount" type="number" class="form-control mb-3" />
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Transaction Type</label>
+                    <input id="Transactiontype" type="text" class="form-control mb-3" readonly/>
+                </div>
             </div>
-
-            <label class="form-label"> Count Days</label>
-
-            <input id="CountDays" type="number" class="form-control mb-3" />
-            <label class="form-label"> Max Transactions</label>
-
-            <input id="MaxTransactions" type="number" class="form-control mb-3" />
-
-            <label class="form-label">
-                Max Amount
-            </label>
-
-            <input id="MaxAmount" type="number" class="form-control mb-3" />
-
+            
             <div class="mt-3 d-flex gap-2">
                 <button type="button" class="btn btn-custom" id="btnUpdate">
                     <i class="bi bi-floppy-fill"></i> Update
@@ -90,18 +99,13 @@
         $.get('/Parameters/GetById?id=' + id,
 
         function(d){
-
-            $('#LastMonth')
-                .prop('checked', d.lastMonth);
-
+            $('#LastMonth').prop('checked', d.lastMonth);
             $('#CountDays').val(d.countDays);
+            $('#CantOriginal').val(d.countDays);
             $('#MaxTransactions').val(d.maxTransactions);
-
-            $('#MaxAmount')
-                .val(d.maxAmount);
-
-            $('#Status')
-                .val(d.status);
+            $('#MaxAmount').val(d.maxAmount);
+            $('#Status').val(d.status);
+            $('#Transactiontype').val(d.transactiontypeName);
 
             toggleDays();
         });

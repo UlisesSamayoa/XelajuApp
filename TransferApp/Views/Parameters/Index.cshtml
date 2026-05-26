@@ -43,17 +43,13 @@
                 Parameters
             </h3>
 
-            <button class="btn btn-custom"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalParameters">
-
+            <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalParameters">
                 <i class="bi bi-plus"></i>
                 Add Parameter
             </button>
         </div>
 
-        <table id="tblParameters"
-               class="table table-hover w-100">
+        <table id="tblParameters" class="table table-hover w-100">
 
             <thead class="table-light">
                 <tr>
@@ -61,6 +57,7 @@
                     <th>Days</th>
                     <th>Max Transactions</th>
                     <th>Max Amount</th>
+                    <th>Transaction Type</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -89,33 +86,33 @@
             <div class="modal-body">
 
                 <form id="formParameters">
-
-                    <div class="form-check form-switch mb-3">
-
-                        <input class="form-check-input"
-                               type="checkbox"
-                               id="LastMonth" />
-
-                        <label class="form-check-label">
-                            Use Current Month
-                        </label>
-
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-check form-switch mb-3">
+                                <br />
+                                <input class="form-check-input" type="checkbox" id="LastMonth" />
+                                <label class="form-check-label">
+                                    Use Current Month
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Count Days</label>
+                            <input id="CountDays" type="number" class="form-control mb-3" placeholder="30" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Max Transactions</label>
+                            <input id="MaxTransactions" type="number" class="form-control mb-3" placeholder="10" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Max Amount </label>
+                            <input id="MaxAmount" type="number" class="form-control" placeholder="1000" />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">TransactionType</label>
+                            <select name="TransactionType" id="TransactionType" class="form-control mb-2" required></select>
+                        </div>
                     </div>
-
-                    <label class="form-label">Count Days</label>
-                    <input id="CountDays" type="number" class="form-control mb-3" placeholder="30" />
-                    <label class="form-label">Max Transactions</label>
-                    <input id="MaxTransactions" type="number" class="form-control mb-3" placeholder="10" />
-
-                    <label class="form-label">
-                        Max Amount
-                    </label>
-
-                    <input id="MaxAmount"
-                           type="number"
-                           class="form-control"
-                           placeholder="1000" />
-
                 </form>
 
             </div>
@@ -144,7 +141,16 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
     <script>
-
+        $.get('/TransactionsTypes/GetAllTypes', function (data) {
+                $('#TransactionType').empty();
+                data.forEach(t => {
+                    if(t.numberT == 1 | t.numberT == 3){
+                        $('#TransactionType').append(
+                        `<option value="${t.numberT}" data-commission="${t.commission}"> ${t.name}</option>`
+                        );
+                    }     
+                });
+        });
         let table = $('#tblParameters').DataTable({
 
             ajax: {
@@ -165,6 +171,7 @@
                     data: 'maxAmount',
                     render: d => '$ ' + d
                 },
+                {data: 'transactiontypeName'},
                 {
                     data: 'idParameters',
                     render: d => `
@@ -199,7 +206,8 @@
                 lastMonth:$('#LastMonth').is(':checked'),
                 countDays:$('#LastMonth').is(':checked') ? 0 : $('#CountDays').val(),
                 MaxTransactions:$('#MaxTransactions').val(),
-                maxAmount:$('#MaxAmount').val()
+                maxAmount:$('#MaxAmount').val(),
+                TransactionType:$('#TransactionType').val(),
             };
 
             if(!data.maxAmount){

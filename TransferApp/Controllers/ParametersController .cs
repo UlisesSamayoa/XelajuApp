@@ -97,11 +97,11 @@ public class ParametersController : Controller
 
     [HttpGet]
     public async Task<IActionResult>
-    ValidateClientTransactions(string documentNumber)
+    ValidateClientTransactions(string documentNumber, int TransactionType)
     {
         try
         {
-            var result = await _service.ValidateClientTransactions(documentNumber);
+            var result = await _service.ValidateClientTransactions(documentNumber, TransactionType);
             return Json(result);
         }
         catch (Exception ex)

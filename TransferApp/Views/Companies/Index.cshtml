@@ -95,7 +95,7 @@
         <!-- FILTROS -->
         <div class="row mb-3">
             <div class="col-md-4">
-                <input type="text" id="filterCountry" class="form-control" placeholder="Filter by country">
+                <input type="text" id="filterCountry" class="form-control" placeholder="Filter by Status">
             </div>
         </div>
 
@@ -253,7 +253,7 @@
             $('#tableLoader').hide();
             $('#tblCompanies').show();
             $('#filterCountry').on('keyup', function () {
-                table.column(2).search(this.value).draw();
+                table.column(6).search(this.value).draw();
             });
              loadCountriesDropdown('#Country');
                   applyPhoneMask('#Phone');

@@ -29,8 +29,8 @@ public class ParametersService
         await _repo.Delete(id, user);
     }
 
-    public async Task<TransactionValidationModel> ValidateClientTransactions(string documentNumber)
+    public async Task<TransactionValidationModel> ValidateClientTransactions(string documentNumber, int TransactionType)
     {
-        return await _repo.ValidateClientTransactions(documentNumber);
+        return await _repo.ValidateClientTransactions(documentNumber, TransactionType);
     }
 }

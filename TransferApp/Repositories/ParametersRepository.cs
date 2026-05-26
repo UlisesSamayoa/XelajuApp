@@ -30,7 +30,9 @@ public class ParametersRepository
                 CountDays = (int)rd["CountDays"],
                 MaxTransactions = (int)rd["MaxTransactions"],
                 MaxAmount = (decimal)rd["MaxAmount"],
-                Status = (int)rd["Status"]
+                Status = (int)rd["Status"],
+                Transactiontype = (int)rd["Transactiontype"],
+                TransactiontypeName = (string)rd["TransactiontypeName"]
             });
         }
         await conn.CloseAsync();
@@ -54,7 +56,9 @@ public class ParametersRepository
                 CountDays = (int)rd["CountDays"],
                 MaxTransactions = (int)rd["MaxTransactions"],
                 MaxAmount = (decimal)rd["MaxAmount"],
-                Status = (int)rd["Status"]
+                Status = (int)rd["Status"],
+                Transactiontype = (int)rd["Transactiontype"],
+                TransactiontypeName = (string)rd["TransactiontypeName"]
             };
         }
         await conn.CloseAsync();
@@ -70,6 +74,7 @@ public class ParametersRepository
         cmd.Parameters.AddWithValue("@CountDays", m.CountDays);
         cmd.Parameters.AddWithValue("@MaxTransactions", m.MaxTransactions);
         cmd.Parameters.AddWithValue("@MaxAmount", m.MaxAmount);
+        cmd.Parameters.AddWithValue("@Transactiontype", m.Transactiontype);
         cmd.Parameters.AddWithValue("@UserC", m.UserC);
         await conn.OpenAsync();
         var result = await cmd.ExecuteScalarAsync();
@@ -88,6 +93,7 @@ public class ParametersRepository
         cmd.Parameters.AddWithValue("@CountDays", m.CountDays);
         cmd.Parameters.AddWithValue("@MaxTransactions", m.MaxTransactions);
         cmd.Parameters.AddWithValue("@MaxAmount", m.MaxAmount);
+        cmd.Parameters.AddWithValue("@Transactiontype", m.Transactiontype);
         cmd.Parameters.AddWithValue("@Status", m.Status);
         cmd.Parameters.AddWithValue("@UserU", m.UserU);
         await conn.OpenAsync();
@@ -107,12 +113,13 @@ public class ParametersRepository
         await conn.CloseAsync();
     }
     public async Task<TransactionValidationModel>
-    ValidateClientTransactions(string documentNumber)
+    ValidateClientTransactions(string documentNumber, int TransactionType)
     {
         using var conn = _db.CreateConnection();
         using var cmd = new SqlCommand("sp_ValidateClientTransactions", conn);
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@IdClient", documentNumber);
+        cmd.Parameters.AddWithValue("@TransactionType", TransactionType);
         await conn.OpenAsync();
         using var rd = await cmd.ExecuteReaderAsync();
 

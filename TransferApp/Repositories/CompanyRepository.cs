@@ -28,7 +28,7 @@ public class CompanyRepository
             cmd.Parameters.AddWithValue("@PhoneContactPerson", model.PhoneContactPerson);
             cmd.Parameters.AddWithValue("@Position", model.Position);
             cmd.Parameters.AddWithValue("@TransactionType", model.TransactionType);
-            cmd.Parameters.AddWithValue("@StatusCompany", model.StatusCompany);
+            cmd.Parameters.AddWithValue("@StatusCompany", model.StatusCompany ?? "Excellent");
             cmd.Parameters.AddWithValue("@UserC", model.UserC);
 
             await conn.OpenAsync();

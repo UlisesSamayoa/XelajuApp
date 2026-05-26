@@ -81,7 +81,7 @@ public class TransactionsController : Controller
                 });
             }
 
-            var aml = await _parameters.ValidateClientTransactions(m.IdClient_fk.ToString());
+            var aml = await _parameters.ValidateClientTransactions(m.IdClient_fk.ToString(), m.TransactionType);
 
             bool amountExceeded = (aml.TotalAmount + m.Amount) > aml.MaxAmount;
 

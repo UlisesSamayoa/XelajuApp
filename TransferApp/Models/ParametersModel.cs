@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace TransferApp.Models
+﻿namespace TransferApp.Models
 {
     public class ParametersModel
     {
@@ -9,6 +7,8 @@ namespace TransferApp.Models
         public int? CountDays { get; set; }
         public decimal MaxAmount { get; set; }
         public int MaxTransactions { get; set; }
+        public int Transactiontype { get; set; }
+        public string TransactiontypeName { get; set; }
         public int Status { get; set; }
         public DateTime DateC { get; set; }
         public string UserC { get; set; }

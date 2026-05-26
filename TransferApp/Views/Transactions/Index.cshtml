@@ -92,7 +92,11 @@
                 <i class="bi bi-lightbulb-fill"></i> Paid Service
             </button>
         </div>
-
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <input type="text" id="filterTransactioType" class="form-control" placeholder="Filter by Transaction type">
+            </div>
+        </div>
         <table id="tblTx" class="table table-hover w-100">
             <thead class="table-light">
                 <tr>
@@ -269,8 +273,6 @@
                     <input id="JustifyDetails" class="form-control mb-2" placeholder="Justify Details" />
                 </div>
                 <hr />
-                @* <input type="file" class="form-control" onchange="previewImage(this)" id="ImgJustify" />
-                <img id="imgPreview" class="img-preview" /> *@
                 <label id="justifyCounter">0 / 5 files</label>
                 <div id="justifyContainer">
                     <div class="justify-item row mb-2">
@@ -491,111 +493,6 @@
     </div>
 </div>
 
-@* <div class="modal fade" id="modalTxDetails">
-    <div class="modal-dialog modal-xl modal-dialog-scrollable">
-        <div class="modal-content p-3">
-
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <h5 class="mb-0">Transaction Details</h5>
-                <button class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <hr>
-
-            <!-- SUMMARY CARD -->
-            <div class="row mb-3">
-                <div class="col-md-3">
-                    <div class="card shadow-sm p-2">
-                        <small class="text-muted">Reference</small>
-                        <b id="dReference"></b>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="card shadow-sm p-2">
-                        <small class="text-muted">Amount</small>
-                        <b id="dAmount"></b>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="card shadow-sm p-2">
-                        <small class="text-muted">Commission</small>
-                        <b id="dCommission"></b>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="card shadow-sm p-2 bg-light">
-                        <small class="text-muted">Total</small>
-                        <b id="dTotal"></b>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SENDER & RECEIVER -->
-            <div class="row">
-
-                <!-- SENDER -->
-                <div class="col-md-6">
-                    <div class="card p-3 shadow-sm">
-                        <h6 class="text-primary">Sender</h6>
-
-                        <p class="mb-1"><b>Name:</b> <span id="dSender"></span></p>
-                        <p class="mb-1"><b>Document:</b> <span id="dSenderDoc"></span></p>
-                        <p class="mb-1"><b>Phone:</b> <span id="dSenderPhone"></span></p>
-                        <p class="mb-1"><b>Address:</b> <span id="dSenderAddress"></span></p>
-                        <p class="mb-0"><b>Country:</b> <span id="dSenderCountry"></span></p>
-                    </div>
-                </div>
-
-                <!-- RECEIVER -->
-                <div class="col-md-6">
-                    <div class="card p-3 shadow-sm">
-                        <h6 class="text-success">Receiver</h6>
-
-                        <p class="mb-1"><b>Name:</b> <span id="dReceiver"></span></p>
-                        <p class="mb-1"><b>Document:</b> <span id="dReceiverDoc"></span></p>
-                        <p class="mb-1"><b>Phone:</b> <span id="dReceiverPhone"></span></p>
-                        <p class="mb-1"><b>Address:</b> <span id="dReceiverAddress"></span></p>
-                        <p class="mb-0"><b>Country:</b> <span id="dReceiverCountry"></span></p>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- JUSTIFICATION -->
-            <div class="row mt-3">
-
-                <div class="col-md-6">
-                    <div class="card p-3 shadow-sm">
-                        <h6>AML Justification</h6>
-                        <p id="dJustify"></p>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="card p-3 shadow-sm text-center">
-                        <h6>Evidence</h6>
-                        <img id="imgJustifyPreview"
-                             class="img-fluid rounded border"
-                             style="max-height:250px; object-fit:contain;">
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- FOOTER -->
-            <div class="text-end mt-3">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">
-                    Close
-                </button>
-            </div>
-
-        </div>
-    </div>
-</div> *@
-
 <div class="modal fade" id="modalTxDetails">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content border-0 shadow-lg">
@@ -813,39 +710,8 @@
             <h5>New Check Cashing</h5>
 
             <form id="formSimpleTx">
-
+                <input type="hidden" id="SimpleTx_TransactionType" />
                 <!-- 🔵 HEADER -->
-                <div class="row">
-                    <div class="col-3">
-                        <label class="form-label">Reference Number *</label>
-                        <input id="SimpleTx_ReferenceNumber" class="form-control mb-2" placeholder="Reference Number" />
-                    </div>
-                    <div class="col-2">
-                        <label class="form-label">Transaction Type *</label>
-                        <input id="SimpleTx_TransactionTypeName" type="text" class="form-control mb-2" readonly />
-                        <input type="hidden" id="SimpleTx_TransactionType"/>
-                    </div>
-                    <div class="col-2">
-                        <label class="form-label">Company *</label>
-                        <select id="SimpleTx_Company" class="form-control mb-2"></select>
-                    </div>
-
-                    <div class="col-2">
-                        <label class="form-label">Amount *</label>
-                        <input id="SimpleTx_Amount" type="number" class="form-control mb-2" placeholder="Amount" />
-                    </div>
-
-                    <div class="col-1">
-                        <label class="form-label">Commission</label>
-                        <input id="SimpleTx_Commission" type="number" class="form-control mb-2" readonly placeholder="0.0" />
-                    </div>
-                    <div class="col-2">
-                        <label class="form-label">Total Amount</label>
-                        <input id="SimpleTx_TotalAmount" type="number" class="form-control mb-2" readonly placeholder="0.0" />
-                    </div>
-
-                </div>
-                <hr />
                 <div class="row">
                     <div class="input-group" style="margin-bottom:5px;">
                         <h6>Sender Info </h6> &nbsp;&nbsp;&nbsp;
@@ -886,43 +752,101 @@
                     </div>
                 </div>
                 <hr />
-                @* <div class="row">
-
-                    <div class="col-12">
-                        <label class="form-label">Notes / Justification</label>
-                        <input id="SimpleTx_JustifyDetails" class="form-control mb-2" />
+                <div class="row">
+                    <div class="" id="DivBaseCheck">
+                        <div class="row">
+                            <div class="col-11">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <label class="form-label">Reference Number *</label>
+                                        <input id="SimpleTx_ReferenceNumber" class="form-control mb-2" placeholder="Reference Number" />
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <label class="form-label">Select Company</label>
+                                            </div>
+                                            <div class="col-12">
+                                                <button class="btn btn-primary">Search <i class="bi bi-search"></i></button>&nbsp;&nbsp;
+                                                <button class="btn btn-success">New <i class="bi bi-plus-lg"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label">Company *</label>
+                                        @* <select id="SimpleTx_Company" class="form-control mb-2"></select> *@
+                                        <input id="SimpleTx_Company" class="form-control mb-2"/>
+                                    </div>
+                                    <div class="col-2">
+                                        <label class="form-label">Amount *</label>
+                                        <input id="SimpleTx_Amount" type="number" class="form-control mb-2" placeholder="Amount" />
+                                    </div>
+                                    <div class="col-3">
+                                        <label class="form-label">Check commission</label>
+                                        <input id="SimpleTx_Commission" type="number" class="form-control mb-2" placeholder="0.0" />
+                                    </div>
+                                    <div class="col-3">
+                                        <label class="form-label">Fixed commission</label>
+                                        <input id="SimpleTx_Commission_Fix" type="number" class="form-control mb-2" placeholder="0.0" value="2" />
+                                    </div>
+                                    <div class="col-3">
+                                        <label class="form-label">Total commission</label>
+                                        <input id="SimpleTx_Commission_Fix" type="number" class="form-control mb-2" placeholder="0.0" />
+                                    </div>
+                                    <div class="col-3">
+                                        <label class="form-label">Total Amount</label>
+                                        <input id="SimpleTx_TotalAmount" type="number" class="form-control mb-2" placeholder="0.0" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-1">
+                                <div class="col-1">
+                                    <label class="form-label"><br /><br /></label>
+                                    <button class="btn btn-success"><i class="bi bi-plus-lg" onclick="SimpleTx_addCheckFile()"></i></button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
+                </div>
+                <hr />
+                <div class="col-12">
+                    <label class="form-label">Justify Details</label>
+                    <input id="SimpleTx_JustifyDetails" class="form-control mb-2" placeholder="Justify Details" />
+                </div>
+                <hr />
+                <label id="SimpleTx_justifyCounter">0 / 5 files</label>
+                <div id="SimpleTx_justifyContainer">
+                    <div class="SimpleTx_justify-item row mb-2">
+                        <div class="col-11">
+                            <input type="file" name="SimpleTx_ImgJustify" class="form-control SimpleTx_justify-file" />
+                        </div>
+                        <div class="col-1">
+                            <button type="button" class="btn btn-success" onclick="SimpleTx_addJustifyFile()">
+                                <i class="bi bi-plus-lg"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="row">
-
-                    <div class="col-12">
-                        <label class="form-label">Attachment</label>
-                        <input type="file"
-                               class="form-control"
-                               id="SimpleTx_File"
-                               onchange="previewSimpleTxImage(this)" />
+                    <div class="col-6">
+                        <label class="form-label">Justify Agent Name</label>
+                        <input id="SimpleTx_Justify_AgentName" type="text" class="form-control mb-2" placeholder="Agent name" />
                     </div>
-
-                    <div class="col-12 mt-2">
-                        <img id="SimpleTx_ImgPreview"
-                             class="img-preview"
-                             style="max-width:200px; display:none;" />
+                    <div class="col-6">
+                        <label class="form-label">Justify Date</label>
+                        <input id="SimpleTx_Justify_DateError" type="datetime-local" class="form-control mb-2" />
                     </div>
-
-                </div> *@
-
+                </div>
             </form>
-
             <div class="modal-footer">
                 <button class="btn btn-primary" id="btnSaveSimpleTx">
                     <i class="bi bi-floppy-fill"></i> Save
                 </button>
             </div>
-
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="modalOrderTx">
     <div class="modal-dialog modal-xl">
         <div class="modal-content card-custom p-3">
@@ -1340,16 +1264,22 @@
             applyPhoneMask('#PService_SenderPhone');
 
             applyPhoneMask('#SimpleTx_C_Phone');
+            $('#filterTransactioType').on('keyup', function () {
+                tableTx.column(5).search(this.value).draw();
+            });
         });
+        
+
         function applyPhoneMask(selector) {
             Inputmask("(999)-999-9999").mask(selector);
         }
          
         document.querySelectorAll('.btn').forEach(btn => {
           btn.addEventListener('click', function(event) {
-            event.preventDefault(); // evita el submit
+            event.preventDefault();
           });
         });
+
         function ObtenerTypoTransaccion(NumeroT,InputId,InputName){
             $.get('/TransactionsTypes/GetByNumber?id='+NumeroT,
             function(r){
@@ -2410,6 +2340,7 @@
             $('#TotalAmount').val(total.toFixed(2));
         }
         $('#btnSaveTx').click(async function(){
+            let TransactionTypeField = $('#TransactionType').val();
             if(!validateRequiredFields())
                 return;
             let exists =
@@ -2424,9 +2355,7 @@
                 );
                 return;
             }
-            let validation =
-                await $.get(
-                    '/Parameters/ValidateClientTransactions?documentNumber='+selectedClientId);
+            let validation = await $.get('/Parameters/ValidateClientTransactions?documentNumber='+selectedClientId+'&TransactionType='+TransactionTypeField);
 
             let warnings =buildRiskMessages(validation,$('#Amount').val());
          if(warnings.length > 0){
@@ -2726,7 +2655,17 @@
             $('#SimpleTx_modalNewClient').modal('show');
 
         }
+        function loadModalSearchCompany(numeroT, prefijo) {
+            currentPrefix = prefijo + '_';
+            $('#SimpleTx_modalSearchCompany').modal('show');
+            //loadSimpleTxSearchClient();
 
+        }
+
+        function loadModalNewCompany(numeroT, prefijo) {
+            currentPrefix = prefijo + '_';
+            $('#SimpleTx_modalNewCompany').modal('show');
+        }
         //////////////////////////////////////////////////////////
         // 🔵 SEARCH CLIENT DATATABLE
         //////////////////////////////////////////////////////////
@@ -2785,6 +2724,41 @@
             }, 400);
 
         });
+
+        const SimpleTx_MAX_JUSTIFY_FILES = 5;
+
+        function SimpleTx_addJustifyFile() {
+            let total = $('.SimpleTx_justify-item').length;
+            if (total >= SimpleTx_MAX_JUSTIFY_FILES) {
+                $('#SimpleTx_btnAddJustify').prop('disabled', true);
+                return;
+            }
+            let html = `
+                <div class="SimpleTx_justify-item row mb-2">
+                    <div class="col-11">
+                        <input type="file" name="SimpleTx_ImgJustify" class="form-control SimpleTx_justify-file" />
+                    </div>
+                    <div class="col-1">
+                        <button type="button" class="btn btn-danger" onclick="SimpleTx_removeJustifyFile(this)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            $('#SimpleTx_justifyContainer').append(html);
+            SimpleTx_validateJustifyLimit();
+        }
+
+        function SimpleTx_removeJustifyFile(btn) {
+            $(btn).closest('.SimpleTx_justify-item').remove();
+            SimpleTx_validateJustifyLimit();
+        }
+
+        function SimpleTx_validateJustifyLimit() {
+            let total =$('.SimpleTx_justify-item').length;
+            $('#SimpleTx_btnAddJustify').prop('disabled',total >= SimpleTx_MAX_JUSTIFY_FILES);
+            $('#SimpleTx_justifyCounter').text(`${total} / ${SimpleTx_MAX_JUSTIFY_FILES} files`);
+        }
 
         //////////////////////////////////////////////////////////
         // 🔵 SELECT CLIENT
@@ -3099,6 +3073,20 @@
             let senderDocNumber = $('#' + prefix + 'SenderDocumentNumber').val().trim();
             let senderPhone = $('#' + prefix + 'SenderPhone').val().trim();
             let senderAddress = $('#' + prefix + 'SenderAddress').val().trim();
+            let justifyDetails = $('#' + prefix + 'JustifyDetails').val().trim();
+            let JustifyAgentName = $('#' + prefix + 'Justify_AgentName').val().trim();
+            let JustifyDateError = $('#' + prefix + 'Justify_DateError').val().trim();
+
+            let validation = await $.get('/Parameters/ValidateClientTransactions?documentNumber='+selectedClients[prefix]+'&TransactionType='+type);
+            let warnings = CCbuildRiskMessages(validation,$('#Amount').val());
+                 if(warnings.length > 0){
+                    let validAML = CCvalidateAMLRequiredFields();
+                    if(!validAML)
+                        return;
+                    let accepted = await CCconfirmAMLWarnings(warnings);
+                    if(!accepted)
+                        return;
+                  }
 
             if (!reference)
                 return Swal.fire('Error', 'Reference Number is required', 'error');
@@ -3168,6 +3156,11 @@
             // if (file) {
             //     formData.append("ImgJustify", file);
             // }
+            $('.SimpleTx_justify-file').each(function () {
+                if (this.files.length > 0) {
+                    formData.append('SimpleTx_ImgJustify',this.files[0]);
+                }
+            });
             Swal.fire({
                 title: 'Saving...',
                 allowOutsideClick: false,
@@ -3222,6 +3215,77 @@
                 }
             });
         });
+
+        function CCbuildRiskMessages(validation){
+            let warnings = [];
+            let amount = parseFloat($('#SimpleTx_Amount').val()) || 0;
+            let futureAmount = parseFloat(validation.totalAmount || 0) + amount;
+            let futureTransactions = parseInt(validation.totalTransactions || 0) + 1;
+            if(futureAmount > validation.maxAmount){
+                warnings.push(`
+                    Maximum amount exceeded.<br>
+                    Current Total: <b>$${futureAmount.toFixed(2)}</b><br>
+                    Allowed: <b>$${parseFloat(validation.maxAmount).toFixed(2)}</b>
+                `);
+            }
+            if(futureTransactions > validation.maxTransactions){
+                warnings.push(`
+                    Maximum transactions exceeded.<br>
+                    Current Transactions: <b>${futureTransactions}</b><br>
+                    Allowed: <b>${validation.maxTransactions}</b>
+                `);
+            }
+            return warnings;
+        }
+        async function CCconfirmAMLWarnings(warnings){
+
+            if(warnings.length === 0)
+                return true;
+            let html = '';
+            warnings.forEach(x => {
+                html += `
+                    <div class="text-danger mb-2">
+                        ⚠️ ${x}
+                    </div>
+                `;
+            });
+
+            let result = await Swal.fire({
+                icon:'warning',
+                title:'AML Warning',
+                html:html,
+                showCancelButton:true,
+                confirmButtonText:'Accept Risk',
+                cancelButtonText:'Cancel'
+            });
+            return result.isConfirmed;
+        }
+        function CCvalidateAMLRequiredFields() {
+            let justify =$('#SimpleTx_JustifyDetails').val().trim();
+            if (!justify) {
+                Swal.fire(
+                    'AML Validation',
+                    'Justify Details is required',
+                    'warning');
+                $('#SimpleTx_JustifyDetails').focus();
+                return false;
+            }
+            let hasFiles = false;
+            $('.SimpleTx_justify-file').each(function () {
+                if (this.files.length > 0) {
+                    hasFiles = true;
+                    return false;
+                }
+            });
+            if (!hasFiles) {
+                Swal.fire(
+                    'AML Validation',
+                    'At least one attachment is required',
+                    'warning');
+                return false;
+            }
+            return true;
+        }
 
         $('#btnSaveMOrder').click(async function () {
 
