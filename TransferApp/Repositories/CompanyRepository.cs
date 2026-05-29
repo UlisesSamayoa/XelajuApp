@@ -243,6 +243,7 @@ public class CompanyRepository
                 Name = rd["Name"].ToString(),
                 SwiftCode = rd["SwiftCode"].ToString(),
                 StatusCompany = rd["StatusCompany"].ToString(),
+                StatusCompanyComment = rd["StatusCompanyComment"].ToString()
             });
         }
         await conn.CloseAsync();

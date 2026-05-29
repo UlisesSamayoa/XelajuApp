@@ -697,6 +697,7 @@ C:\GIT\XelajuApp\XelajuApp\TransferApp\bin\Debug\net8.0\Microsoft.IdentityModel.
 C:\GIT\XelajuApp\XelajuApp\TransferApp\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\GIT\XelajuApp\XelajuApp\TransferApp\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 C:\GIT\XelajuApp\XelajuApp\TransferApp\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
+C:\GIT\XelajuApp\XelajuApp\TransferApp\bin\Debug\net8.0\Newtonsoft.Json.dll
 C:\GIT\XelajuApp\XelajuApp\TransferApp\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
 C:\GIT\XelajuApp\XelajuApp\TransferApp\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll
 C:\GIT\XelajuApp\XelajuApp\TransferApp\bin\Debug\net8.0\System.Diagnostics.EventLog.dll

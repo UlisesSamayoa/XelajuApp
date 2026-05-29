@@ -225,12 +225,36 @@ public class TransactionsRepository
         await conn.CloseAsync();
         return null;
     }
-    public async Task CreateSimple(SimpleTransactionsModel m)
+    //public async Task CreateSimple(SimpleTransactionsModel m)
+    //{
+    //    using var conn = _db.CreateConnection();
+    //    using var cmd = new SqlCommand("sp_CreateSimpleTransaction", conn);
+    //    cmd.CommandType = CommandType.StoredProcedure;
+
+    //    cmd.Parameters.AddWithValue("@ReferenceNumber", m.ReferenceNumber);
+    //    cmd.Parameters.AddWithValue("@TransactionType", m.TransactionType);
+    //    cmd.Parameters.AddWithValue("@Company", m.Company);
+    //    cmd.Parameters.AddWithValue("@Amount", m.Amount);
+    //    cmd.Parameters.AddWithValue("@Commission", m.Commission);
+    //    cmd.Parameters.AddWithValue("@TotalAmount", m.TotalAmount);
+    //    cmd.Parameters.AddWithValue("@SenderName", m.SenderName);
+    //    cmd.Parameters.AddWithValue("@SenderDocumentType", m.SenderDocumentType);
+    //    cmd.Parameters.AddWithValue("@SenderDocumentNumber", m.SenderDocumentNumber);
+    //    cmd.Parameters.AddWithValue("@JustifyDetails", m.JustifyDetails ?? "");
+    //    cmd.Parameters.AddWithValue("@SenderPhone", m.SenderPhone);
+    //    cmd.Parameters.AddWithValue("@SenderAddress", m.SenderAddress);
+    //    cmd.Parameters.AddWithValue("@UserC", m.UserC);
+    //    cmd.Parameters.AddWithValue("@IdClient_fk", m.IdClient_fk);
+
+    //    await conn.OpenAsync();
+    //    await cmd.ExecuteNonQueryAsync();
+    //    await conn.CloseAsync();
+    //}
+    public async Task<int> CreateSimple(SimpleTransactionsModel m)
     {
         using var conn = _db.CreateConnection();
         using var cmd = new SqlCommand("sp_CreateSimpleTransaction", conn);
         cmd.CommandType = CommandType.StoredProcedure;
-
         cmd.Parameters.AddWithValue("@ReferenceNumber", m.ReferenceNumber);
         cmd.Parameters.AddWithValue("@TransactionType", m.TransactionType);
         cmd.Parameters.AddWithValue("@Company", m.Company);
@@ -245,10 +269,10 @@ public class TransactionsRepository
         cmd.Parameters.AddWithValue("@SenderAddress", m.SenderAddress);
         cmd.Parameters.AddWithValue("@UserC", m.UserC);
         cmd.Parameters.AddWithValue("@IdClient_fk", m.IdClient_fk);
-
         await conn.OpenAsync();
-        await cmd.ExecuteNonQueryAsync();
+        var result = await cmd.ExecuteScalarAsync();
         await conn.CloseAsync();
+        return Convert.ToInt32(result);
     }
 
     public async Task ChangeStatus(int idTransaction, string status, string TransactionsStatusComment)
@@ -263,5 +287,6 @@ public class TransactionsRepository
         await cmd.ExecuteNonQueryAsync();
         await conn.CloseAsync();
     }
+
 
 }

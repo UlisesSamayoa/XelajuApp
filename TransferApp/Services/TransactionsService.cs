@@ -256,4 +256,81 @@ public class TransactionsService
         return await _repoAttach.GetAttachments(idTransaction);
     }
 
+    public async Task CreateSimpleBatch(SimpleTransactionsBatchModel m, List<IFormFile> files)
+    {
+        if (m.Checks == null || !m.Checks.Any())
+        {
+            throw new Exception("No checks received");
+        }
+        // ====================================
+        // SAVE FILES ONCE
+        // ====================================
+        List<TransactionAttachmentModel> attachments = new();
+        if (files != null && files.Any())
+        {
+            foreach (var file in files)
+            {
+                string filePath = SaveTransactionFile(file, m.TransactionType, m.SenderName, m.SenderDocumentNumber, "BATCH");
+                attachments.Add(
+                    new TransactionAttachmentModel
+                    {
+                        FileName = Path.GetFileName(filePath),
+                        OriginalFileName = file.FileName,
+                        FileExtension = Path.GetExtension(file.FileName),
+                        ContentType = file.ContentType,
+                        FilePath = filePath,
+                        AttachmentType = "TRANSACTION_DOCUMENT",
+                        FileSize = file.Length,
+                        CreatedBy = m.UserC
+                    });
+            }
+        }
+
+        // ====================================
+        // CREATE EACH CHECK
+        // ====================================
+        foreach (var check in m.Checks)
+        {
+            var tx =
+                new SimpleTransactionsModel
+                {
+                    IdClient_fk = m.IdClient_fk,
+                    ReferenceNumber = check.ReferenceNumber,
+                    TransactionType = m.TransactionType,
+                    Company = check.Company,
+                    Amount = check.Amount,
+                    Commission = check.Commission,
+                    TotalAmount = check.TotalAmount,
+                    SenderName = m.SenderName,
+                    SenderDocumentType = m.SenderDocumentType,
+                    SenderDocumentNumber = m.SenderDocumentNumber,
+                    SenderPhone = m.SenderPhone,
+                    SenderAddress = m.SenderAddress,
+                    JustifyDetails = m.JustifyDetails,
+                    UserC = m.UserC
+                };
+            int idTransaction = await _repo.CreateSimple(tx);
+            // ================================
+            // LINK ATTACHMENTS
+            // ================================
+            foreach (var attach in attachments)
+            {
+                await _repoAttach.CreateAttachment(
+                    new TransactionAttachmentModel
+                    {
+                        IdTransaction = idTransaction,
+                        FileName = attach.FileName,
+                        OriginalFileName = attach.OriginalFileName,
+                        FileExtension = attach.FileExtension,
+                        ContentType = attach.ContentType,
+                        FilePath = attach.FilePath,
+                        AttachmentType = attach.AttachmentType,
+                        FileSize = attach.FileSize,
+                        CreatedBy = attach.CreatedBy
+                    });
+            }
+        }
+    }
+
+
 }

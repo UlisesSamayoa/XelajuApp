@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Newtonsoft.Json;
 using TransferApp.Models;
 
 public class TransactionsController : Controller
@@ -131,36 +132,46 @@ public class TransactionsController : Controller
     //[HttpPost]
     //public async Task<IActionResult> CreateSimpleTx(SimpleTransactionsModel m)
     //{
-    //    await _service.CreateSimple(m);
-    //    return Json(new { success = true });
+    //    try
+    //    {
+    //        m.UserC = "admin";
+    //        await _service.CreateSimple(m);
+    //        return Json(new { success = true });
+    //    }
+    //    catch (SqlException ex)
+    //    {
+    //        return BadRequest(new
+    //        {
+    //            message = ex.Message,
+    //            code = ex.Number
+    //        });
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return BadRequest(new
+    //        {
+    //            message = "Unexpected error",
+    //            detail = ex.Message
+    //        });
+    //    }
     //}
     [HttpPost]
-    public async Task<IActionResult> CreateSimpleTx(SimpleTransactionsModel m)
+    public async Task<IActionResult> CreateSimpleTx([FromForm] SimpleTransactionsBatchModel m, [FromForm] string Checks, List<IFormFile> SimpleTx_ImgJustify)
     {
         try
         {
             m.UserC = "admin";
-
-            await _service.CreateSimple(m);
-
+            m.Checks = JsonConvert.DeserializeObject<List<SimpleTransactionDetailModel>>(Checks);
+            await _service.CreateSimpleBatch(m, SimpleTx_ImgJustify);
             return Json(new { success = true });
         }
         catch (SqlException ex)
         {
-            // 🔴 errores controlados desde THROW en el SP
-            return BadRequest(new
-            {
-                message = ex.Message,
-                code = ex.Number
-            });
+            return BadRequest(new { message = ex.Message, code = ex.Number });
         }
         catch (Exception ex)
         {
-            return BadRequest(new
-            {
-                message = "Unexpected error",
-                detail = ex.Message
-            });
+            return BadRequest(new { message = "Unexpected error", detail = ex.Message });
         }
     }
 

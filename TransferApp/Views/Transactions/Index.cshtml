@@ -754,7 +754,7 @@
                 <hr />
                 <div class="row">
                     <div class="" id="DivBaseCheck">
-                        <div class="row">
+                       @*  <div class="row">
                             <div class="col-11">
                                 <div class="row">
                                     <div class="col-3">
@@ -774,8 +774,9 @@
                                     </div>
                                     <div class="col-4">
                                         <label class="form-label">Company *</label>
-                                        @* <select id="SimpleTx_Company" class="form-control mb-2"></select> *@
-                                        <input id="SimpleTx_Company" class="form-control mb-2"/>
+                                        
+                                        <input id="SimpleTx_CompanyText" class="form-control mb-2" readonly/>
+                                        <input type="hidden" id="SimpleTx_Company" />
                                     </div>
                                     <div class="col-2">
                                         <label class="form-label">Amount *</label>
@@ -805,6 +806,67 @@
                                     <button class="btn btn-success"><i class="bi bi-plus-lg" onclick="SimpleTx_addCheckFile()"></i></button>
                                 </div>
                             </div>
+                        </div> *@
+                        <div id="SimpleTxContainer">
+
+                        <div class="row align-items-end g-2 mb-2 simpletx-row">
+                            <div class="col-2">
+                                <label class="form-label">
+                                    Reference
+                                </label>
+                                    <input id="SimpleTx_ReferenceNumber" class="form-control simpletx-reference" placeholder="Reference" />
+                            </div>
+                            <div class="col-3">
+                                <label class="form-label">
+                                    Company
+                                </label>
+                                <div class="input-group">
+                                    <input id="SimpleTx_CompanyText" class="form-control" placeholder="Company" readonly />
+                                    <button class="btn btn-primary" type="button" onclick="loadModalSearchCompany(0)">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                </div>
+                                    <input type="hidden" id="SimpleTx_Company" class="simpletx-company" />
+                            </div>
+                            <div class="col-1">
+                                <label class="form-label">
+                                    Amount
+                                </label>
+                                    <input id="SimpleTx_Amount" type="number" class="form-control simpletx-amount" placeholder="0.00" />
+                            </div>
+                            <div class="col-1">
+                                <label class="form-label">
+                                    %
+                                </label>
+                                <input id="SimpleTx_Commission" type="number" class="form-control" placeholder="0" />
+                            </div>
+                            <div class="col-1">
+                                <label class="form-label">
+                                    Fixed
+                                </label>
+                                <input id="SimpleTx_Commission_Fix" type="number" class="form-control" value="2" />
+                            </div>
+                           <div class="col-1">
+                                <label class="form-label">
+                                    Total Fee
+                                </label>
+                                <input id="SimpleTx_TotalCommission" type="number" class="form-control" placeholder="0.00" readonly />
+                            </div>
+                            <div class="col-2">
+                                <label class="form-label">
+                                    Total
+                                </label>
+                                <input id="SimpleTx_TotalAmount" type="number" class="form-control" placeholder="0.00" readonly />
+                            </div>
+                            <div class="col-1 d-flex gap-1">
+                                <button class="btn btn-success" type="button" onclick="SimpleTx_addCheckFile()">
+                                    <i class="bi bi-plus-lg"></i>
+                                </button>
+                                <button class="btn btn-danger" type="button">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -1210,6 +1272,7 @@
                             <th>Name</th>
                             <th>SwiftCode</th>
                             <th>Status Company</th>
+                            <th>Comment</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -2759,12 +2822,15 @@
 
         }
         //LOGICA DE BUSCAR COMPAÑIAS
-        function loadModalSearchCompany(numeroT, prefijo) {
-            currentPrefix = prefijo + '_';
+        // function loadModalSearchCompany(numeroT, prefijo) {
+        //     currentPrefix = prefijo + '_';
+        //     $('#SimpleTx_modalSearchCompany').modal('show');
+        //     loadSimpleTxSearchCompany();
+        // }
+        function loadModalSearchCompany(index) {
+            currentSimpleTxIndex = index;
             $('#SimpleTx_modalSearchCompany').modal('show');
-            //loadSimpleTxSearchClient();
             loadSimpleTxSearchCompany();
-
         }
 
         function loadModalNewCompany(numeroT, prefijo) {
@@ -2843,7 +2909,9 @@
                             `;
                         }
                     },
-
+                    {
+                        data: 'statusCompanyComment'
+                    },
                     {
                         data: null,
                         render: function (d) {
@@ -2868,8 +2936,102 @@
                     }
                 ]
             });
-        } 
+        }
 
+        // function Global_selectCompany(id) {
+        //     $.get('/Companies/GetById?id=' + id, function (c) {
+        //         //selectedClients[currentPrefix] = c.idClient;
+        //         $('#SimpleTx_Company').val(c.idCompany);
+        //         $('#SimpleTx_CompanyText').val(c.name);
+        //         $('#SimpleTx_modalSearchCompany').modal('hide');
+        //         Swal.fire({
+        //             icon: 'success',
+        //             title: 'Company loaded',
+        //             timer: 1000,
+        //             showConfirmButton: false
+        //         });
+        //     });
+        // }
+        function Global_selectCompany(id) {
+            $.get('/Companies/GetById?id=' + id, function (c) {
+                let companyIdSelector = currentSimpleTxIndex == 0 ? '#SimpleTx_Company' : `#SimpleTx_Company_${currentSimpleTxIndex}`;
+                let companyTextSelector = currentSimpleTxIndex == 0 ? '#SimpleTx_CompanyText' : `#SimpleTx_CompanyText_${currentSimpleTxIndex}`;
+                $(companyIdSelector).val(c.idCompany);
+                $(companyTextSelector).val(c.name);
+                $('#SimpleTx_modalSearchCompany').modal('hide');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Company loaded',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+            });
+        }
+        let currentSimpleTxIndex = 0;
+        let simpleTxIndex = 1;
+
+        function SimpleTx_addCheckFile() {
+            // ocultar botón delete del primer row
+            $('.simpletx-row').first().find('.btn-remove-row').hide();
+
+            let html = `
+                <div class="row align-items-end g-2 mb-2 simpletx-row">
+                    <div class="col-2">
+                        <input id="SimpleTx_ReferenceNumber_${simpleTxIndex}" class="form-control simpletx-reference" placeholder="Reference" />
+                    </div>
+                    <div class="col-3">
+                        <div class="input-group">
+                            <input id="SimpleTx_CompanyText_${simpleTxIndex}" class="form-control" placeholder="Company" readonly />
+                            <button class="btn btn-primary" type="button" onclick="loadModalSearchCompany(${simpleTxIndex})">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                        <input type="hidden" id="SimpleTx_Company_${simpleTxIndex}" class="simpletx-company"/>
+                    </div>
+                    <div class="col-1">
+                        <input id="SimpleTx_Amount_${simpleTxIndex}" type="number" class="form-control simpletx-amount" placeholder="0.00" />
+                    </div>
+                    <div class="col-1">
+                        <input id="SimpleTx_Commission_${simpleTxIndex}" type="number" class="form-control" placeholder="0" />
+                    </div>
+                    <div class="col-1">
+                        <input id="SimpleTx_Commission_Fix_${simpleTxIndex}" type="number" class="form-control" value="2" />
+                    </div>
+                    <div class="col-1">
+                        <input
+                            id="SimpleTx_TotalCommission_${simpleTxIndex}" type="number" class="form-control" placeholder="0.00" readonly />
+                    </div>
+                    <div class="col-2">
+                        <input id="SimpleTx_TotalAmount_${simpleTxIndex}" type="number" class="form-control" placeholder="0.00" readonly />
+                    </div>
+                    <div class="col-1 d-flex gap-1">
+                        <button
+                            class="btn btn-success" type="button" onclick="SimpleTx_addCheckFile()">
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
+                        <button class="btn btn-danger btn-remove-row" type="button" onclick="SimpleTx_removeRow(this)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            $('#SimpleTxContainer').append(html);
+            simpleTxIndex++;
+            validateSimpleTxRows();
+        }
+
+        function SimpleTx_removeRow(btn) {
+            $(btn).closest('.simpletx-row').remove();
+            validateSimpleTxRows();
+        }
+
+        function validateSimpleTxRows() {
+            let rows = $('.simpletx-row');
+            // primer row sin delete
+            rows.first().find('.btn-remove-row').hide();
+            // demás rows con delete
+            rows.not(':first').find('.btn-remove-row').show();
+        }
         //////////////////////////////////////////////////////////
         // 🔵 COMPAÑIAS INPUT
         //////////////////////////////////////////////////////////
@@ -3282,111 +3444,185 @@
         // }
 
         //GUARDAR SimpleTx o CHECK CASHING
-            $('#btnSaveSimpleTx').click(async function () {
-
+                   $('#btnSaveSimpleTx').click(async function () {
             let prefix = "SimpleTx_";
-            let reference = $('#' + prefix + 'ReferenceNumber').val().trim();
-            let type = $('#' + prefix + 'TransactionType').val();
-            let company = $('#' + prefix + 'Company').val();
-            let amount = $('#' + prefix + 'Amount').val();
+            // =========================================
+            // BUILD CHECKS ARRAY
+            // =========================================
+            let checks = [];
+            let totalAmountAML = 0;
+            $('.simpletx-row').each(function () {
+                let row = $(this)
+                let reference =row.find('.simpletx-reference').val()?.trim();
+                let company =row.find('.simpletx-company').val();
+                let amount =parseFloat(row.find('.simpletx-amount').val()) || 0;
+                let commission = parseFloat(row.find('.simpletx-commission').val()) || 0;
+                let totalAmount = parseFloat(row.find('.simpletx-total').val()) || 0;
+                // IGNORE EMPTY ROWS
+                if (!reference && !company && amount <= 0) {
+                    return;
+                }
+                checks.push({
+                    ReferenceNumber: reference,
+                    Company: parseInt(company),
+                    Amount: amount,
+                    Commission: commission,
+                    TotalAmount: totalAmount
+                });
+                totalAmountAML += amount;
+            });
+            // =========================================
+            // VALIDATE CHECKS
+            // =========================================
+            if (checks.length <= 0) {
+                return Swal.fire('Error','At least one check is required','error');
+            }
+            // =========================================
+            // GLOBAL FIELDS
+            // =========================================
+            let type =$('#' + prefix + 'TransactionType').val();
             let senderName = $('#' + prefix + 'SenderName').val().trim();
             let senderDocType = $('#' + prefix + 'SenderDocumentType').val();
             let senderDocNumber = $('#' + prefix + 'SenderDocumentNumber').val().trim();
             let senderPhone = $('#' + prefix + 'SenderPhone').val().trim();
             let senderAddress = $('#' + prefix + 'SenderAddress').val().trim();
             let justifyDetails = $('#' + prefix + 'JustifyDetails').val().trim();
-            let JustifyAgentName = $('#' + prefix + 'Justify_AgentName').val().trim();
-            let JustifyDateError = $('#' + prefix + 'Justify_DateError').val().trim();
-
-            let validation = await $.get('/Parameters/ValidateClientTransactions?documentNumber='+selectedClients[prefix]+'&TransactionType='+type);
-            let warnings = CCbuildRiskMessages(validation,$('#Amount').val());
-                 if(warnings.length > 0){
-                    let validAML = CCvalidateAMLRequiredFields();
-                    if(!validAML)
-                        return;
-                    let accepted = await CCconfirmAMLWarnings(warnings);
-                    if(!accepted)
-                        return;
-                  }
-
-            if (!reference)
-                return Swal.fire('Error', 'Reference Number is required', 'error');
+            // =========================================
+            // BASIC VALIDATIONS
+            // =========================================
             if (!type)
-                return Swal.fire('Error', 'Transaction Type is required', 'error');
-            if (!company)
-                return Swal.fire('Error', 'Company is required', 'error');
-            if (!amount || amount <= 0)
-                return Swal.fire('Error', 'Amount is required', 'error');
+                return Swal.fire('Error','Transaction Type is required','error');
             if (!senderName)
-                return Swal.fire('Error', 'Sender Name is required', 'error');
+                return Swal.fire('Error','Sender Name is required','error');
             if (!senderDocType)
-                return Swal.fire('Error', 'Document Type is required', 'error');
+                return Swal.fire('Error','Document Type is required','error');
             if (!senderDocNumber)
-                return Swal.fire('Error', 'Document Number is required', 'error');
+                return Swal.fire('Error','Document Number is required','error');
             if (!senderPhone)
-                return Swal.fire('Error', 'Phone is required', 'error');
+                return Swal.fire('Error','Phone is required','error');
             if (!senderAddress)
-                return Swal.fire('Error', 'Address is required', 'error');
-            if (!selectedClients[prefix] || selectedClients[prefix] <= 0) {
-                return Swal.fire(
-                    'Error',
-                    'Select a valid client',
-                    'error'
-                );
+                return Swal.fire('Error','Address is required','error');
+            // =========================================
+            // VALIDATE EACH ROW
+            // =========================================
+            for (let i = 0; i < checks.length; i++) {
+                let check = checks[i];
+                if (!check.ReferenceNumber) {
+                    return Swal.fire('Error',`Reference is required on row ${i + 1}`,'error');
+                }
+                if (!check.Company || check.Company <= 0) {
+                    return Swal.fire('Error',`Company is required on row ${i + 1}`,'error');
+                }
+                if (!check.Amount || check.Amount <= 0) {
+                    return Swal.fire('Error',`Amount is required on row ${i + 1}`,'error');
+                }
+            }
+
+            // =========================================
+            // CLIENT VALIDATION
+            // =========================================
+            if (
+                !selectedClients[prefix] || selectedClients[prefix] <= 0
+            ) {
+                return Swal.fire('Error','Select a valid client','error');
             }
             let clientValidation = await $.get(
-                '/Clients/GetById?id=' + selectedClients[prefix]
-            );
-            if (!clientValidation || !clientValidation.idClient) {
-                return Swal.fire(
-                    'Error',
-                    'Client no longer exists',
-                    'error'
-                );
-            }
-            let formData = new FormData();
-            formData.append(
-                "IdClient_fk",
+                '/Clients/GetById?id=' +
                 selectedClients[prefix]
             );
-            formData.append("ReferenceNumber", reference);
-            formData.append("TransactionType", type);
-            formData.append("Company", company);
-            formData.append("Amount", amount);
+            if (!clientValidation || !clientValidation.idClient
+            ) {
+                return Swal.fire('Error','Client no longer exists','error');
+            }
+            // =========================================
+            // AML VALIDATION
+            // =========================================
+            let validation = await $.get(
+                '/Parameters/ValidateClientTransactions' +
+                '?documentNumber=' + selectedClients[prefix] +
+                '&TransactionType=' + type
+            );
+            let warnings = [];
+            let futureAmount = parseFloat(validation.totalAmount || 0) + totalAmountAML;
+            let futureTransactions = parseInt(validation.totalTransactions || 0) + checks.length;
+            if (futureAmount > validation.maxAmount) {
+                warnings.push(`
+                    Maximum amount exceeded.<br>
+                    Current Total:
+                    <b>$${futureAmount.toFixed(2)}</b><br>
+                    Allowed:
+                    <b>$${parseFloat(validation.maxAmount).toFixed(2)}</b>
+                `);
+            }
+            if (
+                futureTransactions >
+                validation.maxTransactions
+            ) {
+                warnings.push(`
+                    Maximum transactions exceeded.<br>
+                    Current Transactions:
+                    <b>${futureTransactions}</b><br>
+                    Allowed:
+                    <b>${validation.maxTransactions}</b>
+                `);
+            }
+            // =========================================
+            // AML REQUIREMENTS
+            // =========================================
+            if (warnings.length > 0) {
+                let validAML =CCvalidateAMLRequiredFields();
+                if (!validAML)
+                    return;
+                let accepted =await CCconfirmAMLWarnings(warnings);
+                if (!accepted)
+                    return;
+            }
+            // =========================================
+            // BUILD FORM DATA
+            // =========================================
+            let formData = new FormData();
+            formData.append("IdClient_fk",selectedClients[prefix]);
+            formData.append("TransactionType",type);
+            formData.append("SenderName",senderName);
+            formData.append("SenderDocumentType",senderDocType);
+            formData.append("SenderDocumentNumber",senderDocNumber);
+            formData.append("SenderPhone",senderPhone);
+            formData.append("SenderAddress",senderAddress);
+            formData.append("JustifyDetails",justifyDetails);
+            formData.append("UserC","admin");
 
+            // =========================================
+            // SEND CHECKS ARRAY
+            // =========================================
             formData.append(
-                "Commission",
-                $('#' + prefix + 'Commission').val()
+                "Checks",
+                JSON.stringify(checks)
             );
 
-            formData.append(
-                "TotalAmount",
-                $('#' + prefix + 'TotalAmount').val()
-            );
-            formData.append("SenderName", senderName);
-            formData.append("SenderDocumentType", senderDocType);
-            formData.append("SenderDocumentNumber", senderDocNumber);
-            formData.append("SenderPhone", senderPhone);
-            formData.append("SenderAddress", senderAddress);
-            // formData.append(
-            //     "JustifyDetails",
-            //     $('#' + prefix + '_JustifyDetails').val()
-            // );
-            formData.append("UserC", "admin");
-            // let file = $('#' + prefix + '_File')[0]?.files[0];
-            // if (file) {
-            //     formData.append("ImgJustify", file);
-            // }
+            // =========================================
+            // ATTACHMENTS
+            // =========================================
             $('.SimpleTx_justify-file').each(function () {
                 if (this.files.length > 0) {
-                    formData.append('SimpleTx_ImgJustify',this.files[0]);
+                    formData.append(
+                        'SimpleTx_ImgJustify',
+                        this.files[0]
+                    );
                 }
             });
-            Swal.fire({
-                title: 'Saving...',
-                allowOutsideClick: false,
-                didOpen: () => Swal.showLoading()
-            });
+            // =========================================
+            // DEBUG
+            // =========================================
+            for (let pair of formData.entries()) {
+                console.log(pair[0], pair[1]);
+            }
+            // =========================================
+            // LOADING
+            // =========================================
+            Swal.fire({title: 'Saving...',allowOutsideClick: false,didOpen: () => Swal.showLoading()});
+            // =========================================
+            // AJAX
+            // =========================================
             $.ajax({
                 url: '/Transactions/CreateSimpleTx',
                 method: 'POST',
@@ -3396,43 +3632,32 @@
                 success: function () {
                     $('#modalSimpleTx').modal('hide');
                     $('#formSimpleTx')[0].reset();
-                    // $('#' + prefix + '_ImgPreview').hide();
                     selectedClients[prefix] = null;
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Transaction saved',
-                        timer: 1200,
-                        showConfirmButton: false
-                    });
+                    Swal.fire({icon: 'success',title: 'Transactions saved',timer: 1200,showConfirmButton: false});
                     $('#tblTx').DataTable().ajax.reload();
                 },
                 error: function (err) {
-                    let msg = err.responseJSON?.message || err.responseText ||'Error';
-                    if (msg.includes('Reference number already exists')) {
-                        Swal.fire(
-                            'Duplicate',
-                            'This reference number already exists',
-                            'warning'
+                    let msg = err.responseJSON?.message || err.responseText || 'Error';
+                    if (
+                        msg.includes('Reference number already exists')
+                    ) {
+                        Swal.fire('Duplicate','One reference number already exists','warning');
+                        return;
+                    }
+                    if (
+                        msg.includes('Invalid transaction type')
+                    ) {
+                        Swal.fire('Error','Invalid transaction type','error');
+                        return;
+                    }
+                    if (
+                        msg.includes('Total amount mismatch')
+                    ) {
+                        Swal.fire('Warning','Amount was modified. Please recheck values.','warning'
                         );
                         return;
                     }
-                    if (msg.includes('Invalid transaction type')) {
-                        Swal.fire(
-                            'Error',
-                            'Invalid transaction type',
-                            'error'
-                        );
-                        return;
-                    }
-                    if (msg.includes('Total amount mismatch')) {
-                        Swal.fire(
-                            'Warning',
-                            'Amount was modified. Please recheck values.',
-                            'warning'
-                        );
-                        return;
-                    }
-                    Swal.fire('Error', msg, 'error');
+                    Swal.fire('Error',msg,'error');
                 }
             });
         });
@@ -3938,7 +4163,7 @@
         // }
 
                 function loadCompaniesByTransactionType(transactionType, selectId, selectedValue = null) {
-
+                    $('#SimpleTx_Company').val('');
             $.get(
                 '/Companies/GetByTransactionType?transactionType=' + transactionType,
                 function (data) {
@@ -3967,6 +4192,7 @@
                         );
                     });
                 }
+                
             );
         }
 
