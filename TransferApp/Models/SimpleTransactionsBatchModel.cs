@@ -10,6 +10,7 @@
         public string SenderPhone { get; set; }
         public string SenderAddress { get; set; }
         public string JustifyDetails { get; set; }
+        public decimal TotalAmount { get; set; }
         public string UserC { get; set; }
         public List<SimpleTransactionDetailModel> Checks { get; set; }
     }
