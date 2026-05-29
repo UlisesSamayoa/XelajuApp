@@ -102,4 +102,19 @@ public class CompaniesController : Controller
         }
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Search(string term)
+    {
+        try
+        {
+            var data = await _service.Search(term);
+            return Json(data);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+
 }

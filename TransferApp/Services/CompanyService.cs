@@ -63,4 +63,12 @@ public class CompanyService
         );
     }
 
+    public async Task<List<CompaniesModel>> Search(string term)
+    {
+        if (string.IsNullOrWhiteSpace(term))
+            return new List<CompaniesModel>();
+
+        return await _repo.Search(term);
+    }
+
 }

@@ -1203,16 +1203,13 @@
             <!-- BODY -->
             <div class="modal-body">
 
-                <input id="SimpleTx_searchClientInput"
-                       class="form-control mb-3 search-input"
-                       placeholder="Search by name or document..." />
-
-                <table id="SimpleTx_tblSearchClient" class="table table-hover w-100">
+                <input id="SimpleTx_searchCompanyInput" class="form-control mb-3 search-input" placeholder="Search by name or document..." />
+                <table id="SimpleTx_tblSearchCompany" class="table table-hover w-100">
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Document</th>
-                            <th>Phone</th>
+                            <th>SwiftCode</th>
+                            <th>Status Company</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -2761,10 +2758,12 @@
             $('#SimpleTx_modalNewClient').modal('show');
 
         }
+        //LOGICA DE BUSCAR COMPAÑIAS
         function loadModalSearchCompany(numeroT, prefijo) {
             currentPrefix = prefijo + '_';
             $('#SimpleTx_modalSearchCompany').modal('show');
             //loadSimpleTxSearchClient();
+            loadSimpleTxSearchCompany();
 
         }
 
@@ -2772,6 +2771,122 @@
             currentPrefix = prefijo + '_';
             $('#SimpleTx_modalNewCompany').modal('show');
         }
+
+        //////////////////////////////////////////////////////////
+        // 🔵 SEARCH COMPAÑIAS DATATABLE
+        //////////////////////////////////////////////////////////
+
+                function loadSimpleTxSearchCompany() {
+
+            if ($.fn.DataTable.isDataTable('#SimpleTx_tblSearchCompany')) {
+                $('#SimpleTx_tblSearchCompany')
+                    .DataTable()
+                    .destroy();
+            }
+
+            SimpleTx_tableSearchClient =
+                $('#SimpleTx_tblSearchCompany')
+                .DataTable({
+
+                ajax: {
+                    url: '/Companies/Search',
+                    data: function (d) {
+                        d.term =
+                            $('#SimpleTx_searchCompanyInput')
+                                .val();
+                    },
+                    dataSrc: ''
+                },
+
+                destroy: true,
+
+                columns: [
+                    {
+                        data: null,
+                        render: d => `<b>${d.name}</b>`
+                    },
+
+                    {
+                        data: 'swiftCode'
+                    },
+
+                    {
+                        data: 'statusCompany',
+                        render: function (data) {
+
+                            let badgeClass = 'bg-secondary';
+                            let icon = 'bi-question-circle';
+
+                            switch (data) {
+
+                                case 'Excellent':
+                                    badgeClass = 'bg-success';
+                                    icon = 'bi-check-circle-fill';
+                                    break;
+
+                                case 'Suspicious':
+                                    badgeClass = 'bg-warning text-dark';
+                                    icon = 'bi-clock-fill';
+                                    break;
+
+                                case 'Rejected':
+                                    badgeClass = 'bg-danger';
+                                    icon = 'bi-x-circle-fill';
+                                    break;
+                            }
+
+                            return `
+                                <span class="badge ${badgeClass}">
+                                    <i class="bi ${icon}"></i>
+                                    ${data}
+                                </span>
+                            `;
+                        }
+                    },
+
+                    {
+                        data: null,
+                        render: function (d) {
+
+                            let isEnabled =
+                                d.statusCompany === 'Excellent';
+
+                            let btnClass =
+                                isEnabled
+                                    ? 'btn-success'
+                                    : 'btn-secondary';
+
+                            return `
+                                <button
+                                    class="btn ${btnClass} btn-sm"
+                                    onclick="Global_selectCompany(${d.idCompany})"
+                                    ${!isEnabled ? 'disabled' : ''}>
+                                    Select
+                                </button>
+                            `;
+                        }
+                    }
+                ]
+            });
+        } 
+
+        //////////////////////////////////////////////////////////
+        // 🔵 COMPAÑIAS INPUT
+        //////////////////////////////////////////////////////////
+
+        $('#SimpleTx_searchCompanyInput').on('keyup', function () {
+
+            clearTimeout(searchClientTimer);
+
+            searchClientTimer = setTimeout(() => {
+
+                if (SimpleTx_tableSearchClient) {
+                    SimpleTx_tableSearchClient.ajax.reload();
+                }
+
+            }, 400);
+
+        });
         //////////////////////////////////////////////////////////
         // 🔵 SEARCH CLIENT DATATABLE
         //////////////////////////////////////////////////////////

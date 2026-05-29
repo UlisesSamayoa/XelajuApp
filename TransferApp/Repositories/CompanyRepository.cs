@@ -222,4 +222,31 @@ public class CompanyRepository
         await conn.CloseAsync();
     }
 
+    public async Task<List<CompaniesModel>> Search(string term)
+    {
+        var list = new List<CompaniesModel>();
+
+        using var conn = _db.CreateConnection();
+        using var cmd = new SqlCommand("sp_SearchCompanies", conn);
+
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@Term", term ?? "");
+
+        await conn.OpenAsync();
+        using var rd = await cmd.ExecuteReaderAsync();
+
+        while (await rd.ReadAsync())
+        {
+            list.Add(new CompaniesModel
+            {
+                IdCompany = (int)rd["IdCompany"],
+                Name = rd["Name"].ToString(),
+                SwiftCode = rd["SwiftCode"].ToString(),
+                StatusCompany = rd["StatusCompany"].ToString(),
+            });
+        }
+        await conn.CloseAsync();
+        return list;
+    }
+
 }
