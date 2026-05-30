@@ -171,7 +171,8 @@ public class TransactionsController : Controller
         }
         catch (Exception ex)
         {
-            return BadRequest(new { message = "Unexpected error", detail = ex.Message });
+            //return BadRequest(new { message = "Unexpected error", detail = ex.Message });
+            return BadRequest(new { message = ex.Message });
         }
     }
 

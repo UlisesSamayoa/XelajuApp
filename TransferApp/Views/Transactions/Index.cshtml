@@ -838,19 +838,19 @@
                                 <label class="form-label">
                                     %
                                 </label>
-                                <input id="SimpleTx_Commission" type="number" class="form-control" placeholder="0" />
+                                    <input id="SimpleTx_Commission" type="number" class="form-control simpletx-commission" data-auto="true" placeholder="0" />
                             </div>
                             <div class="col-1">
                                 <label class="form-label">
                                     Fixed
                                 </label>
-                                <input id="SimpleTx_Commission_Fix" type="number" class="form-control" value="2" />
+                                    <input id="SimpleTx_Commission_Fix" type="number" class="form-control simpletx-fixed" value="2" />
                             </div>
                            <div class="col-1">
                                 <label class="form-label">
                                     Total Fee
                                 </label>
-                                    <input id="SimpleTx_TotalCommission" type="number" class="form-control simpletx-commission" placeholder="0.00" readonly />
+                                    <input id="SimpleTx_TotalCommission" type="number" class="form-control simpletx-totalfee" placeholder="0.00" readonly />
                             </div>
                             <div class="col-2">
                                 <label class="form-label">
@@ -867,6 +867,29 @@
                                 </button>
                             </div>
                         </div>
+                        </div>
+                        <hr>
+
+                        <div class="row mt-3">
+                            <div class="col-4 text-end">
+                                <br />
+                                TOTAL
+                            </div>
+                            <div class="col-2">
+                                <label>Total Amount</label>
+                                <input id="SimpleTx_SumAmount" class="form-control" readonly placeholder="$0.00" />
+                            </div>
+
+                            <div class="col-3">
+                                <label>Total Fees</label>
+                                <input id="SimpleTx_SumFees" class="form-control" readonly placeholder="$0.00" />
+                            </div>
+
+                            <div class="col-3">
+                                <label>Grand Total</label>
+                                <input id="SimpleTx_GrandTotal" class="form-control" readonly placeholder="$0.00"/>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -2992,14 +3015,14 @@
                         <input id="SimpleTx_Amount_${simpleTxIndex}" type="number" class="form-control simpletx-amount" placeholder="0.00" />
                     </div>
                     <div class="col-1">
-                        <input id="SimpleTx_Commission_${simpleTxIndex}" type="number" class="form-control" placeholder="0" />
+                        <input id="SimpleTx_Commission_${simpleTxIndex}" type="number" class="form-control simpletx-commission" data-auto="true" placeholder="0" />
                     </div>
                     <div class="col-1">
-                        <input id="SimpleTx_Commission_Fix_${simpleTxIndex}" type="number" class="form-control" value="2" />
+                        <input id="SimpleTx_Commission_Fix_${simpleTxIndex}" type="number" class="form-control simpletx-fixed" value="2" />
                     </div>
                     <div class="col-1">
                         <input
-                            id="SimpleTx_TotalCommission_${simpleTxIndex}" type="number" class="form-control simpletx-commission" placeholder="0.00" readonly />
+                            id="SimpleTx_TotalCommission_${simpleTxIndex}" type="number" class="form-control simpletx-totalfee" placeholder="0.00" readonly />
                     </div>
                     <div class="col-2">
                         <input id="SimpleTx_TotalAmount_${simpleTxIndex}" type="number" class="form-control simpletx-total" placeholder="0.00" readonly />
@@ -3023,6 +3046,7 @@
         function SimpleTx_removeRow(btn) {
             $(btn).closest('.simpletx-row').remove();
             validateSimpleTxRows();
+            calculateChecksTotals();
         }
 
         function validateSimpleTxRows() {
@@ -3365,7 +3389,7 @@
         //////////////////////////////////////////////////////////
                 $(document).on(
             'keyup change input',
-            '#SimpleTx_Amount, #MOrder_Amount, #PService_Amount',
+            '#MOrder_Amount, #PService_Amount',
             function () {
 
                 let prefix = $(this)
@@ -3395,7 +3419,96 @@
                 .val(total.toFixed(2));
 
         }
-        
+
+        //comisiones de cheque
+        //         $(document).on(
+        //     'keyup change input',
+        //     '.simpletx-amount, .simpletx-commission, .simpletx-fixed',
+        //     function () {
+
+        //         let row = $(this).closest('.simpletx-row');
+
+        //         calculateCheckCommission(row);
+        //         calculateChecksTotals();
+        //     }
+        // );
+        // function calculateCheckCommission(row) {
+        //      let commissionPercent = parseFloat($('#SimpleTx_TransactionType').attr('data-commission') || 0);
+        //      let amount = parseFloat(row.find('.simpletx-amount').val() ) || 0;
+        //     //let commissionPercent =parseFloat(row.find('.simpletx-commission').val()) || 0;
+        //     let fixedFee =parseFloat( row.find('.simpletx-fixed').val()) || 0;
+            
+        //     let totalFee = percentFee + fixedFee;
+        //     let totalAmount = amount + totalFee;
+        //     let percentFee =  0;
+        //     if (commissionInput.data('auto') === true) {
+        //         percentFee = amount * (commissionPercent / 100);
+        //         commissionInput.data('auto').val(false)
+        //     }else{
+        //         percentFee = parseFloat(row.find('.simpletx-commission').val()) || 0;
+        //     }
+        //     row.find('.simpletx-commission').val(percentFee.toFixed(2));
+        //     row.find('.simpletx-totalfee').val(totalFee.toFixed(2));
+        //     row.find('.simpletx-total').val(totalAmount.toFixed(2));
+        // }
+        // function calculateChecksTotals() {
+        //     let totalAmount = 0;
+        //     let totalFees = 0;
+        //     let grandTotal = 0;
+        //     $('.simpletx-row').each(function () {
+        //         let row = $(this);
+        //         totalAmount +=parseFloat(row.find('.simpletx-amount').val()) || 0;
+        //         totalFees +=parseFloat(row.find('.simpletx-totalfee').val()) || 0;
+        //         grandTotal +=parseFloat(row.find('.simpletx-total').val()) || 0;
+        //     });
+        //     $('#SimpleTx_SumAmount').val(totalAmount.toFixed(2));
+        //     $('#SimpleTx_SumFees').val(totalFees.toFixed(2));
+        //     $('#SimpleTx_GrandTotal').val(grandTotal.toFixed(2));
+        // }
+                $(document).on('keyup change input','.simpletx-amount, .simpletx-commission, .simpletx-fixed',
+            function () {
+                let row = $(this).closest('.simpletx-row');
+                calculateCheckCommission(row,$(this).hasClass('simpletx-commission'));
+                calculateChecksTotals();
+                }
+            );
+
+        function calculateCheckCommission(row,commissionEdited = false) {
+            let commissionInput =row.find('.simpletx-commission');
+            if (commissionEdited) {
+                commissionInput.data('auto', false);
+            }
+            let commissionPercent =parseFloat($('#SimpleTx_TransactionType').attr('data-commission')) || 0;
+            let amount =parseFloat(row.find('.simpletx-amount').val()) || 0;
+            let fixedFee =parseFloat(row.find('.simpletx-fixed').val()) || 0;
+            let percentFee = 0;
+            if (commissionInput.data('auto') !== false) {
+                percentFee =amount * (commissionPercent / 100);
+                commissionInput.val(percentFee.toFixed(2));
+            }
+            else {
+                percentFee =parseFloat(commissionInput.val()) || 0;
+            }
+            let totalFee =percentFee + fixedFee;
+            let totalAmount =amount + totalFee;
+            row.find('.simpletx-totalfee').val(totalFee.toFixed(2));
+            row.find('.simpletx-total').val(totalAmount.toFixed(2));
+        }
+        function calculateChecksTotals() {
+            let totalAmount = 0;
+            let totalFees = 0;
+            let grandTotal = 0;
+            $('.simpletx-row').each(function () {
+                let row = $(this);
+                totalAmount +=parseFloat(row.find('.simpletx-amount').val()) || 0;
+                totalFees +=parseFloat(row.find('.simpletx-totalfee').val()) || 0;
+                grandTotal +=parseFloat(row.find('.simpletx-total').val()) || 0;
+            });
+            $('#SimpleTx_SumAmount').val(totalAmount.toFixed(2));
+            $('#SimpleTx_SumFees').val(totalFees.toFixed(2));
+            $('#SimpleTx_GrandTotal').val(grandTotal.toFixed(2));
+        }
+
         function ObtenerTipoTransaccion(NumeroT,Prefijo) {
 
             $.get('/TransactionsTypes/GetByNumber?id='+NumeroT, function (data) {
@@ -3469,7 +3582,8 @@
                     Commission: commission,
                     TotalAmount: totalAmount
                 });
-                totalAmountAML += amount;
+                
+                totalAmountAML +=parseFloat($(this).find('.simpletx-amount').val()) || 0;
             });
             // =========================================
             // VALIDATE CHECKS
@@ -3653,8 +3767,12 @@
                     if (
                         msg.includes('Total amount mismatch')
                     ) {
-                        Swal.fire('Warning','Amount was modified. Please recheck values.','warning'
-                        );
+                        Swal.fire('Warning','Amount was modified. Please recheck values.','warning');
+                        return;
+                    }
+                    if (msg.includes('Duplicated references detected')
+                    ) {
+                        Swal.fire('Duplicate References',msg,'warning');
                         return;
                     }
                     Swal.fire('Error',msg,'error');
