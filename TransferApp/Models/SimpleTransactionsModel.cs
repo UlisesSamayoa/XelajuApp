@@ -19,6 +19,8 @@
         public string? ImgJustify { get; set; }
         public decimal FixedCommission { get; set; }
         public DateTime? IssueDateCheck { get; set; }
+        public string Justify_AgentName { get; set; } = string.Empty;
+        public DateTime? Justify_DateError { get; set; }
         public int? Status { get; set; }
 
         public DateTime? DateC { get; set; }

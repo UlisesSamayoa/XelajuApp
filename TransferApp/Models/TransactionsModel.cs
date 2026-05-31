@@ -45,7 +45,7 @@
         public string TransactionStatus { get; set; } = string.Empty;
         public string TransactionsStatusComment { get; set; } = string.Empty;
         public string Justify_AgentName { get; set; } = string.Empty;
-        public DateTime Justify_DateError { get; set; }
+        public DateTime? Justify_DateError { get; set; }
 
         //OTROS
         public decimal FixedCommission { get; set; }

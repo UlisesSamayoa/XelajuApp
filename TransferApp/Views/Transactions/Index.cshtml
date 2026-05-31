@@ -293,7 +293,7 @@
                     </div>
                     <div class="col-6">
                         <label class="form-label">Justify Date</label>
-                        <input id="Justify_DateError" type="datetime-local" class="form-control mb-2"/>
+                        <input id="Justify_DateError" type="date" class="form-control mb-2"/>
                     </div>
                 </div>
             </form>
@@ -1015,6 +1015,35 @@
                     <div class="col-12">
                         <label class="form-label">Address *</label>
                         <input id="MOrder_SenderAddress" class="form-control mb-2" placeholder="Address" />
+                    </div>
+                </div>
+                <hr />
+                <div class="col-12">
+                    <label class="form-label">Justify Details</label>
+                    <input id="MOrder_JustifyDetails" class="form-control mb-2" placeholder="Justify Details" />
+                </div>
+                <hr />
+                <label id="MOrder_justifyCounter">0 / 5 files</label>
+                <div id="MOrder_justifyContainer">
+                    <div class="MOrder_justify-item row mb-2">
+                        <div class="col-11">
+                            <input type="file" name="MOrder_ImgJustify" class="form-control MOrder_justify-file" />
+                        </div>
+                        <div class="col-1">
+                            <button type="button" class="btn btn-success" onclick="MOrder_addJustifyFile()">
+                                <i class="bi bi-plus-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <label class="form-label">Justify Agent Name</label>
+                        <input id="MOrder_Justify_AgentName" type="text" class="form-control mb-2" placeholder="Agent name" />
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Justify Date</label>
+                        <input id="MOrder_Justify_DateError" type="datetime-local" class="form-control mb-2" />
                     </div>
                 </div>
                 <hr />
@@ -2600,7 +2629,7 @@
             formData.append('ReceiverAddress',$('#ReceiverAddress').val());
             formData.append('JustifyDetails',$('#JustifyDetails').val());
             formData.append('Justify_AgentName',$('#Justify_AgentName').val());
-            formData.append('Justify_DateError',$('#Justify_DateError').val());
+            formData.append('Justify_DateError',$('#Justify_DateError').val() || '');
             formData.append('IdClient_fk',selectedClientId);
             formData.append('IdBeneficiarie_fk',selectedBeneficiaryId);
             formData.append('UserC','admin');
@@ -3176,6 +3205,41 @@
             $('#SimpleTx_justifyCounter').text(`${total} / ${SimpleTx_MAX_JUSTIFY_FILES} files`);
         }
 
+        const MOrder_MAX_JUSTIFY_FILES = 5;
+
+        function MOrder_addJustifyFile() {
+            let total = $('.MOrder_justify-item').length;
+            if (total >= MOrder_MAX_JUSTIFY_FILES) {
+                $('#MOrder_btnAddJustify').prop('disabled', true);
+                return;
+            }
+            let html = `
+                <div class="MOrder_justify-item row mb-2">
+                    <div class="col-11">
+                        <input type="file" name="MOrder_ImgJustify" class="form-control MOrder_justify-file" />
+                    </div>
+                    <div class="col-1">
+                        <button type="button" class="btn btn-danger" onclick="MOrder_removeJustifyFile(this)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            $('#MOrder_justifyContainer').append(html);
+            MOrder_validateJustifyLimit();
+        }
+
+        function MOrder_removeJustifyFile(btn) {
+            $(btn).closest('.MOrder_justify-item').remove();
+            MOrder_validateJustifyLimit();
+        }
+
+        function MOrder_validateJustifyLimit() {
+            let total =$('.MOrder_justify-item').length;
+            $('#MOrder_btnAddJustify').prop('disabled',total >= MOrder_MAX_JUSTIFY_FILES);
+            $('#MOrder_justifyCounter').text(`${total} / ${MOrder_MAX_JUSTIFY_FILES} files`);
+        }
+
         //////////////////////////////////////////////////////////
         // 🔵 SELECT CLIENT
         //////////////////////////////////////////////////////////
@@ -3617,6 +3681,8 @@
             let senderPhone = $('#' + prefix + 'SenderPhone').val().trim();
             let senderAddress = $('#' + prefix + 'SenderAddress').val().trim();
             let justifyDetails = $('#' + prefix + 'JustifyDetails').val().trim();
+            let justifyAgent =  $('#' + prefix + 'Justify_AgentName').val();
+            let justifuDateError =  $('#' + prefix + 'Justify_DateError').val() || '';
             // =========================================
             // BASIC VALIDATIONS
             // =========================================
@@ -3719,6 +3785,8 @@
             formData.append("SenderPhone",senderPhone);
             formData.append("SenderAddress",senderAddress);
             formData.append("JustifyDetails",justifyDetails);
+            formData.append("Justify_AgentName",justifyAgent);
+            formData.append("Justify_DateError",justifuDateError);
             formData.append("UserC","admin");
 
             // =========================================

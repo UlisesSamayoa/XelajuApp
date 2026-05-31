@@ -409,6 +409,8 @@ public class TransactionsService
                 SenderPhone = m.SenderPhone,
                 SenderAddress = m.SenderAddress,
                 JustifyDetails = m.JustifyDetails,
+                Justify_AgentName = m.Justify_AgentName,
+                Justify_DateError = m.Justify_DateError,
                 UserC = m.UserC
             };
 

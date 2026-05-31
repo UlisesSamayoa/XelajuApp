@@ -268,6 +268,8 @@ public class TransactionsRepository
         cmd.Parameters.AddWithValue("@SenderDocumentType", m.SenderDocumentType);
         cmd.Parameters.AddWithValue("@SenderDocumentNumber", m.SenderDocumentNumber);
         cmd.Parameters.AddWithValue("@JustifyDetails", m.JustifyDetails ?? "");
+        cmd.Parameters.AddWithValue("@Justify_AgentName", m.Justify_AgentName ?? "");
+        cmd.Parameters.AddWithValue("@Justify_DateError", m.Justify_DateError == null ? (object)DBNull.Value : m.Justify_DateError);
         cmd.Parameters.AddWithValue("@SenderPhone", m.SenderPhone);
         cmd.Parameters.AddWithValue("@SenderAddress", m.SenderAddress);
         cmd.Parameters.AddWithValue("@UserC", m.UserC);
