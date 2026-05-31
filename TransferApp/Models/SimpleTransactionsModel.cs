@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace TransferApp.Models
+﻿namespace TransferApp.Models
 {
     public class SimpleTransactionsModel
     {
@@ -34,6 +32,7 @@ namespace TransferApp.Models
 
         public string? ImgJustify { get; set; }
 
+        public decimal FixedCommission { get; set; }
         public int? Status { get; set; }
 
         public DateTime? DateC { get; set; }

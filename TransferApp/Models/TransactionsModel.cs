@@ -48,6 +48,7 @@
         public DateTime Justify_DateError { get; set; }
 
         //OTROS
+        public decimal FixedCommission { get; set; }
         public bool IsSimpleTransaction { get; set; }
         public string? Notes { get; set; }
         public int? Status { get; set; }

@@ -7,5 +7,6 @@
         public decimal Amount { get; set; }
         public decimal Commission { get; set; }
         public decimal TotalAmount { get; set; }
+        public decimal FixedCommission { get; set; }
     }
 }

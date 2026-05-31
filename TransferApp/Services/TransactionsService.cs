@@ -359,7 +359,7 @@ public class TransactionsService
         // SAVE FILES ONCE
         // ====================================
         List<TransactionAttachmentModel> attachments = new();
-
+        string batchReferenceImg = $"{m.Checks.First().ReferenceNumber}_{m.Checks.Last().ReferenceNumber}";
         if (files != null && files.Any())
         {
             foreach (var file in files)
@@ -369,7 +369,7 @@ public class TransactionsService
                     m.TransactionType,
                     m.SenderName,
                     m.SenderDocumentNumber,
-                    "BATCH"
+                    batchReferenceImg
                 );
 
                 attachments.Add(
@@ -401,6 +401,7 @@ public class TransactionsService
                 Amount = check.Amount,
                 Commission = check.Commission,
                 TotalAmount = check.TotalAmount,
+                FixedCommission = check.FixedCommission,
                 SenderName = m.SenderName,
                 SenderDocumentType = m.SenderDocumentType,
                 SenderDocumentNumber = m.SenderDocumentNumber,

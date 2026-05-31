@@ -3557,7 +3557,7 @@
         // }
 
         //GUARDAR SimpleTx o CHECK CASHING
-                   $('#btnSaveSimpleTx').click(async function () {
+            $('#btnSaveSimpleTx').click(async function () {
             let prefix = "SimpleTx_";
             // =========================================
             // BUILD CHECKS ARRAY
@@ -3570,6 +3570,7 @@
                 let company =row.find('.simpletx-company').val();
                 let amount =parseFloat(row.find('.simpletx-amount').val()) || 0;
                 let commission = parseFloat(row.find('.simpletx-commission').val()) || 0;
+                let fixed_commission = parseFloat(row.find('.simpletx-fixed').val()) || 0;
                 let totalAmount = parseFloat(row.find('.simpletx-total').val()) || 0;
                 // IGNORE EMPTY ROWS
                 if (!reference && !company && amount <= 0) {
@@ -3580,7 +3581,8 @@
                     Company: parseInt(company),
                     Amount: amount,
                     Commission: commission,
-                    TotalAmount: totalAmount
+                    TotalAmount: totalAmount,
+                    FixedCommission:fixed_commission
                 });
                 
                 totalAmountAML +=parseFloat($(this).find('.simpletx-amount').val()) || 0;
