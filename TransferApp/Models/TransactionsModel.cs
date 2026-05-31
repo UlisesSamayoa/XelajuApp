@@ -49,6 +49,7 @@
 
         //OTROS
         public decimal FixedCommission { get; set; }
+        public DateTime? IssueDateCheck { get; set; }
         public bool IsSimpleTransaction { get; set; }
         public string? Notes { get; set; }
         public int? Status { get; set; }

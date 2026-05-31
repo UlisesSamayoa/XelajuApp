@@ -261,6 +261,8 @@ public class TransactionsRepository
         cmd.Parameters.AddWithValue("@Amount", m.Amount);
         cmd.Parameters.AddWithValue("@Commission", m.Commission);
         cmd.Parameters.AddWithValue("@FixedCommission", m.FixedCommission);
+        //cmd.Parameters.AddWithValue("@IssueDateCheck", m.IssueDateCheck);
+        cmd.Parameters.Add("@IssueDateCheck", SqlDbType.Date).Value = (object?)m.IssueDateCheck ?? DBNull.Value;
         cmd.Parameters.AddWithValue("@TotalAmount", m.TotalAmount);
         cmd.Parameters.AddWithValue("@SenderName", m.SenderName);
         cmd.Parameters.AddWithValue("@SenderDocumentType", m.SenderDocumentType);

@@ -816,7 +816,7 @@
                                 </label>
                                     <input id="SimpleTx_ReferenceNumber" class="form-control simpletx-reference" placeholder="Reference" />
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 <label class="form-label">
                                     Company
                                 </label>
@@ -828,6 +828,12 @@
                                 </div>
                                     <input type="hidden" id="SimpleTx_Company" class="simpletx-company" />
                             </div>
+                                <div class="col-2">
+                                    <label class="form-label">
+                                        Date
+                                    </label>
+                                    <input id="SimpleTx_IssueDateCheck" type="date" class="form-control simpletx-issuedatecheck" placeholder="0.00" />
+                                </div>
                             <div class="col-1">
                                 <label class="form-label">
                                     Amount
@@ -852,7 +858,7 @@
                                 </label>
                                     <input id="SimpleTx_TotalCommission" type="number" class="form-control simpletx-totalfee" placeholder="0.00" readonly />
                             </div>
-                            <div class="col-2">
+                            <div class="col-1">
                                 <label class="form-label">
                                     Total
                                 </label>
@@ -2630,7 +2636,7 @@
                 return;
             }
                     for (let pair of formData.entries()) {
-            console.log(pair[0] + ': ' + pair[1]);
+            // console.log(pair[0] + ': ' + pair[1]);
         }
             $.ajax({
                 url:'/Transactions/Create',
@@ -3002,7 +3008,7 @@
                     <div class="col-2">
                         <input id="SimpleTx_ReferenceNumber_${simpleTxIndex}" class="form-control simpletx-reference" placeholder="Reference" />
                     </div>
-                    <div class="col-3">
+                    <div class="col-2">
                         <div class="input-group">
                             <input id="SimpleTx_CompanyText_${simpleTxIndex}" class="form-control" placeholder="Company" readonly />
                             <button class="btn btn-primary" type="button" onclick="loadModalSearchCompany(${simpleTxIndex})">
@@ -3010,6 +3016,9 @@
                             </button>
                         </div>
                         <input type="hidden" id="SimpleTx_Company_${simpleTxIndex}" class="simpletx-company"/>
+                    </div>
+                     <div class="col-2">
+                         <input id="SimpleTx_IssueDateCheck" type="date" class="form-control simpletx-issuedatecheck" placeholder="0.00" />
                     </div>
                     <div class="col-1">
                         <input id="SimpleTx_Amount_${simpleTxIndex}" type="number" class="form-control simpletx-amount" placeholder="0.00" />
@@ -3024,7 +3033,7 @@
                         <input
                             id="SimpleTx_TotalCommission_${simpleTxIndex}" type="number" class="form-control simpletx-totalfee" placeholder="0.00" readonly />
                     </div>
-                    <div class="col-2">
+                    <div class="col-1">
                         <input id="SimpleTx_TotalAmount_${simpleTxIndex}" type="number" class="form-control simpletx-total" placeholder="0.00" readonly />
                     </div>
                     <div class="col-1 d-flex gap-1">
@@ -3564,6 +3573,9 @@
             // =========================================
             let checks = [];
             let totalAmountAML = 0;
+            if (!validateCheckDates()) {
+                return;
+            }
             $('.simpletx-row').each(function () {
                 let row = $(this)
                 let reference =row.find('.simpletx-reference').val()?.trim();
@@ -3572,6 +3584,7 @@
                 let commission = parseFloat(row.find('.simpletx-commission').val()) || 0;
                 let fixed_commission = parseFloat(row.find('.simpletx-fixed').val()) || 0;
                 let totalAmount = parseFloat(row.find('.simpletx-total').val()) || 0;
+                let IssueDateC = row.find('.simpletx-issuedatecheck').val();
                 // IGNORE EMPTY ROWS
                 if (!reference && !company && amount <= 0) {
                     return;
@@ -3582,7 +3595,8 @@
                     Amount: amount,
                     Commission: commission,
                     TotalAmount: totalAmount,
-                    FixedCommission:fixed_commission
+                    FixedCommission:fixed_commission,
+                    IssueDateCheck:IssueDateC
                 });
                 
                 totalAmountAML +=parseFloat($(this).find('.simpletx-amount').val()) || 0;
@@ -3729,9 +3743,9 @@
             // =========================================
             // DEBUG
             // =========================================
-            for (let pair of formData.entries()) {
-                console.log(pair[0], pair[1]);
-            }
+            // for (let pair of formData.entries()) {
+            //     console.log(pair[0], pair[1]);
+            // }
             // =========================================
             // LOADING
             // =========================================
@@ -3781,6 +3795,35 @@
                 }
             });
         });
+          function validateCheckDates() {
+            let today = new Date();
+            let isValid = true;
+            $('.simpletx-issuedatecheck').each(function () {
+                let value = $(this).val();
+                if (!value) {
+                    Swal.fire('Validation','Issue Date is required','warning');
+                    $(this).focus();
+                    isValid = false;
+                    return false;
+                }
+                let issueDate = new Date(value);
+                let diffTime =today.getTime() -issueDate.getTime();
+                let diffDays =Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                if (diffDays > 30) {
+                    Swal.fire('Expired Check','The check cannot be older than 30 days','warning');
+                    $(this).focus();
+                    isValid = false;
+                    return false;
+                }
+                if (diffDays < 0) {
+                    Swal.fire('Validation','Issue Date cannot be in the future','warning');
+                    $(this).focus();
+                    isValid = false;
+                    return false;
+                }
+            });
+            return isValid;
+        }
 
         function CCbuildRiskMessages(validation){
             let warnings = [];

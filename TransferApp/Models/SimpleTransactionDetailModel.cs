@@ -8,5 +8,6 @@
         public decimal Commission { get; set; }
         public decimal TotalAmount { get; set; }
         public decimal FixedCommission { get; set; }
+        public DateTime? IssueDateCheck { get; set; }
     }
 }

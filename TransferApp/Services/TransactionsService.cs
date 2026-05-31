@@ -402,6 +402,7 @@ public class TransactionsService
                 Commission = check.Commission,
                 TotalAmount = check.TotalAmount,
                 FixedCommission = check.FixedCommission,
+                IssueDateCheck = check.IssueDateCheck,
                 SenderName = m.SenderName,
                 SenderDocumentType = m.SenderDocumentType,
                 SenderDocumentNumber = m.SenderDocumentNumber,
