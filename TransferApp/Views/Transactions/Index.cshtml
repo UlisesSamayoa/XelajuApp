@@ -2600,31 +2600,67 @@
             return true;
         }
 
-        // $('#Amount').on('keyup change', function(){
-        //     calculateCommission();
-        // });
-        //   function calculateCommission(){
-        //     let amount = parseFloat( $('#Amount').val()) || 0;
-        //     let commissionPercent = parseFloat( $('#TransactionType').data('commission')) || 0;
-        //     let commissionValue = amount * (commissionPercent / 100);
-        //     let total = amount + commissionValue;
-        //     $('#Commission').val(commissionValue.toFixed(2));
-
-        //     $('#TotalAmount').val(total.toFixed(2));
+        //comisiones money transfer
+        // $('#Amount, #Commission, #FixedCommission')
+        //     .on('keyup change input', function () {
+        //         calculateCommission();
+        //     });
+        // function calculateCommission() {
+        //     let amount =parseFloat($('#Amount').val()) || 0;
+        //     let commissionInput =$('#Commission');
+        //     let commissionPercent =parseFloat($('#TransactionType').data('commission')) || 0;
+        //     if (commissionInput.data('auto') !== false) {
+        //         let autoCommission =amount * (commissionPercent / 100);
+        //         commissionInput.val(autoCommission.toFixed(2));
+        //     }
+        //     let commission =parseFloat(commissionInput.val()) || 0;
+        //     let fixedCommission =parseFloat($('#FixedCommission').val()) || 0;
+        //     let totalCommission =commission + fixedCommission;
+        //     let totalAmount =amount + totalCommission;
+        //     $('#TotalCommission').val(totalCommission.toFixed(2));
+        //     $('#TotalAmount').val(totalAmount.toFixed(2));
         // }
+                $('#Commission').data('auto', true);
+
         $('#Amount, #Commission, #FixedCommission')
             .on('keyup change input', function () {
+
+                if ($(this).is('#Commission')) {
+                    $('#Commission').data('auto', false);
+                }
+
                 calculateCommission();
             });
+
         function calculateCommission() {
-            let amount =parseFloat($('#Amount').val()) || 0;
-            let commissionInput =$('#Commission');
-            let commissionPercent =parseFloat($('#TransactionType').data('commission')) || 0;
+
+            let amount =
+                parseFloat($('#Amount').val()) || 0;
+
+            let commissionInput =
+                $('#Commission');
+
+            let commissionPercent =
+                parseFloat(
+                    $('#TransactionType').data('commission')
+                ) || 0;
+
+            let commission = 0;
+
+            //////////////////////////////////////////////////////
+            // AUTO CALCULATION
+            //////////////////////////////////////////////////////
+
             if (commissionInput.data('auto') !== false) {
-                let autoCommission =amount * (commissionPercent / 100);
-                commissionInput.val(autoCommission.toFixed(2));
+                commission =amount * (commissionPercent / 100);
+                commissionInput.val(commission.toFixed(2));
             }
-            let commission =parseFloat(commissionInput.val()) || 0;
+            else {
+                commission =parseFloat(commissionInput.val()) || 0;
+            }
+            //////////////////////////////////////////////////////
+            // TOTALS
+            //////////////////////////////////////////////////////
             let fixedCommission =parseFloat($('#FixedCommission').val()) || 0;
             let totalCommission =commission + fixedCommission;
             let totalAmount =amount + totalCommission;
@@ -2771,6 +2807,7 @@
                             tableSearchClient.clear().draw();
                         }
                     clearTransactionForm();
+                    $('#Commission').data('auto', true);
                 },error:function(err){
                     let res = err.responseJSON;
                     if(!res){
@@ -2849,7 +2886,7 @@
             $('#ReferenceNumber').val("")
             $('#Amount').val("")
             $('#Commission').val("")
-            $('#FixedCommission').val("")
+            $('#FixedCommission').val(2)
             $('#TotalCommission').val("")
             $('#TotalAmount').val("")
             $('#TransactionType').val("")
@@ -3547,21 +3584,15 @@
             // });
          function calculateCommissionSimple(prefix) {
             let commission = parseFloat(
-                $('#' + prefix + '_TransactionType')
-                    .attr('data-commission') || 0
+                $('#' + prefix + '_TransactionType').attr('data-commission') || 0
             );
-
             let amount = parseFloat(
                 $('#' + prefix + '_Amount').val() || 0
             );
-
             let total = amount + (amount * (commission / 100));
             let commissionValue = amount * (commission / 100);
-            $('#' + prefix + '_Commission')
-                .val(commissionValue.toFixed(2));
-
-            $('#' + prefix + '_TotalAmount')
-                .val(total.toFixed(2));
+            $('#' + prefix + '_Commission').val(commissionValue.toFixed(2));
+            $('#' + prefix + '_TotalAmount').val(total.toFixed(2));
 
         }
         //Comision de morder
@@ -3644,67 +3675,64 @@
         //Comision de morder
 
         //comisiones de cheque
-        //         $(document).on(
-        //     'keyup change input',
-        //     '.simpletx-amount, .simpletx-commission, .simpletx-fixed',
+       
+        //         $(document).on('keyup change input','.simpletx-amount, .simpletx-commission, .simpletx-fixed',
         //     function () {
-
         //         let row = $(this).closest('.simpletx-row');
-
-        //         calculateCheckCommission(row);
+        //         calculateCheckCommission(row,$(this).hasClass('simpletx-commission'));
         //         calculateChecksTotals();
+        //         }
+        //     );
+
+        // function calculateCheckCommission(row,commissionEdited = false) {
+        //     let commissionInput =row.find('.simpletx-commission');
+        //     if (commissionEdited) {
+        //         commissionInput.data('auto', false);
         //     }
-        // );
-        // function calculateCheckCommission(row) {
-        //      let commissionPercent = parseFloat($('#SimpleTx_TransactionType').attr('data-commission') || 0);
-        //      let amount = parseFloat(row.find('.simpletx-amount').val() ) || 0;
-        //     //let commissionPercent =parseFloat(row.find('.simpletx-commission').val()) || 0;
-        //     let fixedFee =parseFloat( row.find('.simpletx-fixed').val()) || 0;
-            
-        //     let totalFee = percentFee + fixedFee;
-        //     let totalAmount = amount + totalFee;
-        //     let percentFee =  0;
-        //     if (commissionInput.data('auto') === true) {
-        //         percentFee = amount * (commissionPercent / 100);
-        //         commissionInput.data('auto').val(false)
-        //     }else{
-        //         percentFee = parseFloat(row.find('.simpletx-commission').val()) || 0;
+        //     let commissionPercent =parseFloat($('#SimpleTx_TransactionType').attr('data-commission')) || 0;
+        //     let amount =parseFloat(row.find('.simpletx-amount').val()) || 0;
+        //     let fixedFee =parseFloat(row.find('.simpletx-fixed').val()) || 0;
+        //     let percentFee = 0;
+        //     if (commissionInput.data('auto') !== false) {
+        //         percentFee =amount * (commissionPercent / 100);
+        //         commissionInput.val(percentFee.toFixed(2));
         //     }
-        //     row.find('.simpletx-commission').val(percentFee.toFixed(2));
+        //     else {
+        //         percentFee =parseFloat(commissionInput.val()) || 0;
+        //     }
+        //     let totalFee =percentFee + fixedFee;
+        //     let totalAmount =amount + totalFee;
         //     row.find('.simpletx-totalfee').val(totalFee.toFixed(2));
         //     row.find('.simpletx-total').val(totalAmount.toFixed(2));
         // }
-        // function calculateChecksTotals() {
-        //     let totalAmount = 0;
-        //     let totalFees = 0;
-        //     let grandTotal = 0;
-        //     $('.simpletx-row').each(function () {
-        //         let row = $(this);
-        //         totalAmount +=parseFloat(row.find('.simpletx-amount').val()) || 0;
-        //         totalFees +=parseFloat(row.find('.simpletx-totalfee').val()) || 0;
-        //         grandTotal +=parseFloat(row.find('.simpletx-total').val()) || 0;
-        //     });
-        //     $('#SimpleTx_SumAmount').val(totalAmount.toFixed(2));
-        //     $('#SimpleTx_SumFees').val(totalFees.toFixed(2));
-        //     $('#SimpleTx_GrandTotal').val(grandTotal.toFixed(2));
-        // }
-                $(document).on('keyup change input','.simpletx-amount, .simpletx-commission, .simpletx-fixed',
+                $(document).on(
+            'keyup change input',
+            '.simpletx-amount, .simpletx-commission, .simpletx-fixed',
             function () {
-                let row = $(this).closest('.simpletx-row');
-                calculateCheckCommission(row,$(this).hasClass('simpletx-commission'));
-                calculateChecksTotals();
-                }
-            );
 
-        function calculateCheckCommission(row,commissionEdited = false) {
-            let commissionInput =row.find('.simpletx-commission');
-            if (commissionEdited) {
-                commissionInput.data('auto', false);
+                let row = $(this).closest('.simpletx-row');
+
+                // Si editaron manualmente la comisión
+                if ($(this).hasClass('simpletx-commission')) {
+                    row.find('.simpletx-commission')
+                        .data('auto', false);
+                }
+
+                calculateCheckCommission(row);
+                calculateChecksTotals();
             }
+        );
+
+        function calculateCheckCommission(row) {
+            let commissionInput =row.find('.simpletx-commission');
             let commissionPercent =parseFloat($('#SimpleTx_TransactionType').attr('data-commission')) || 0;
             let amount =parseFloat(row.find('.simpletx-amount').val()) || 0;
             let fixedFee =parseFloat(row.find('.simpletx-fixed').val()) || 0;
             let percentFee = 0;
+            //////////////////////////////////////////////////////
+            // AUTO CALCULATION
+            //////////////////////////////////////////////////////
+
             if (commissionInput.data('auto') !== false) {
                 percentFee =amount * (commissionPercent / 100);
                 commissionInput.val(percentFee.toFixed(2));
@@ -3712,6 +3740,10 @@
             else {
                 percentFee =parseFloat(commissionInput.val()) || 0;
             }
+
+            //////////////////////////////////////////////////////
+            // TOTALS
+            //////////////////////////////////////////////////////
             let totalFee =percentFee + fixedFee;
             let totalAmount =amount + totalFee;
             row.find('.simpletx-totalfee').val(totalFee.toFixed(2));
@@ -3978,11 +4010,38 @@
                 contentType: false,
                 processData: false,
                 success: function () {
-                    $('#modalSimpleTx').modal('hide');
-                    $('#formSimpleTx')[0].reset();
-                    selectedClients[prefix] = null;
-                    Swal.fire({icon: 'success',title: 'Transactions saved',timer: 1200,showConfirmButton: false});
-                    $('#tblTx').DataTable().ajax.reload();
+                    // $('#modalSimpleTx').modal('hide');
+                    // $('#formSimpleTx')[0].reset();
+                    // selectedClients[prefix] = null;
+                    // Swal.fire({icon: 'success',title: 'Transactions saved',timer: 1200,showConfirmButton: false});
+                    // $('#tblTx').DataTable().ajax.reload();
+                    // $('#Simpletx_Commission').data('auto', true);
+                   
+                            $('.simpletx-row:not(:first)').remove();
+                            let firstRow = $('.simpletx-row:first');
+                            firstRow.find('.simpletx-reference').val('');
+                            firstRow.find('.simpletx-company').val('');
+                            firstRow.find('.simpletx-companytext').val('');
+                            firstRow.find('.simpletx-amount').val('');
+                            firstRow.find('.simpletx-commission').val('');
+                            firstRow.find('.simpletx-fixed').val('2');
+                            firstRow.find('.simpletx-totalfee').val('');
+                            firstRow.find('.simpletx-total').val('');
+                            firstRow.find('.simpletx-issuedatecheck').val('');
+                            firstRow.find('.simpletx-commission').data('auto', true);
+                            simpleTxIndex = 1;
+                            $('#formSimpleTx')[0].reset();
+                            $('#SimpleTx_FixedCommission').val(2);
+                            $('#SimpleTx_Commission').data('auto', true);
+                            selectedClients[prefix] = null;
+                            $('#modalSimpleTx').modal('hide');
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Transaction saved',
+                                timer: 1200,
+                                showConfirmButton: false
+                            });
+                            $('#tblTx').DataTable().ajax.reload();
                 },
                 error: function (err) {
                     let msg = err.responseJSON?.message || err.responseText || 'Error';
@@ -4221,6 +4280,7 @@
                     });
                     $('#tblTx').DataTable().ajax.reload();
                     $('#MOrder_Commission').data('auto', true);
+                    $('#MOrder_FixedCommission').val(2);
                 },
                 error: function (err) {
                     let msg = err.responseJSON?.message || err.responseText ||'Error';
