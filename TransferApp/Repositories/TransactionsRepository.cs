@@ -131,6 +131,7 @@ public class TransactionsRepository
         cmd.Parameters.AddWithValue("@TransactionType", m.TransactionType);
         cmd.Parameters.AddWithValue("@Amount", m.Amount);
         cmd.Parameters.AddWithValue("@Commission", m.Commission);
+        cmd.Parameters.AddWithValue("@FixedCommission", m.FixedCommission);
         cmd.Parameters.AddWithValue("@TotalAmount", m.TotalAmount);
         cmd.Parameters.AddWithValue("@ReferenceNumber", m.ReferenceNumber);
         cmd.Parameters.AddWithValue("@SenderCountry", m.SenderCountry);

@@ -124,7 +124,7 @@
             <form id="formTx">
                 <div class="row">
                     <div class="col-12">
-                        <div class="row">
+                        @* <div class="row">
                             <div class="col-3">
                                 <label class="form-label">Reference Number *</label>
                                 <input id="ReferenceNumber" class="form-control mb-2" placeholder="Reference Number" />
@@ -146,10 +146,33 @@
                                 <label class="form-label">Total Amount</label>
                                 <input id="TotalAmount" type="number" class="form-control mb-2" placeholder="Total Amount" />
                             </div>
-                            @* <div class="col-3">
-                                <label class="form-label">Currency *</label>
-                                <select id="Currency" class="form-control mb-2"></select>
-                            </div> *@
+                        </div> *@
+                        <div class="row">
+                            <div class="col-3">
+                                <label class="form-label">Reference Number *</label>
+                                <input id="ReferenceNumber" class="form-control mb-2" placeholder="Reference Number" />
+                                <input type="hidden" id="TransactionType" />
+                            </div>
+                            <div class="col-2">
+                                <label class="form-label">Amount *</label>
+                                <input id="Amount" type="number" class="form-control mb-2" placeholder="Amount" />
+                            </div>
+                            <div class="col-2">
+                                <label class="form-label">%</label>
+                                <input id="Commission" type="number" class="form-control mb-2" placeholder="0.00"/>
+                            </div>
+                            <div class="col-1">
+                                <label class="form-label">Fixed</label>
+                                <input id="FixedCommission" type="number" value="2" class="form-control mb-2" placeholder="0.00" />
+                            </div>
+                            <div class="col-2">
+                                <label class="form-label">Total Fee</label>
+                                <input id="TotalCommission" type="text" class="form-control mb-2" placeholder="0.00" readonly />
+                            </div>
+                            <div class="col-2">
+                                <label class="form-label">Total Amount</label>
+                                <input id="TotalAmount" type="number" class="form-control mb-2" placeholder="Total Amount" />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -925,7 +948,7 @@
                     </div>
                     <div class="col-6">
                         <label class="form-label">Justify Date</label>
-                        <input id="SimpleTx_Justify_DateError" type="datetime-local" class="form-control mb-2" />
+                        <input id="SimpleTx_Justify_DateError" type="date" class="form-control mb-2" />
                     </div>
                 </div>
             </form>
@@ -2551,18 +2574,40 @@
             return true;
         }
 
-        $('#Amount').on('keyup change', function(){
-            calculateCommission();
-        });
-          function calculateCommission(){
-            let amount = parseFloat( $('#Amount').val()) || 0;
-            let commissionPercent = parseFloat( $('#TransactionType').data('commission')) || 0;
-            let commissionValue = amount * (commissionPercent / 100);
-            let total = amount + commissionValue;
-            $('#Commission').val(commissionValue.toFixed(2));
+        // $('#Amount').on('keyup change', function(){
+        //     calculateCommission();
+        // });
+        //   function calculateCommission(){
+        //     let amount = parseFloat( $('#Amount').val()) || 0;
+        //     let commissionPercent = parseFloat( $('#TransactionType').data('commission')) || 0;
+        //     let commissionValue = amount * (commissionPercent / 100);
+        //     let total = amount + commissionValue;
+        //     $('#Commission').val(commissionValue.toFixed(2));
 
-            $('#TotalAmount').val(total.toFixed(2));
+        //     $('#TotalAmount').val(total.toFixed(2));
+        // }
+        $('#Amount, #Commission, #FixedCommission')
+            .on('keyup change input', function () {
+                calculateCommission();
+            });
+        function calculateCommission() {
+            let amount =parseFloat($('#Amount').val()) || 0;
+            let commissionInput =$('#Commission');
+            let commissionPercent =parseFloat($('#TransactionType').data('commission')) || 0;
+            if (commissionInput.data('auto') !== false) {
+                let autoCommission =amount * (commissionPercent / 100);
+                commissionInput.val(autoCommission.toFixed(2));
+            }
+            let commission =parseFloat(commissionInput.val()) || 0;
+            let fixedCommission =parseFloat($('#FixedCommission').val()) || 0;
+            let totalCommission =commission + fixedCommission;
+            let totalAmount =amount + totalCommission;
+            $('#TotalCommission').val(totalCommission.toFixed(2));
+            $('#TotalAmount').val(totalAmount.toFixed(2));
         }
+        $('#Commission').on('input', function () {$(this).data('auto', false);});
+
+
         $('#btnSaveTx').click(async function(){
             let TransactionTypeField = $('#TransactionType').val();
             if(!validateRequiredFields())
@@ -2607,9 +2652,6 @@
         function saveTransaction(){
             let formData = new FormData();
             formData.append('TransactionType',$('#TransactionType').val());
-            formData.append('Amount',$('#Amount').val());
-            formData.append('Commission',$('#Commission').val());
-            formData.append('TotalAmount',$('#TotalAmount').val());
             formData.append('ReferenceNumber',$('#ReferenceNumber').val());
             formData.append('SenderCountry',$('#SenderCountry').val());
             formData.append('SenderCompany',$('#SenderCompany').val());
@@ -2632,6 +2674,12 @@
             formData.append('Justify_DateError',$('#Justify_DateError').val() || '');
             formData.append('IdClient_fk',selectedClientId);
             formData.append('IdBeneficiarie_fk',selectedBeneficiaryId);
+            //Nuevos campos
+            formData.append('Amount',$('#Amount').val());
+            formData.append('Commission',$('#Commission').val());
+            formData.append('FixedCommission',$('#FixedCommission').val());
+            formData.append('TotalAmount',$('#TotalAmount').val());
+            //neuvos campos
             formData.append('UserC','admin');
 
             // let file =$('#ImgJustify')[0].files[0];
@@ -2764,22 +2812,21 @@
             $('#JustifyDetails').val("")
             $('#Justify_AgentName').val("")
             $('#Justify_DateError').val("")
-
             $('#imgPreview').hide();
-
             selectedClientId = 0;
-
             selectedBeneficiaryId = 0;
-
             $('#SenderCompany').html('');
             $('#SenderCurrency').html('');
-
             $('#ReceiverCompany').html('');
             $('#ReceiverCurrency').html('');
-
-            $('#CantBeneficiariesXClient')
-                .text('(0)');
-
+            $('#CantBeneficiariesXClient').text('(0)');
+            $('#ReferenceNumber').val("")
+            $('#Amount').val("")
+            $('#Commission').val("")
+            $('#FixedCommission').val("")
+            $('#TotalCommission').val("")
+            $('#TotalAmount').val("")
+            $('#TransactionType').val("")
             toggleBeneficiariesActions();
         }
 
