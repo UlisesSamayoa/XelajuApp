@@ -2775,7 +2775,6 @@
                 return;
             }
                     for (let pair of formData.entries()) {
-            // console.log(pair[0] + ': ' + pair[1]);
         }
             $.ajax({
                 url:'/Transactions/Create',
@@ -3645,13 +3644,6 @@
             let amount =parseFloat($('#MOrder_Amount').val()) || 0;
             let commissionInput =$('#MOrder_Commission');
             let commissionPercent =parseFloat($('#MOrder_TransactionType').attr('data-commission')) || 0;
-
-            //////////////////////////////////////////////////////
-            // AUTO CALCULATION
-            //////////////////////////////////////////////////////
-                    console.log(
-            'auto:',
-            commissionInput.data('auto')
         );
             if (commissionInput.data('auto') !== false) {
 
@@ -3990,12 +3982,6 @@
                     );
                 }
             });
-            // =========================================
-            // DEBUG
-            // =========================================
-            // for (let pair of formData.entries()) {
-            //     console.log(pair[0], pair[1]);
-            // }
             // =========================================
             // LOADING
             // =========================================
