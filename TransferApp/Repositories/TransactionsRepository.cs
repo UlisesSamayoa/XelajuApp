@@ -280,6 +280,35 @@ public class TransactionsRepository
         await conn.CloseAsync();
         return Convert.ToInt32(result);
     }
+    public async Task<int> CreateMorder(SimpleTransactionsModel m)
+    {
+        using var conn = _db.CreateConnection();
+        using var cmd = new SqlCommand("sp_CreateSimpleTransaction", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@ReferenceNumber", m.ReferenceNumber);
+        cmd.Parameters.AddWithValue("@TransactionType", m.TransactionType);
+        cmd.Parameters.AddWithValue("@Company", m.Company);
+        cmd.Parameters.AddWithValue("@Amount", m.Amount);
+        cmd.Parameters.AddWithValue("@Commission", m.Commission);
+        cmd.Parameters.AddWithValue("@FixedCommission", m.FixedCommission);
+        //cmd.Parameters.AddWithValue("@IssueDateCheck", m.IssueDateCheck);
+        cmd.Parameters.Add("@IssueDateCheck", SqlDbType.Date).Value = (object?)m.IssueDateCheck ?? DBNull.Value;
+        cmd.Parameters.AddWithValue("@TotalAmount", m.TotalAmount);
+        cmd.Parameters.AddWithValue("@SenderName", m.SenderName);
+        cmd.Parameters.AddWithValue("@SenderDocumentType", m.SenderDocumentType);
+        cmd.Parameters.AddWithValue("@SenderDocumentNumber", m.SenderDocumentNumber);
+        cmd.Parameters.AddWithValue("@JustifyDetails", m.JustifyDetails ?? "");
+        cmd.Parameters.AddWithValue("@Justify_AgentName", m.Justify_AgentName ?? "");
+        cmd.Parameters.AddWithValue("@Justify_DateError", m.Justify_DateError == null ? (object)DBNull.Value : m.Justify_DateError);
+        cmd.Parameters.AddWithValue("@SenderPhone", m.SenderPhone);
+        cmd.Parameters.AddWithValue("@SenderAddress", m.SenderAddress);
+        cmd.Parameters.AddWithValue("@UserC", m.UserC);
+        cmd.Parameters.AddWithValue("@IdClient_fk", m.IdClient_fk);
+        await conn.OpenAsync();
+        var result = await cmd.ExecuteScalarAsync();
+        await conn.CloseAsync();
+        return Convert.ToInt32(result);
+    }
 
     public async Task ChangeStatus(int idTransaction, string status, string TransactionsStatusComment)
     {

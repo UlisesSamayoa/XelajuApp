@@ -73,6 +73,63 @@ public class TransactionsService
     {
         await _repo.CreateSimple(m);
     }
+    //public async Task CreateMorder(SimpleTransactionsModel m)
+    //{
+    //    await _repo.CreateMorder(m);
+    //}
+    public async Task CreateMorder(SimpleTransactionsModel m, List<IFormFile> files)
+    {
+        List<TransactionAttachmentModel> attachments = new();
+        if (files != null && files.Any())
+        {
+            foreach (var file in files)
+            {
+                string filePath = SaveTransactionFile(
+                    file,
+                    m.TransactionType,
+                    m.SenderName,
+                    m.SenderDocumentNumber,
+                    m.ReferenceNumber
+                );
+                attachments.Add(
+                    new TransactionAttachmentModel
+                    {
+                        FileName = Path.GetFileName(filePath),
+                        OriginalFileName = file.FileName,
+                        FileExtension = Path.GetExtension(file.FileName),
+                        ContentType = file.ContentType,
+                        FilePath = filePath,
+                        AttachmentType = "TRANSACTION_DOCUMENT",
+                        FileSize = file.Length,
+                        CreatedBy = m.UserC
+                    });
+            }
+        }
+        int idTransaction = await _repo.CreateMorder(m);
+        if (idTransaction <= 0)
+        {
+            throw new Exception(
+                $"Could not create transaction {m.ReferenceNumber}"
+            );
+        }
+        foreach (var attach in attachments)
+        {
+            await _repoAttach.CreateAttachment(
+                new TransactionAttachmentModel
+                {
+                    IdTransaction = idTransaction,
+                    FileName = attach.FileName,
+                    OriginalFileName = attach.OriginalFileName,
+                    FileExtension = attach.FileExtension,
+                    ContentType = attach.ContentType,
+                    FilePath = attach.FilePath,
+                    AttachmentType = attach.AttachmentType,
+                    FileSize = attach.FileSize,
+                    CreatedBy = attach.CreatedBy
+                });
+        }
+    }
+
 
     //private string SaveTransactionFile(IFormFile file, int transactionType, string documentNumber, string referenceNumber)
     //{

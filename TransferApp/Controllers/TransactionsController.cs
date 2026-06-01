@@ -129,39 +129,43 @@ public class TransactionsController : Controller
     }
 
     //TRANSACCION SIMPLE
-    //[HttpPost]
-    //public async Task<IActionResult> CreateSimpleTx(SimpleTransactionsModel m)
-    //{
-    //    try
-    //    {
-    //        m.UserC = "admin";
-    //        await _service.CreateSimple(m);
-    //        return Json(new { success = true });
-    //    }
-    //    catch (SqlException ex)
-    //    {
-    //        return BadRequest(new
-    //        {
-    //            message = ex.Message,
-    //            code = ex.Number
-    //        });
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        return BadRequest(new
-    //        {
-    //            message = "Unexpected error",
-    //            detail = ex.Message
-    //        });
-    //    }
-    //}
+    [HttpPost]
+    public async Task<IActionResult> CreateMorder(SimpleTransactionsModel m, List<IFormFile> Morder_ImgJustify)
+    {
+        try
+        {
+            m.UserC = "admin";
+            await _service.CreateMorder(m, Morder_ImgJustify);
+            return Json(new { success = true });
+        }
+        catch (SqlException ex)
+        {
+            return BadRequest(new
+            {
+                message = ex.Message,
+                code = ex.Number
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                message = "Unexpected error",
+                detail = ex.Message
+            });
+        }
+    }
     [HttpPost]
     public async Task<IActionResult> CreateSimpleTx([FromForm] SimpleTransactionsBatchModel m, [FromForm] string Checks, List<IFormFile> SimpleTx_ImgJustify)
     {
         try
         {
             m.UserC = "admin";
-            m.Checks = JsonConvert.DeserializeObject<List<SimpleTransactionDetailModel>>(Checks);
+            if (Checks != null)
+            {
+                m.Checks = JsonConvert.DeserializeObject<List<SimpleTransactionDetailModel>>(Checks);
+            }
+
             await _service.CreateSimpleBatch(m, SimpleTx_ImgJustify);
             return Json(new { success = true });
         }

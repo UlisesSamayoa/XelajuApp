@@ -968,9 +968,7 @@
             <h5>New Money Order</h5>
 
             <form id="formMOrder">
-
-                <!-- 🔵 HEADER -->
-                <div class="row">
+                @* <div class="row">
                     <div class="col-3">
                         <label class="form-label">Reference Number *</label>
                         <input id="MOrder_ReferenceNumber" class="form-control mb-2" placeholder="Reference Number" />
@@ -984,12 +982,10 @@
                         <label class="form-label">Company *</label>
                         <select id="MOrder_Company" class="form-control mb-2"></select>
                     </div>
-
                     <div class="col-2">
                         <label class="form-label">Amount *</label>
                         <input id="MOrder_Amount" type="number" class="form-control mb-2" placeholder="Amount" />
                     </div>
-
                     <div class="col-1">
                         <label class="form-label">Commission</label>
                         <input id="MOrder_Commission" type="number" class="form-control mb-2" readonly placeholder="0.0" />
@@ -998,7 +994,37 @@
                         <label class="form-label">Total Amount</label>
                         <input id="MOrder_TotalAmount" type="number" class="form-control mb-2" readonly placeholder="0.0" />
                     </div>
-
+                </div> *@
+                <div class="row">
+                    <div class="col-3">
+                        <label class="form-label">Reference Number *</label>
+                        <input id="MOrder_ReferenceNumber" class="form-control mb-2" placeholder="Reference Number" />
+                        <input type="hidden" id="MOrder_TransactionType" />
+                    </div>
+                    <div class="col-2">
+                        <label class="form-label">Company *</label>
+                        <select id="MOrder_Company" class="form-control mb-2"></select>
+                    </div>
+                    <div class="col-2">
+                        <label class="form-label">Amount *</label>
+                        <input id="MOrder_Amount" type="number" class="form-control mb-2" placeholder="Amount" />
+                    </div>
+                    <div class="col-1">
+                        <label class="form-label">%</label>
+                        <input id="MOrder_Commission" type="number" data-auto="true" class="form-control mb-2" placeholder="0.0" />
+                    </div>
+                    <div class="col-1">
+                        <label class="form-label">Fixed</label>
+                        <input id="MOrder_FixedCommission" type="number" value="2" class="form-control mb-2" placeholder="0.0" />
+                    </div>
+                    <div class="col-1">
+                        <label class="form-label">Total Fee</label>
+                        <input id="MOrder_TotalCommission" type="number" class="form-control mb-2" readonly placeholder="0.0" />
+                    </div>
+                    <div class="col-2">
+                        <label class="form-label">Total Amount</label>
+                        <input id="MOrder_TotalAmount" type="number" class="form-control mb-2" readonly placeholder="0.0" />
+                    </div>
                 </div>
                 <hr />
                 <div class="row">
@@ -1066,7 +1092,7 @@
                     </div>
                     <div class="col-6">
                         <label class="form-label">Justify Date</label>
-                        <input id="MOrder_Justify_DateError" type="datetime-local" class="form-control mb-2" />
+                        <input id="MOrder_Justify_DateError" type="date" class="form-control mb-2" />
                     </div>
                 </div>
                 <hr />
@@ -3507,19 +3533,18 @@
         //////////////////////////////////////////////////////////
         // 🔵 COMMISSION CALCULATION
         //////////////////////////////////////////////////////////
-                $(document).on(
-            'keyup change input',
-            '#MOrder_Amount, #PService_Amount',
-            function () {
+            //     $(document).on(
+            // 'keyup change input',
+            // '#MOrder_Amount, #PService_Amount',
+            // function () {
 
-                let prefix = $(this)
-                    .attr('id')
-                    .replace('_Amount', '');
+            //     let prefix = $(this)
+            //         .attr('id')
+            //         .replace('_Amount', '');
 
-                calculateCommissionSimple(prefix);
+            //     calculateCommissionSimple(prefix);
 
-            }
-        );
+            // });
          function calculateCommissionSimple(prefix) {
             let commission = parseFloat(
                 $('#' + prefix + '_TransactionType')
@@ -3539,6 +3564,84 @@
                 .val(total.toFixed(2));
 
         }
+        //Comision de morder
+        // $('#MOrder_Amount, #MOrder_Commission, #MOrder_FixedCommission').on('keyup change input', function () {calculateCommissionMOrder();});
+        // $('#MOrder_Commission').on('input', function () {$(this).data('auto', false);});
+        // function calculateCommissionMOrder() {
+        //     let amount =parseFloat($('#MOrder_Amount').val()) || 0;
+        //     let commissionInput =$('#MOrder_Commission');
+        //     let commissionPercent =parseFloat($('#MOrder_TransactionType').attr('data-commission')) || 0;
+        //     if (commissionInput.data('auto') !== false) {
+        //         let autoCommission =amount * (commissionPercent / 100);
+        //         commissionInput.val(autoCommission.toFixed(2));
+        //     }
+        //     let commission =parseFloat(commissionInput.val()) || 0;
+        //     let fixedCommission =parseFloat($('#MOrder_FixedCommission').val()) || 0;
+        //     let totalCommission =commission + fixedCommission;
+        //     let totalAmount =amount + totalCommission;
+        //     $('#MOrder_TotalCommission').val(totalCommission.toFixed(2));
+        //     $('#MOrder_TotalAmount').val(totalAmount.toFixed(2));
+        // }
+                //////////////////////////////////////////////////////////
+        // AUTO -> MANUAL
+        //////////////////////////////////////////////////////////
+
+        $('#MOrder_Commission').data('auto', true);
+
+        $('#MOrder_Amount, #MOrder_FixedCommission')
+            .on('keyup change input', function () {
+
+                calculateCommissionMOrder();
+
+            });
+
+        $('#MOrder_Commission')
+            .on('input', function () {
+
+                // El usuario modificó manualmente
+                $(this).data('auto', false);
+
+                calculateCommissionMOrder();
+
+            });
+
+        //////////////////////////////////////////////////////////
+        // COMMISSION CALCULATION
+        //////////////////////////////////////////////////////////
+
+        function calculateCommissionMOrder() {
+
+            let amount =parseFloat($('#MOrder_Amount').val()) || 0;
+            let commissionInput =$('#MOrder_Commission');
+            let commissionPercent =parseFloat($('#MOrder_TransactionType').attr('data-commission')) || 0;
+
+            //////////////////////////////////////////////////////
+            // AUTO CALCULATION
+            //////////////////////////////////////////////////////
+                    console.log(
+            'auto:',
+            commissionInput.data('auto')
+        );
+            if (commissionInput.data('auto') !== false) {
+
+                let autoCommission =
+                    amount * (commissionPercent / 100);
+
+                commissionInput.val(
+                    autoCommission.toFixed(2)
+                );
+            }
+            //////////////////////////////////////////////////////
+            // TOTALS
+            //////////////////////////////////////////////////////
+            let commission =parseFloat(commissionInput.val()) || 0;
+            let fixedCommission =parseFloat($('#MOrder_FixedCommission').val()) || 0;
+            let totalCommission =commission + fixedCommission;
+            let totalAmount =amount + totalCommission;
+            $('#MOrder_TotalCommission').val(totalCommission.toFixed(2));
+            $('#MOrder_TotalAmount').val(totalAmount.toFixed(2));
+        }
+        //Comision de morder
 
         //comisiones de cheque
         //         $(document).on(
@@ -4023,6 +4126,9 @@
             let senderDocNumber = $('#' + prefix + 'SenderDocumentNumber').val().trim();
             let senderPhone = $('#' + prefix + 'SenderPhone').val().trim();
             let senderAddress = $('#' + prefix + 'SenderAddress').val().trim();
+            let justifyDetails = $('#' + prefix + 'JustifyDetails').val().trim();
+            let justifyAgent =  $('#' + prefix + 'Justify_AgentName').val();
+            let justifuDateError =  $('#' + prefix + 'Justify_DateError').val() || '';
 
             if (!reference)
                 return Swal.fire('Error', 'Reference Number is required', 'error');
@@ -4068,37 +4174,36 @@
             formData.append("TransactionType", type);
             formData.append("Company", company);
             formData.append("Amount", amount);
-
-            formData.append(
-                "Commission",
-                $('#' + prefix + 'Commission').val()
-            );
-
-            formData.append(
-                "TotalAmount",
-                $('#' + prefix + 'TotalAmount').val()
-            );
+            formData.append("Commission",$('#' + prefix + 'Commission').val());
+            formData.append("FixedCommission",$('#' + prefix + 'FixedCommission').val());
+            formData.append("TotalAmount",$('#' + prefix + 'TotalAmount').val());
             formData.append("SenderName", senderName);
             formData.append("SenderDocumentType", senderDocType);
             formData.append("SenderDocumentNumber", senderDocNumber);
             formData.append("SenderPhone", senderPhone);
             formData.append("SenderAddress", senderAddress);
-            // formData.append(
-            //     "JustifyDetails",
-            //     $('#' + prefix + '_JustifyDetails').val()
-            // );
+
+            formData.append("JustifyDetails",justifyDetails);
+            formData.append("Justify_AgentName",justifyAgent);
+            formData.append("Justify_DateError",justifuDateError);
+            
+            $('.MOrder_justify-file').each(function () {
+                if (this.files.length > 0) {
+                    formData.append(
+                        'Morder_ImgJustify',
+                        this.files[0]
+                    );
+                }
+            });
+
             formData.append("UserC", "admin");
-            // let file = $('#' + prefix + '_File')[0]?.files[0];
-            // if (file) {
-            //     formData.append("ImgJustify", file);
-            // }
             Swal.fire({
                 title: 'Saving...',
                 allowOutsideClick: false,
                 didOpen: () => Swal.showLoading()
             });
             $.ajax({
-                url: '/Transactions/CreateSimpleTx',
+                url: '/Transactions/CreateMorder',
                 method: 'POST',
                 data: formData,
                 contentType: false,
@@ -4115,6 +4220,7 @@
                         showConfirmButton: false
                     });
                     $('#tblTx').DataTable().ajax.reload();
+                    $('#MOrder_Commission').data('auto', true);
                 },
                 error: function (err) {
                     let msg = err.responseJSON?.message || err.responseText ||'Error';
@@ -4251,6 +4357,7 @@
                         showConfirmButton: false
                     });
                     $('#tblTx').DataTable().ajax.reload();
+                    $('#Simpletx_Commission').data('auto', true);
                 },
                 error: function (err) {
                     let msg = err.responseJSON?.message || err.responseText ||'Error';

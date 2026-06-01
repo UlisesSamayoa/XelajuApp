@@ -3,6 +3,7 @@
     public class SimpleTransactionsBatchModel
     {
         public int IdClient_fk { get; set; }
+        public string ReferenceNumber { get; set; } = string.Empty;
         public int TransactionType { get; set; }
         public string SenderName { get; set; }
         public int SenderDocumentType { get; set; }
