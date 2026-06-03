@@ -486,22 +486,27 @@
                             <input id="B_LastName" class="form-control mb-2" placeholder="Last Name" />
                         </div>
 
-                        <div class="col-4">
+                        <div class="col-6">
                             <label>Document Type</label>
                             <select id="B_DocumentType" class="form-control mb-2"></select>
                         </div>
 
-                        <div class="col-4">
+                        <div class="col-6">
                             <label>Document Number</label>
                             <input id="B_DocumentNumber" class="form-control mb-2" placeholder="Document Number" />
                         </div>
 
-                        <div class="col-4">
+                        <div class="col-6">
                             <label>Country</label>
                             <select id="B_Country" class="form-control mb-2"></select>
                         </div>
+                        <div class="col-6">
+                            <label>Phone</label>
+                            <input name="B_Phone" id="B_Phone" class="form-control mb-2" placeholder="Phone" />
+                        </div>
                     </div>
-
+                    <label>Address</label>
+                    <textarea name="B_Address" id="B_Address" class="form-control mb-2" placeholder="Address"></textarea>
                 </form>
 
             </div>
@@ -2398,6 +2403,8 @@
                 IdDocumentType: $('#B_DocumentType').val(),
                 DocumentNumber: $('#B_DocumentNumber').val(),
                 Country: $('#B_Country').val(),
+                Phone: $('#B_Phone').val(),
+                Address: $('#B_Address').val(),
                 IdClient_fk: selectedClientId
             };
 
@@ -2424,6 +2431,14 @@
              }
              if (!data.Country) {
                Swal.fire('Error', 'Country is required', 'error');
+               return;
+             }
+             if (!data.Phone) {
+               Swal.fire('Error', 'Phone is required', 'error');
+               return;
+             }
+             if (!data.Address) {
+               Swal.fire('Error', 'Address is required', 'error');
                return;
              }
 
