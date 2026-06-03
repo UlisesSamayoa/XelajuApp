@@ -2369,8 +2369,9 @@
                 $('#ReceiverName').val(b.firstName + ' ' + b.lastName);
                 $('#ReceiverDocumentNumber').val(b.documentNumber);
                 $('#ReceiverCountry').val(b.country).trigger('change');
-
                 $('#ReceiverDocumentType').val(b.idDocumentType);
+                $('#ReceiverPhone').val(b.phone);
+                $('#ReceiverAddress').val(b.address);
 
                 setTimeout(() => {
                     // loadCompaniesByCountry(b.country, 'Receiver');
