@@ -156,6 +156,32 @@ public class TransactionsController : Controller
         }
     }
     [HttpPost]
+    public async Task<IActionResult> CreatePService(SimpleTransactionsModel m, List<IFormFile> PService_ImgJustify)
+    {
+        try
+        {
+            m.UserC = "admin";
+            await _service.CreatePService(m, PService_ImgJustify);
+            return Json(new { success = true });
+        }
+        catch (SqlException ex)
+        {
+            return BadRequest(new
+            {
+                message = ex.Message,
+                code = ex.Number
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                message = "Unexpected error",
+                detail = ex.Message
+            });
+        }
+    }
+    [HttpPost]
     public async Task<IActionResult> CreateSimpleTx([FromForm] SimpleTransactionsBatchModel m, [FromForm] string Checks, List<IFormFile> SimpleTx_ImgJustify)
     {
         try

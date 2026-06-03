@@ -11,48 +11,14 @@ public class TransactionsRepository
     {
         _db = db;
     }
-
-    //public async Task<List<TransactionsModel>> GetAll()
-    //{
-    //    var list = new List<TransactionsModel>();
-
-    //    using var conn = _db.CreateConnection();
-    //    using var cmd = new SqlCommand("sp_GetTransactions", conn);
-    //    cmd.CommandType = CommandType.StoredProcedure;
-
-    //    await conn.OpenAsync();
-    //    using var rd = await cmd.ExecuteReaderAsync();
-
-    //    while (await rd.ReadAsync())
-    //    {
-    //        list.Add(new TransactionsModel
-    //        {
-    //            IdTransaction = (int)rd["IdTransaction"],
-    //            ReferenceNumber = rd["ReferenceNumber"].ToString(),
-    //            SenderName = rd["SenderName"].ToString(),
-    //            ReceiverName = rd["ReceiverName"].ToString(),
-    //            ReceiverCountry = rd["ReceiverCountry"].ToString(),
-    //            Amount = (decimal)rd["Amount"],
-    //            Status = (int)rd["Status"]
-    //        });
-    //    }
-
-    //    return list;
-    //}
     public async Task<List<TransactionsModel>> GetAll()
     {
         var list = new List<TransactionsModel>();
-
         using var conn = _db.CreateConnection();
-
         using var cmd = new SqlCommand("sp_GetTransactions", conn);
-
         cmd.CommandType = CommandType.StoredProcedure;
-
         await conn.OpenAsync();
-
         using var rd = await cmd.ExecuteReaderAsync();
-
         while (await rd.ReadAsync())
         {
             list.Add(new TransactionsModel
@@ -80,49 +46,6 @@ public class TransactionsRepository
         await conn.CloseAsync();
         return list;
     }
-
-    //public async Task Create(TransactionsModel m)
-    //{
-    //    using var conn = _db.CreateConnection();
-    //    using var cmd = new SqlCommand("sp_CreateTransaction", conn);
-
-    //    cmd.CommandType = CommandType.StoredProcedure;
-
-    //    cmd.Parameters.AddWithValue("@TransactionType", m.TransactionType);
-    //    cmd.Parameters.AddWithValue("@Amount", m.Amount);
-    //    cmd.Parameters.AddWithValue("@Commission", m.Commission);
-    //    cmd.Parameters.AddWithValue("@TotalAmount", m.TotalAmount);
-    //    cmd.Parameters.AddWithValue("@ReferenceNumber", m.ReferenceNumber);
-
-    //    cmd.Parameters.AddWithValue("@SenderCountry", m.SenderCountry);
-    //    cmd.Parameters.AddWithValue("@SenderCompany", m.SenderCompany);
-    //    cmd.Parameters.AddWithValue("@SenderCurrency", m.SenderCurrency);
-    //    cmd.Parameters.AddWithValue("@SenderName", m.SenderName);
-    //    cmd.Parameters.AddWithValue("@SenderDocumentType", m.SenderDocumentType);
-    //    cmd.Parameters.AddWithValue("@SenderDocumentNumber", m.SenderDocumentNumber);
-    //    cmd.Parameters.AddWithValue("@SenderPhone", m.SenderPhone ?? "");
-    //    cmd.Parameters.AddWithValue("@SenderAddress", m.SenderAddress ?? "");
-
-    //    cmd.Parameters.AddWithValue("@ReceiverCountry", m.ReceiverCountry);
-    //    cmd.Parameters.AddWithValue("@ReceiverCompany", m.ReceiverCompany);
-    //    cmd.Parameters.AddWithValue("@ReceiverCurrency", m.ReceiverCurrency);
-    //    cmd.Parameters.AddWithValue("@ReceiverName", m.ReceiverName);
-    //    cmd.Parameters.AddWithValue("@ReceiverDocumentType", m.ReceiverDocumentType);
-    //    cmd.Parameters.AddWithValue("@ReceiverDocumentNumber", m.ReceiverDocumentNumber);
-    //    cmd.Parameters.AddWithValue("@ReceiverPhone", m.ReceiverPhone ?? "");
-    //    cmd.Parameters.AddWithValue("@ReceiverAddress", m.ReceiverAddress ?? "");
-    //    //LLAVE
-    //    cmd.Parameters.AddWithValue("@IdClient_fk", m.IdClient_fk);
-    //    cmd.Parameters.AddWithValue("@IdBeneficiarie_fk", m.IdBeneficiarie_fk);
-
-    //    cmd.Parameters.AddWithValue("@JustifyDetails", m.JustifyDetails ?? "");
-    //    cmd.Parameters.AddWithValue("@TransactionFile", m.TransactionFile ?? "");
-    //    cmd.Parameters.AddWithValue("@UserC", m.UserC);
-
-    //    await conn.OpenAsync();
-    //    await cmd.ExecuteNonQueryAsync();
-    //    await conn.CloseAsync();
-    //}
     public async Task<int> Create(TransactionsModel m)
     {
         using var conn = _db.CreateConnection();
@@ -167,12 +90,9 @@ public class TransactionsRepository
     {
         using var conn = _db.CreateConnection();
         using var cmd = new SqlCommand("sp_DeleteTransaction", conn);
-
         cmd.CommandType = CommandType.StoredProcedure;
-
         cmd.Parameters.AddWithValue("@IdTransaction", id);
         cmd.Parameters.AddWithValue("@UserU", user);
-
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
         await conn.CloseAsync();
@@ -181,18 +101,11 @@ public class TransactionsRepository
     public async Task<TransactionsModel> GetById(int id)
     {
         using var conn = _db.CreateConnection();
-
-        using var cmd =
-            new SqlCommand("sp_GetTransactionById", conn);
-
+        using var cmd = new SqlCommand("sp_GetTransactionById", conn);
         cmd.CommandType = CommandType.StoredProcedure;
-
         cmd.Parameters.AddWithValue("@IdTransaction", id);
-
         await conn.OpenAsync();
-
         using var rd = await cmd.ExecuteReaderAsync();
-
         if (await rd.ReadAsync())
         {
             return new TransactionsModel
@@ -226,31 +139,6 @@ public class TransactionsRepository
         await conn.CloseAsync();
         return null;
     }
-    //public async Task CreateSimple(SimpleTransactionsModel m)
-    //{
-    //    using var conn = _db.CreateConnection();
-    //    using var cmd = new SqlCommand("sp_CreateSimpleTransaction", conn);
-    //    cmd.CommandType = CommandType.StoredProcedure;
-
-    //    cmd.Parameters.AddWithValue("@ReferenceNumber", m.ReferenceNumber);
-    //    cmd.Parameters.AddWithValue("@TransactionType", m.TransactionType);
-    //    cmd.Parameters.AddWithValue("@Company", m.Company);
-    //    cmd.Parameters.AddWithValue("@Amount", m.Amount);
-    //    cmd.Parameters.AddWithValue("@Commission", m.Commission);
-    //    cmd.Parameters.AddWithValue("@TotalAmount", m.TotalAmount);
-    //    cmd.Parameters.AddWithValue("@SenderName", m.SenderName);
-    //    cmd.Parameters.AddWithValue("@SenderDocumentType", m.SenderDocumentType);
-    //    cmd.Parameters.AddWithValue("@SenderDocumentNumber", m.SenderDocumentNumber);
-    //    cmd.Parameters.AddWithValue("@JustifyDetails", m.JustifyDetails ?? "");
-    //    cmd.Parameters.AddWithValue("@SenderPhone", m.SenderPhone);
-    //    cmd.Parameters.AddWithValue("@SenderAddress", m.SenderAddress);
-    //    cmd.Parameters.AddWithValue("@UserC", m.UserC);
-    //    cmd.Parameters.AddWithValue("@IdClient_fk", m.IdClient_fk);
-
-    //    await conn.OpenAsync();
-    //    await cmd.ExecuteNonQueryAsync();
-    //    await conn.CloseAsync();
-    //}
     public async Task<int> CreateSimple(SimpleTransactionsModel m)
     {
         using var conn = _db.CreateConnection();
@@ -309,7 +197,35 @@ public class TransactionsRepository
         await conn.CloseAsync();
         return Convert.ToInt32(result);
     }
-
+    public async Task<int> CreatePService(SimpleTransactionsModel m)
+    {
+        using var conn = _db.CreateConnection();
+        using var cmd = new SqlCommand("sp_CreateSimpleTransaction", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@ReferenceNumber", m.ReferenceNumber);
+        cmd.Parameters.AddWithValue("@TransactionType", m.TransactionType);
+        cmd.Parameters.AddWithValue("@Company", m.Company);
+        cmd.Parameters.AddWithValue("@Amount", m.Amount);
+        cmd.Parameters.AddWithValue("@Commission", m.Commission);
+        cmd.Parameters.AddWithValue("@FixedCommission", m.FixedCommission);
+        //cmd.Parameters.AddWithValue("@IssueDateCheck", m.IssueDateCheck);
+        cmd.Parameters.Add("@IssueDateCheck", SqlDbType.Date).Value = (object?)m.IssueDateCheck ?? DBNull.Value;
+        cmd.Parameters.AddWithValue("@TotalAmount", m.TotalAmount);
+        cmd.Parameters.AddWithValue("@SenderName", m.SenderName);
+        cmd.Parameters.AddWithValue("@SenderDocumentType", m.SenderDocumentType);
+        cmd.Parameters.AddWithValue("@SenderDocumentNumber", m.SenderDocumentNumber);
+        cmd.Parameters.AddWithValue("@JustifyDetails", m.JustifyDetails ?? "");
+        cmd.Parameters.AddWithValue("@Justify_AgentName", m.Justify_AgentName ?? "");
+        cmd.Parameters.AddWithValue("@Justify_DateError", m.Justify_DateError == null ? (object)DBNull.Value : m.Justify_DateError);
+        cmd.Parameters.AddWithValue("@SenderPhone", m.SenderPhone);
+        cmd.Parameters.AddWithValue("@SenderAddress", m.SenderAddress);
+        cmd.Parameters.AddWithValue("@UserC", m.UserC);
+        cmd.Parameters.AddWithValue("@IdClient_fk", m.IdClient_fk);
+        await conn.OpenAsync();
+        var result = await cmd.ExecuteScalarAsync();
+        await conn.CloseAsync();
+        return Convert.ToInt32(result);
+    }
     public async Task ChangeStatus(int idTransaction, string status, string TransactionsStatusComment)
     {
         using var conn = _db.CreateConnection();
