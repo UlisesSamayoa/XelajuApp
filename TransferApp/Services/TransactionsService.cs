@@ -5,29 +5,64 @@ public class TransactionsService
 {
     private readonly TransactionsRepository _repo;
     private readonly TransactionAttachmentRepository _repoAttach;
+    private readonly ReferenceNumberRepository _repoRefe;
+    private readonly CompanyRepository _repoCompany;
 
-    public TransactionsService(TransactionsRepository repo, TransactionAttachmentRepository repoAttach)
+    public TransactionsService(TransactionsRepository repo, TransactionAttachmentRepository repoAttach, ReferenceNumberRepository repoRefe, CompanyRepository repoCompany)
     {
         _repo = repo;
         _repoAttach = repoAttach;
+        _repoRefe = repoRefe;
+        _repoCompany = repoCompany;
     }
 
     public async Task<List<TransactionsModel>> GetAll() => await _repo.GetAll();
-    //public async Task Create(TransactionsModel m, IFormFile ImgJustify)
+    //public async Task Create(TransactionsModel m, List<IFormFile> ImgJustify)
     //{
-    //    string ruta = SaveTransactionFile(
-    //        ImgJustify,
-    //        m.TransactionType,
-    //        m.SenderDocumentNumber,
-    //        m.ReferenceNumber
-    //    );
-
-    //    m.TransactionFile = ruta;
-
-    //    await _repo.Create(m);
+    //    int idTransaction = await _repo.Create(m);
+    //    if (ImgJustify != null && ImgJustify.Any())
+    //    {
+    //        foreach (var file in ImgJustify)
+    //        {
+    //            string filePath = SaveTransactionFile(
+    //                file,
+    //                m.TransactionType,
+    //                m.SenderName,
+    //                m.SenderDocumentNumber,
+    //                m.ReferenceNumber
+    //            );
+    //            try
+    //            {
+    //                await _repoAttach.CreateAttachment(
+    //                    new TransactionAttachmentModel
+    //                    {
+    //                        IdTransaction = idTransaction,
+    //                        FileName = Path.GetFileName(filePath),
+    //                        OriginalFileName = file.FileName,
+    //                        FileExtension = Path.GetExtension(file.FileName),
+    //                        ContentType = file.ContentType,
+    //                        FilePath = filePath,
+    //                        AttachmentType = "TRANSACTION_DOCUMENT",
+    //                        FileSize = file.Length,
+    //                        CreatedBy = m.UserC
+    //                    });
+    //            }
+    //            catch (Exception ex)
+    //            {
+    //                Console.WriteLine(ex.Message + ex.StackTrace);
+    //            }
+    //        }
+    //    }
     //}
     public async Task Create(TransactionsModel m, List<IFormFile> ImgJustify)
     {
+        // Validar compañía
+        var company = await _repoCompany.GetById(m.SenderCompany);
+        if (company == null) throw new Exception("Company not found");
+        // Validar que la compañía pertenece al tipo seleccionado
+        if (company.TransactionType != m.TransactionType) throw new Exception("Invalid company for selected transaction type");
+        // Generar referencia
+        m.ReferenceNumber = await _repoRefe.GetNextReferenceNumber(m.SenderCompany, m.TransactionType);
         int idTransaction = await _repo.Create(m);
         if (ImgJustify != null && ImgJustify.Any())
         {
@@ -58,7 +93,7 @@ public class TransactionsService
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message + ex.StackTrace);
+                    Console.WriteLine(ex.Message);
                 }
             }
         }

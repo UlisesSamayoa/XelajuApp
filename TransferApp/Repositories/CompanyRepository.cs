@@ -76,38 +76,57 @@ public class CompanyRepository
         await conn.CloseAsync();
         return list;
     }
-    public async Task<CompaniesModel> GetById(int id)
+    //public async Task<CompaniesModel> GetById(int id)
+    //{
+    //    using var conn = _db.CreateConnection();
+    //    using var cmd = new SqlCommand("sp_GetCompanyById", conn);
+
+    //    cmd.CommandType = CommandType.StoredProcedure;
+    //    cmd.Parameters.AddWithValue("@IdCompany", id);
+
+    //    await conn.OpenAsync();
+
+    //    using var reader = await cmd.ExecuteReaderAsync();
+
+    //    if (await reader.ReadAsync())
+    //    {
+    //        return new CompaniesModel
+    //        {
+    //            IdCompany = (int)reader["IdCompany"],
+    //            Name = reader["Name"].ToString(),
+    //            Country = reader["Country"].ToString(),
+    //            IdCountry = reader["IdCountry"].ToString(),
+    //            SwiftCode = reader["SwiftCode"].ToString(),
+    //            Phone = reader["Phone"].ToString(),
+    //            TransactionType = (int)reader["TransactionType"],
+    //            TransactionTypeName = reader["TransactionTypeName"].ToString(),
+    //            ContactPerson = reader["ContactPerson"].ToString(),
+    //            PhoneContactPerson = reader["PhoneContactPerson"].ToString(),
+    //            Position = reader["Position"].ToString(),
+    //            StatusCompany = reader["StatusCompany"].ToString(),
+    //            StatusCompanyComment = reader["StatusCompanyComment"].ToString()
+    //        };
+    //    }
+    //    await conn.CloseAsync();
+    //    return null;
+    //}
+    public async Task<CompaniesModel?> GetById(int id)
     {
         using var conn = _db.CreateConnection();
-        using var cmd = new SqlCommand("sp_GetCompanyById", conn);
-
-        cmd.CommandType = CommandType.StoredProcedure;
-        cmd.Parameters.AddWithValue("@IdCompany", id);
-
+        using var cmd = new SqlCommand("SELECT IdCompany, Name, TransactionType, SwiftCode FROM Companies WHERE IdCompany = @Id", conn);
+        cmd.Parameters.AddWithValue("@Id", id);
         await conn.OpenAsync();
-
         using var reader = await cmd.ExecuteReaderAsync();
-
         if (await reader.ReadAsync())
         {
             return new CompaniesModel
             {
-                IdCompany = (int)reader["IdCompany"],
+                IdCompany = Convert.ToInt32(reader["IdCompany"]),
                 Name = reader["Name"].ToString(),
-                Country = reader["Country"].ToString(),
-                IdCountry = reader["IdCountry"].ToString(),
-                SwiftCode = reader["SwiftCode"].ToString(),
-                Phone = reader["Phone"].ToString(),
-                TransactionType = (int)reader["TransactionType"],
-                TransactionTypeName = reader["TransactionTypeName"].ToString(),
-                ContactPerson = reader["ContactPerson"].ToString(),
-                PhoneContactPerson = reader["PhoneContactPerson"].ToString(),
-                Position = reader["Position"].ToString(),
-                StatusCompany = reader["StatusCompany"].ToString(),
-                StatusCompanyComment = reader["StatusCompanyComment"].ToString()
+                TransactionType = Convert.ToInt32(reader["TransactionType"]),
+                SwiftCode = reader["SwiftCode"].ToString()
             };
         }
-        await conn.CloseAsync();
         return null;
     }
     public async Task Update(CompaniesModel model)
@@ -202,7 +221,8 @@ public class CompanyRepository
             list.Add(new CompaniesModel
             {
                 IdCompany = Convert.ToInt32(dr["IdCompany"]),
-                Name = dr["Name"].ToString()
+                Name = dr["Name"].ToString(),
+                SwiftCode = dr["SwiftCode"].ToString()
             });
         }
 

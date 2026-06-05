@@ -2162,6 +2162,29 @@
 
             });
         }
+            // $(document).on('change', '#SenderCompany', function () {
+            //     const swiftCode =$(this).find(':selected').data('swift');
+            //     $('#ReferenceNumber').val(swiftCode? swiftCode + '-AUTO': ''
+            //     );
+            // });
+
+            $('#SenderCompany').change(function () {
+            let senderCompany =$(this).val();
+            let transactionType =$('#TransactionType').val();
+            $.get(
+                '/ReferenceNumber/GetReferencePreview',
+                {
+                    senderCompany,
+                    transactionType
+                },
+                function (referenceNumber) {
+                    $('#ReferenceNumber').val(referenceNumber);
+                });
+            });
+
+
+
+
                 $('#btnSaveNewClient').click(function () {
                      var _FirstName= $('#C_FirstName').val().trim();
                  var _LastName= $('#C_LastName').val().trim();
@@ -4748,9 +4771,18 @@
                         select = $('#' + selectId);
                     }
                     select.empty();
-                    data.forEach(c => {
+                    // data.forEach(c => {
+                    //     select.append(
+                    //         `<option value="${c.idCompany}">
+                    //             ${c.name}
+                    //         </option>`
+                    //     );
+                    // });
+                       data.forEach(c => {
                         select.append(
-                            `<option value="${c.idCompany}">
+                            `<option
+                                value="${c.idCompany}"
+                                data-swift="${c.swiftCode || ''}">
                                 ${c.name}
                             </option>`
                         );

@@ -1,5 +1,6 @@
 using TransferApp.Data;
 using TransferApp.Repositories;
+using TransferApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +31,8 @@ builder.Services.AddScoped<TransactionsService>();
 builder.Services.AddScoped<ParametersRepository>();
 builder.Services.AddScoped<ParametersService>();
 builder.Services.AddScoped<TransactionAttachmentRepository>();
+builder.Services.AddScoped<ReferenceNumberRepository>();
+builder.Services.AddScoped<ReferenceNumberService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
