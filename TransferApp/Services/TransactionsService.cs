@@ -64,6 +64,16 @@ public class TransactionsService
         // Generar referencia
         m.ReferenceNumber = await _repoRefe.GetNextReferenceNumber(m.SenderCompany, m.TransactionType);
         int idTransaction = await _repo.Create(m);
+        // ====================================
+        // UPDATE REFERENCE SEQUENCE
+        // ====================================
+
+        long sequence =
+            ExtractSequence(
+                m.ReferenceNumber);
+
+        await _repoRefe.SaveReferenceSequence(m.SenderCompany, m.TransactionType, sequence);
+
         if (ImgJustify != null && ImgJustify.Any())
         {
             foreach (var file in ImgJustify)
@@ -401,22 +411,47 @@ public class TransactionsService
     {
         return await _repoAttach.GetAttachments(idTransaction);
     }
-
     //public async Task CreateSimpleBatch(SimpleTransactionsBatchModel m, List<IFormFile> files)
     //{
     //    if (m.Checks == null || !m.Checks.Any())
     //    {
     //        throw new Exception("No checks received");
     //    }
+
+    //    // ====================================
+    //    // VALIDATE DUPLICATED REFERENCES
+    //    // ====================================
+    //    var duplicatedReferences = m.Checks
+    //        .Where(x => !string.IsNullOrWhiteSpace(x.ReferenceNumber))
+    //        .GroupBy(x => x.ReferenceNumber.Trim())
+    //        .Where(g => g.Count() > 1)
+    //        .Select(g => g.Key)
+    //        .ToList();
+
+    //    if (duplicatedReferences.Any())
+    //    {
+    //        throw new Exception(
+    //            $"Duplicated references detected: {string.Join(", ", duplicatedReferences)}"
+    //        );
+    //    }
+
     //    // ====================================
     //    // SAVE FILES ONCE
     //    // ====================================
     //    List<TransactionAttachmentModel> attachments = new();
+    //    string batchReferenceImg = $"{m.Checks.First().ReferenceNumber}_{m.Checks.Last().ReferenceNumber}";
     //    if (files != null && files.Any())
     //    {
     //        foreach (var file in files)
     //        {
-    //            string filePath = SaveTransactionFile(file, m.TransactionType, m.SenderName, m.SenderDocumentNumber, "BATCH");
+    //            string filePath = SaveTransactionFile(
+    //                file,
+    //                m.TransactionType,
+    //                m.SenderName,
+    //                m.SenderDocumentNumber,
+    //                batchReferenceImg
+    //            );
+
     //            attachments.Add(
     //                new TransactionAttachmentModel
     //                {
@@ -437,28 +472,40 @@ public class TransactionsService
     //    // ====================================
     //    foreach (var check in m.Checks)
     //    {
-    //        var tx =
-    //            new SimpleTransactionsModel
-    //            {
-    //                IdClient_fk = m.IdClient_fk,
-    //                ReferenceNumber = check.ReferenceNumber,
-    //                TransactionType = m.TransactionType,
-    //                Company = check.Company,
-    //                Amount = check.Amount,
-    //                Commission = check.Commission,
-    //                TotalAmount = check.TotalAmount,
-    //                SenderName = m.SenderName,
-    //                SenderDocumentType = m.SenderDocumentType,
-    //                SenderDocumentNumber = m.SenderDocumentNumber,
-    //                SenderPhone = m.SenderPhone,
-    //                SenderAddress = m.SenderAddress,
-    //                JustifyDetails = m.JustifyDetails,
-    //                UserC = m.UserC
-    //            };
+    //        var tx = new SimpleTransactionsModel
+    //        {
+    //            IdClient_fk = m.IdClient_fk,
+    //            ReferenceNumber = check.ReferenceNumber,
+    //            TransactionType = m.TransactionType,
+    //            Company = check.Company,
+    //            Amount = check.Amount,
+    //            Commission = check.Commission,
+    //            TotalAmount = check.TotalAmount,
+    //            FixedCommission = check.FixedCommission,
+    //            IssueDateCheck = check.IssueDateCheck,
+    //            SenderName = m.SenderName,
+    //            SenderDocumentType = m.SenderDocumentType,
+    //            SenderDocumentNumber = m.SenderDocumentNumber,
+    //            SenderPhone = m.SenderPhone,
+    //            SenderAddress = m.SenderAddress,
+    //            JustifyDetails = m.JustifyDetails,
+    //            Justify_AgentName = m.Justify_AgentName,
+    //            Justify_DateError = m.Justify_DateError,
+    //            UserC = m.UserC
+    //        };
+
     //        int idTransaction = await _repo.CreateSimple(tx);
-    //        // ================================
+
+    //        if (idTransaction <= 0)
+    //        {
+    //            throw new Exception(
+    //                $"Could not create transaction {check.ReferenceNumber}"
+    //            );
+    //        }
+
+    //        // ====================================
     //        // LINK ATTACHMENTS
-    //        // ================================
+    //        // ====================================
     //        foreach (var attach in attachments)
     //        {
     //            await _repoAttach.CreateAttachment(
@@ -477,7 +524,9 @@ public class TransactionsService
     //        }
     //    }
     //}
-    public async Task CreateSimpleBatch(SimpleTransactionsBatchModel m, List<IFormFile> files)
+    public async Task CreateSimpleBatch(
+     SimpleTransactionsBatchModel m,
+     List<IFormFile> files)
     {
         if (m.Checks == null || !m.Checks.Any())
         {
@@ -485,8 +534,36 @@ public class TransactionsService
         }
 
         // ====================================
+        // GENERATE REAL REFERENCES
+        // ====================================
+        var generatedReferences = new Dictionary<string, long>();
+        foreach (var check in m.Checks)
+        {
+            var preview = await _repoRefe.GetReferencePreview(check.Company, m.TransactionType);
+            if (string.IsNullOrWhiteSpace(preview))
+            {
+                throw new Exception($"Could not generate reference for company {check.Company}");
+            }
+            var match = System.Text.RegularExpressions.Regex.Match(preview, @"^(.*)-(\d+)$");
+            if (!match.Success)
+            {
+                throw new Exception($"Invalid reference format: {preview}");
+            }
+            string swiftCode = match.Groups[1].Value;
+            long nextSequence = long.Parse(match.Groups[2].Value);
+            string key = $"{check.Company}_{m.TransactionType}";
+            if (generatedReferences.ContainsKey(key))
+            {
+                nextSequence = generatedReferences[key] + 1;
+            }
+            generatedReferences[key] = nextSequence;
+            check.ReferenceNumber = $"{swiftCode}-{nextSequence:D8}";
+        }
+
+        // ====================================
         // VALIDATE DUPLICATED REFERENCES
         // ====================================
+
         var duplicatedReferences = m.Checks
             .Where(x => !string.IsNullOrWhiteSpace(x.ReferenceNumber))
             .GroupBy(x => x.ReferenceNumber.Trim())
@@ -500,24 +577,18 @@ public class TransactionsService
                 $"Duplicated references detected: {string.Join(", ", duplicatedReferences)}"
             );
         }
-
         // ====================================
         // SAVE FILES ONCE
         // ====================================
         List<TransactionAttachmentModel> attachments = new();
         string batchReferenceImg = $"{m.Checks.First().ReferenceNumber}_{m.Checks.Last().ReferenceNumber}";
+
         if (files != null && files.Any())
         {
             foreach (var file in files)
             {
-                string filePath = SaveTransactionFile(
-                    file,
-                    m.TransactionType,
-                    m.SenderName,
-                    m.SenderDocumentNumber,
-                    batchReferenceImg
-                );
-
+                string filePath =
+                    SaveTransactionFile(file, m.TransactionType, m.SenderName, m.SenderDocumentNumber, batchReferenceImg);
                 attachments.Add(
                     new TransactionAttachmentModel
                     {
@@ -536,30 +607,31 @@ public class TransactionsService
         // ====================================
         // CREATE EACH CHECK
         // ====================================
+
         foreach (var check in m.Checks)
         {
-            var tx = new SimpleTransactionsModel
-            {
-                IdClient_fk = m.IdClient_fk,
-                ReferenceNumber = check.ReferenceNumber,
-                TransactionType = m.TransactionType,
-                Company = check.Company,
-                Amount = check.Amount,
-                Commission = check.Commission,
-                TotalAmount = check.TotalAmount,
-                FixedCommission = check.FixedCommission,
-                IssueDateCheck = check.IssueDateCheck,
-                SenderName = m.SenderName,
-                SenderDocumentType = m.SenderDocumentType,
-                SenderDocumentNumber = m.SenderDocumentNumber,
-                SenderPhone = m.SenderPhone,
-                SenderAddress = m.SenderAddress,
-                JustifyDetails = m.JustifyDetails,
-                Justify_AgentName = m.Justify_AgentName,
-                Justify_DateError = m.Justify_DateError,
-                UserC = m.UserC
-            };
-
+            var tx =
+                new SimpleTransactionsModel
+                {
+                    IdClient_fk = m.IdClient_fk,
+                    ReferenceNumber = check.ReferenceNumber,
+                    TransactionType = m.TransactionType,
+                    Company = check.Company,
+                    Amount = check.Amount,
+                    Commission = check.Commission,
+                    TotalAmount = check.TotalAmount,
+                    FixedCommission = check.FixedCommission,
+                    IssueDateCheck = check.IssueDateCheck,
+                    SenderName = m.SenderName,
+                    SenderDocumentType = m.SenderDocumentType,
+                    SenderDocumentNumber = m.SenderDocumentNumber,
+                    SenderPhone = m.SenderPhone,
+                    SenderAddress = m.SenderAddress,
+                    JustifyDetails = m.JustifyDetails,
+                    Justify_AgentName = m.Justify_AgentName,
+                    Justify_DateError = m.Justify_DateError,
+                    UserC = m.UserC
+                };
             int idTransaction = await _repo.CreateSimple(tx);
 
             if (idTransaction <= 0)
@@ -572,6 +644,7 @@ public class TransactionsService
             // ====================================
             // LINK ATTACHMENTS
             // ====================================
+
             foreach (var attach in attachments)
             {
                 await _repoAttach.CreateAttachment(
@@ -588,8 +661,27 @@ public class TransactionsService
                         CreatedBy = attach.CreatedBy
                     });
             }
+            foreach (var item in generatedReferences)
+            {
+                var parts = item.Key.Split('_');
+                int company = int.Parse(parts[0]);
+                int transactionType = int.Parse(parts[1]);
+                long lastSequence = item.Value;
+                await _repoRefe.SaveReferenceSequence(company, transactionType, lastSequence);
+            }
         }
     }
+    private long ExtractSequence(string referenceNumber)
+    {
+        var match = System.Text.RegularExpressions.Regex.Match(
+            referenceNumber,
+            @"-(\d+)$");
 
+        if (!match.Success)
+            throw new Exception(
+                $"Invalid reference format: {referenceNumber}");
+
+        return long.Parse(match.Groups[1].Value);
+    }
 
 }

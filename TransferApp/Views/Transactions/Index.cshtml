@@ -150,7 +150,7 @@
                         <div class="row">
                             <div class="col-3">
                                 <label class="form-label">Reference Number *</label>
-                                <input id="ReferenceNumber" class="form-control mb-2" placeholder="Reference Number" />
+                                <input id="ReferenceNumber" class="form-control mb-2" placeholder="Reference Number" readonly/>
                                 <input type="hidden" id="TransactionType" />
                             </div>
                             <div class="col-2">
@@ -3178,11 +3178,13 @@
             });
         }
 
+        //ANTES DE CALCULO DE REFERENCE
         // function Global_selectCompany(id) {
         //     $.get('/Companies/GetById?id=' + id, function (c) {
-        //         //selectedClients[currentPrefix] = c.idClient;
-        //         $('#SimpleTx_Company').val(c.idCompany);
-        //         $('#SimpleTx_CompanyText').val(c.name);
+        //         let companyIdSelector = currentSimpleTxIndex == 0 ? '#SimpleTx_Company' : `#SimpleTx_Company_${currentSimpleTxIndex}`;
+        //         let companyTextSelector = currentSimpleTxIndex == 0 ? '#SimpleTx_CompanyText' : `#SimpleTx_CompanyText_${currentSimpleTxIndex}`;
+        //         $(companyIdSelector).val(c.idCompany);
+        //         $(companyTextSelector).val(c.name);
         //         $('#SimpleTx_modalSearchCompany').modal('hide');
         //         Swal.fire({
         //             icon: 'success',
@@ -3192,21 +3194,115 @@
         //         });
         //     });
         // }
-        function Global_selectCompany(id) {
+        //ANTES DE CALCULO DE REFERENCE
+
+        //CALCULO DE REFERENCE para cheques
+                    function getHighestPreviewForCompany(companyId, currentReferenceSelector) {
+
+            let highest = 0;
+
+            $('.simpletx-row').each(function () {
+
+                const rowCompany =
+                    $(this).find('.simpletx-company').val();
+
+                if (rowCompany != companyId)
+                    return;
+
+                const referenceInput =
+                    $(this).find('.simpletx-reference');
+
+                if (
+                    '#' + referenceInput.attr('id') ===
+                    currentReferenceSelector
+                )
+                    return;
+
+                const reference =
+                    referenceInput.val();
+
+                if (!reference)
+                    return;
+
+                const match =
+                    reference.match(/-(\d+)$/);
+
+                if (!match)
+                    return;
+
+                const number =
+                    parseInt(match[1]);
+
+                if (number > highest)
+                    highest = number;
+            });
+
+            return highest;
+        }
+
+                   function Global_selectCompany(id) {
+
             $.get('/Companies/GetById?id=' + id, function (c) {
-                let companyIdSelector = currentSimpleTxIndex == 0 ? '#SimpleTx_Company' : `#SimpleTx_Company_${currentSimpleTxIndex}`;
-                let companyTextSelector = currentSimpleTxIndex == 0 ? '#SimpleTx_CompanyText' : `#SimpleTx_CompanyText_${currentSimpleTxIndex}`;
+                let companyIdSelector =currentSimpleTxIndex == 0? '#SimpleTx_Company': `#SimpleTx_Company_${currentSimpleTxIndex}`;
+                let companyTextSelector =currentSimpleTxIndex == 0? '#SimpleTx_CompanyText': `#SimpleTx_CompanyText_${currentSimpleTxIndex}`;
+                let referenceSelector =currentSimpleTxIndex == 0? '#SimpleTx_ReferenceNumber': `#SimpleTx_ReferenceNumber_${currentSimpleTxIndex}`;
                 $(companyIdSelector).val(c.idCompany);
                 $(companyTextSelector).val(c.name);
+
+                $.get(
+                    '/ReferenceNumber/GetReferencePreview',
+                    {
+                        senderCompany: c.idCompany,
+                        transactionType: 1
+                    },
+                    function (preview) {
+                        const match =preview.match(/^(.*)-(\d+)$/);
+                        if (!match) {
+                            $(referenceSelector).val(preview);
+                            return;
+                        }
+                        const swiftCode =match[1];
+                        const baseSequence =parseInt(match[2]);
+                        const highestPreview =getHighestPreviewForCompany(c.idCompany,referenceSelector);
+                        let finalSequence =baseSequence;
+                        if (
+                            highestPreview >= baseSequence
+                        ) {
+                            finalSequence =highestPreview + 1;
+                        }
+                        const finalReference =`${swiftCode}-${finalSequence.toString().padStart(8, '0')}`;
+                        $(referenceSelector).val(finalReference);
+                    });
                 $('#SimpleTx_modalSearchCompany').modal('hide');
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Company loaded',
-                    timer: 1000,
-                    showConfirmButton: false
-                });
+                Swal.fire({icon: 'success',title: 'Company loaded',timer: 1000,showConfirmButton: false});
             });
         }
+        //CALCULO DE REFERENCE para cheques
+
+//CALCULO DE REFERENCE PARA MONEY ORDER
+        function MOrder_companyChanged() {
+
+            const companyId = $('#MOrder_Company').val();
+
+            if (!companyId) {
+                $('#MOrder_ReferenceNumber').val('');
+                return;
+            }
+
+            $.get(
+                '/ReferenceNumber/GetReferencePreview',
+                {
+                    senderCompany: companyId,
+                    transactionType: 4
+                },
+                function (preview) {
+
+                    $('#MOrder_ReferenceNumber').val(preview);
+
+                }
+            );
+        }
+//CALCULO DE REFERENCE PARA MONEY ORDER
         let currentSimpleTxIndex = 0;
         let simpleTxIndex = 1;
 
@@ -3913,14 +4009,17 @@
                       //$('#TransactionType').val(t.idTypeTransaction);
                       $('#TransactionTypeName').val(t.name);
                       $('#TransactionType').attr('data-commission', t.commission);
-                      loadCompaniesByTransactionType(3,'TransactionType');
+                      //loadCompaniesByTransactionType(3,'TransactionType');
                     }else{
                       $('#'+Prefijo+'_TransactionType').empty();
                       //$('#'+Prefijo+'_TransactionType').val(t.idTypeTransaction);
                       $('#'+Prefijo+'_TransactionType').val(t.numberT);
                       $('#'+Prefijo+'_TransactionTypeName').val(t.name);
                      $('#' + Prefijo + '_TransactionType').attr('data-commission', t.commission);
-                     loadCompaniesByTransactionType(NumeroT,Prefijo+"_Company");
+                     if(Prefijo != "SimpleTx"){
+                         loadCompaniesByTransactionType(NumeroT,Prefijo+"_Company");
+                     }
+                     //loadCompaniesByTransactionType(NumeroT,Prefijo+"_Company");
                     }
                 });
 

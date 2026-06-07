@@ -46,5 +46,18 @@ namespace TransferApp.Repositories
             var result = await cmd.ExecuteScalarAsync();
             return result?.ToString() ?? "";
         }
+
+        public async Task SaveReferenceSequence(int senderCompany, int transactionType, long lastSequence)
+        {
+            using var conn = _db.CreateConnection();
+            using var cmd = new SqlCommand("sp_SaveReferenceSequence", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@SenderCompany", senderCompany);
+            cmd.Parameters.AddWithValue("@TransactionType", transactionType);
+            cmd.Parameters.AddWithValue("@LastSequence", lastSequence);
+            await conn.OpenAsync();
+            await cmd.ExecuteNonQueryAsync();
+        }
+
     }
 }
