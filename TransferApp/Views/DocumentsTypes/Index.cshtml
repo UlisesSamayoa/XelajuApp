@@ -67,6 +67,7 @@
                 <tr>
                     <th>Name</th>
                     <th>Description</th>
+                    <th>Mask</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -90,6 +91,8 @@
                     <input name="Name" class="form-control mb-2" placeholder="Name" required />
                     <label class="form-label">Description</label>
                     <textarea name="Description" class="form-control mb-2" placeholder="Description"></textarea>
+                    <label class="form-label">Document Mask</label>
+                    <input name="MaskPattern" class="form-control mb-2" placeholder="000-000" required />
                 </form>
             </div>
 
@@ -118,6 +121,7 @@
                 columns: [
                     { data: 'name' },
                     { data: 'description' },
+                    { data: 'maskPattern' },
                     {
                         data: 'idDocumentType',
                         render: id => `
@@ -136,6 +140,7 @@
         $('#btnSaveDoc').click(function () {
             var _Name= $('input[name="Name"]').val().trim();
             var _Description= $('textarea[name="Description"]').val().trim();
+            var _MaskPattern = $('input[name="MaskPattern"]').val();
              if (!_Name) {
                     Swal.fire('Error', 'Name is required', 'error');
                     return;
@@ -144,13 +149,18 @@
                         Swal.fire('Error', 'Description is required', 'error');
                     return;
                 }
+                if (!_MaskPattern) {
+                        Swal.fire('Error', 'Mask is required', 'error');
+                    return;
+                }
             $.ajax({
                 url: '/DocumentsTypes/Create',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
                     name: _Name,
-                    description:_Description
+                    description:_Description,
+                    maskPattern:_MaskPattern,
                 }),
                 success: () => {
                     Swal.fire('Saved!', '', 'success');

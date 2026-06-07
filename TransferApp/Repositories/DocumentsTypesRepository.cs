@@ -30,7 +30,8 @@ public class DocumentsTypesRepository
                 IdDocumentType = (int)rd["IdDocumentType"],
                 Name = rd["Name"].ToString(),
                 Description = rd["Description"].ToString(),
-                Status = (int)rd["Status"]
+                Status = (int)rd["Status"],
+                MaskPattern = rd["MaskPattern"].ToString()
             });
         }
         await conn.CloseAsync();
@@ -55,7 +56,8 @@ public class DocumentsTypesRepository
                 IdDocumentType = (int)rd["IdDocumentType"],
                 Name = rd["Name"].ToString(),
                 Description = rd["Description"].ToString(),
-                Status = (int)rd["Status"]
+                Status = (int)rd["Status"],
+                MaskPattern = rd["MaskPattern"].ToString()
             };
         }
         await conn.CloseAsync();
@@ -71,6 +73,7 @@ public class DocumentsTypesRepository
 
         cmd.Parameters.AddWithValue("@Name", m.Name);
         cmd.Parameters.AddWithValue("@Description", m.Description ?? "");
+        cmd.Parameters.AddWithValue("@MaskPattern", m.MaskPattern ?? "");
         cmd.Parameters.AddWithValue("@UserC", m.UserC);
 
         await conn.OpenAsync();
@@ -88,6 +91,7 @@ public class DocumentsTypesRepository
         cmd.Parameters.AddWithValue("@IdDocumentType", m.IdDocumentType);
         cmd.Parameters.AddWithValue("@Name", m.Name);
         cmd.Parameters.AddWithValue("@Description", m.Description ?? "");
+        cmd.Parameters.AddWithValue("@MaskPattern", m.MaskPattern ?? "");
         cmd.Parameters.AddWithValue("@UserU", m.UserU);
 
         await conn.OpenAsync();
