@@ -842,7 +842,7 @@
                                 <label class="form-label">
                                     Reference
                                 </label>
-                                    <input id="SimpleTx_ReferenceNumber" class="form-control simpletx-reference" placeholder="Reference" />
+                                    <input id="SimpleTx_ReferenceNumber" class="form-control simpletx-reference" placeholder="Reference" readonly />
                             </div>
                             <div class="col-2">
                                 <label class="form-label">
@@ -1003,12 +1003,12 @@
                 <div class="row">
                     <div class="col-3">
                         <label class="form-label">Reference Number *</label>
-                        <input id="MOrder_ReferenceNumber" class="form-control mb-2" placeholder="Reference Number" />
+                        <input id="MOrder_ReferenceNumber" class="form-control mb-2" placeholder="Reference Number" readonly/>
                         <input type="hidden" id="MOrder_TransactionType" />
                     </div>
                     <div class="col-2">
                         <label class="form-label">Company *</label>
-                        <select id="MOrder_Company" class="form-control mb-2"></select>
+                        <select id="MOrder_Company" class="form-control mb-2" onchange="MOrder_companyChanged()"></select>
                     </div>
                     <div class="col-2">
                         <label class="form-label">Amount *</label>
@@ -1178,12 +1178,12 @@
                 <div class="row">
                     <div class="col-3">
                         <label class="form-label">Reference Number *</label>
-                        <input id="PService_ReferenceNumber" class="form-control mb-2" placeholder="Reference Number" />
+                        <input id="PService_ReferenceNumber" class="form-control mb-2" placeholder="Reference Number" readonly />
                         <input type="hidden" id="PService_TransactionType" />
                     </div>
                     <div class="col-2">
                         <label class="form-label">Company *</label>
-                        <select id="PService_Company" class="form-control mb-2"></select>
+                        <select id="PService_Company" class="form-control mb-2" onchange="PService_companyChanged()" ></select>
                     </div>
                     <div class="col-2">
                         <label class="form-label">Amount *</label>
@@ -3279,30 +3279,46 @@
         }
         //CALCULO DE REFERENCE para cheques
 
-//CALCULO DE REFERENCE PARA MONEY ORDER
-        function MOrder_companyChanged() {
-
-            const companyId = $('#MOrder_Company').val();
-
-            if (!companyId) {
-                $('#MOrder_ReferenceNumber').val('');
-                return;
-            }
-
-            $.get(
-                '/ReferenceNumber/GetReferencePreview',
-                {
-                    senderCompany: companyId,
-                    transactionType: 4
-                },
-                function (preview) {
-
-                    $('#MOrder_ReferenceNumber').val(preview);
-
+           //CALCULO DE REFERENCE PARA MONEY ORDER
+            function MOrder_companyChanged() {
+                const companyId = $('#MOrder_Company').val();
+                if (!companyId) {
+                    $('#MOrder_ReferenceNumber').val('');
+                    return;
                 }
-            );
-        }
-//CALCULO DE REFERENCE PARA MONEY ORDER
+                $.get(
+                    '/ReferenceNumber/GetReferencePreview',
+                    {
+                        senderCompany: companyId,
+                        transactionType: 2
+                    },
+                    function (preview) {
+
+                        $('#MOrder_ReferenceNumber').val(preview);
+                    }
+                );
+            }
+        //CALCULO DE REFERENCE PARA MONEY ORDER
+        //CALCULO DE REFERENCE PARA PAID SERVICE
+                        function PService_companyChanged() {
+                    const companyId = $('#PService_Company').val();
+                    if (!companyId) {
+                                $('#PService_ReferenceNumber').val('');
+                        return;
+                    }
+                    $.get(
+                        '/ReferenceNumber/GetReferencePreview',
+                        {
+                            senderCompany: companyId,
+                            transactionType: 4
+                        },
+                        function (preview) {
+
+                                    $('#PService_ReferenceNumber').val(preview);
+                        }
+                    );
+                }
+                //CALCULO DE REFERENCE PARA PAID SERVICE
         let currentSimpleTxIndex = 0;
         let simpleTxIndex = 1;
 
@@ -3313,7 +3329,7 @@
             let html = `
                 <div class="row align-items-end g-2 mb-2 simpletx-row">
                     <div class="col-2">
-                        <input id="SimpleTx_ReferenceNumber_${simpleTxIndex}" class="form-control simpletx-reference" placeholder="Reference" />
+                                <input id="SimpleTx_ReferenceNumber_${simpleTxIndex}" class="form-control simpletx-reference" placeholder="Reference" readonly />
                     </div>
                     <div class="col-2">
                         <div class="input-group">
@@ -4513,6 +4529,7 @@
                     $('#tblTx').DataTable().ajax.reload();
                     $('#MOrder_Commission').data('auto', true);
                     $('#MOrder_FixedCommission').val(2);
+                    $('#MOrder_ReferenceNumber').val("");
                 },
                 error: function (err) {
                     let msg = err.responseJSON?.message || err.responseText ||'Error';
@@ -4659,6 +4676,7 @@
                     $('#tblTx').DataTable().ajax.reload();
                     $('#PService_Commission').data('auto', true);
                     $('#PService_FixedCommission').val(2);
+                    $('#PService_ReferenceNumber').val("");
                 },
                 error: function (err) {
                     let msg = err.responseJSON?.message || err.responseText ||'Error';

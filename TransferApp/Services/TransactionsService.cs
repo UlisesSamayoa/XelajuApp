@@ -125,6 +125,10 @@ public class TransactionsService
     public async Task CreateMorder(SimpleTransactionsModel m, List<IFormFile> files)
     {
         List<TransactionAttachmentModel> attachments = new();
+        // ====================================
+        // GENERATE REFERENCE
+        // ====================================
+        m.ReferenceNumber = await _repoRefe.GetNextReferenceNumber(m.Company, m.TransactionType);
         if (files != null && files.Any())
         {
             foreach (var file in files)
@@ -157,6 +161,12 @@ public class TransactionsService
                 $"Could not create transaction {m.ReferenceNumber}"
             );
         }
+        // ====================================
+        // UPDATE SEQUENCE
+        // ====================================
+
+        long sequence = ExtractSequence(m.ReferenceNumber);
+        await _repoRefe.SaveReferenceSequence(m.Company, m.TransactionType, sequence);
         foreach (var attach in attachments)
         {
             await _repoAttach.CreateAttachment(
@@ -179,7 +189,10 @@ public class TransactionsService
     public async Task CreatePService(SimpleTransactionsModel m, List<IFormFile> files)
     {
         List<TransactionAttachmentModel> attachments = new();
-
+        // ====================================
+        // GENERATE REFERENCE
+        // ====================================
+        m.ReferenceNumber = await _repoRefe.GetNextReferenceNumber(m.Company, m.TransactionType);
         if (files != null && files.Any())
         {
             foreach (var file in files)
@@ -212,6 +225,11 @@ public class TransactionsService
                 $"Could not create transaction {m.ReferenceNumber}"
             );
         }
+        // ====================================
+        // UPDATE SEQUENCE
+        // ====================================
+        long sequence = ExtractSequence(m.ReferenceNumber);
+        await _repoRefe.SaveReferenceSequence(m.Company, m.TransactionType, sequence);
         foreach (var attach in attachments)
         {
             await _repoAttach.CreateAttachment(
