@@ -222,7 +222,7 @@
                         <div class="row">
                             <div class="col-4">
                                 <label class="form-label">Issue Date</label>
-                                <input type="date" id="IssueDate" class="form-control mb-2" />
+                                <input type="date" id="IssueDate" class="form-control mb-2 issue-date" />
                             </div>
                             <div class="col-4">
                                 <label class="form-label">Expiration Date *</label>
@@ -764,7 +764,7 @@
                     </div>
                     <div class="col-4">
                         <label class="form-label">Issue Date</label>
-                        <input type="date" id="SimpleTx_SenderIssueDate" class="form-control mb-2" />
+                        <input type="date" id="SimpleTx_SenderIssueDate" class="form-control mb-2 issue-date" />
                     </div>
                     <div class="col-4">
                         <label class="form-label">Expiration Date *</label>
@@ -1056,7 +1056,7 @@
                     </div>
                     <div class="col-4">
                         <label class="form-label">Issue Date</label>
-                        <input type="date" id="MOrder_SenderIssueDate" class="form-control mb-2" />
+                        <input type="date" id="MOrder_SenderIssueDate" class="form-control mb-2 issue-date" />
                     </div>
                     <div class="col-4">
                         <label class="form-label">Expiration Date *</label>
@@ -1232,7 +1232,7 @@
                     </div>
                     <div class="col-4">
                         <label class="form-label">Issue Date</label>
-                        <input type="date" id="PService_SenderIssueDate" class="form-control mb-2" />
+                        <input type="date" id="PService_SenderIssueDate" class="form-control mb-2 issue-date" />
                     </div>
                     <div class="col-4">
                         <label class="form-label">Expiration Date *</label>
@@ -1579,8 +1579,25 @@
             $('#filterTransactioType').on('keyup', function () {
                 tableTx.column(5).search(this.value).draw();
             });
+            // const today = new Date().toISOString().split('T')[0];
+            // $('.issue-date').attr('max', today);
+            const localDate = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0];
+            $('.issue-date').attr('max', localDate);
+            applyCheckDateValidation();
         });
-        
+        // function applyCheckDateValidation() {
+        //     const today = new Date();
+        //     const localDate =today.getFullYear() +'-' +String(today.getMonth() + 1).padStart(2, '0') +'-' +String(today.getDate()).padStart(2, '0');
+        //     $('.simpletx-issuedatecheck').attr('max', localDate);
+        // }
+         function applyCheckDateValidation() {
+            const today = new Date();
+            const minDate = new Date();
+            minDate.setDate(today.getDate() - 30);
+            const maxDate =today.getFullYear() + '-' +String(today.getMonth() + 1).padStart(2, '0') + '-' +String(today.getDate()).padStart(2, '0');
+            const minDateString =minDate.getFullYear() + '-' +String(minDate.getMonth() + 1).padStart(2, '0') + '-' +String(minDate.getDate()).padStart(2, '0');
+            $('.simpletx-issuedatecheck').attr('min', minDateString).attr('max', maxDate);
+        }
 
         function applyPhoneMask(selector) {
             Inputmask("(999)-999-9999").mask(selector);
@@ -3373,6 +3390,7 @@
             $('#SimpleTxContainer').append(html);
             simpleTxIndex++;
             validateSimpleTxRows();
+            applyCheckDateValidation();
         }
 
         function SimpleTx_removeRow(btn) {
@@ -4320,8 +4338,38 @@
                 }
             });
         });
-          function validateCheckDates() {
+        //   function validateCheckDates() {
+        //     let today = new Date();
+        //     let isValid = true;
+        //     $('.simpletx-issuedatecheck').each(function () {
+        //         let value = $(this).val();
+        //         if (!value) {
+        //             Swal.fire('Validation','Issue Date is required','warning');
+        //             $(this).focus();
+        //             isValid = false;
+        //             return false;
+        //         }
+        //         let issueDate = new Date(value);
+        //         let diffTime =today.getTime() -issueDate.getTime();
+        //         let diffDays =Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        //         if (diffDays > 30) {
+        //             Swal.fire('Expired Check','The check cannot be older than 30 days','warning');
+        //             $(this).focus();
+        //             isValid = false;
+        //             return false;
+        //         }
+        //         if (diffDays < 0) {
+        //             Swal.fire('Validation','Issue Date cannot be in the future','warning');
+        //             $(this).focus();
+        //             isValid = false;
+        //             return false;
+        //         }
+        //     });
+        //     return isValid;
+        // }
+         function validateCheckDates() {
             let today = new Date();
+            today.setHours(0, 0, 0, 0);
             let isValid = true;
             $('.simpletx-issuedatecheck').each(function () {
                 let value = $(this).val();
@@ -4331,9 +4379,11 @@
                     isValid = false;
                     return false;
                 }
-                let issueDate = new Date(value);
-                let diffTime =today.getTime() -issueDate.getTime();
-                let diffDays =Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                let parts = value.split('-');
+                let issueDate = new Date(parts[0],parts[1] - 1,parts[2]);
+                issueDate.setHours(0, 0, 0, 0);
+                let diffTime =today - issueDate;
+                let diffDays =diffTime / (1000 * 60 * 60 * 24);
                 if (diffDays > 30) {
                     Swal.fire('Expired Check','The check cannot be older than 30 days','warning');
                     $(this).focus();
