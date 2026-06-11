@@ -1012,7 +1012,7 @@
                     </div>
                 </div> *@
                 <div class="row">
-                    <div class="col-3">
+                    <div class="col-2">
                         <label class="form-label">Reference Number *</label>
                         <input id="MOrder_ReferenceNumber" class="form-control mb-2" placeholder="Reference Number" readonly/>
                         <input type="hidden" id="MOrder_TransactionType" />
@@ -1022,7 +1022,7 @@
                         <select id="MOrder_Company" class="form-control mb-2" onchange="MOrder_companyChanged()"></select>
                     </div>
                     <div class="col-2">
-                        <label class="form-label">Amount *</label>
+                        <label class="form-label">Amount * ($<span id="MOrder_NetAmountL"></span>)</label>
                         <input id="MOrder_Amount" type="number" class="form-control mb-2" placeholder="Amount" />
                     </div>
                     <div class="col-1">
@@ -1040,6 +1040,20 @@
                     <div class="col-2">
                         <label class="form-label">Total Amount</label>
                         <input id="MOrder_TotalAmount" type="number" class="form-control mb-2" readonly placeholder="0.0" />
+                    </div>
+                    <div class="col-1">
+                        @* <label for="MOrder_DeductFees">
+                            Calculation Mode
+                        </label>
+                        <input type="checkbox" id="MOrder_DeductFees" />
+                        <input type="hidden" id="MOrder_NetAmount" /> *@
+                        <label class="form-check-label">
+                            Calculation Mode
+                        </label>
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="MOrder_DeductFees" />
+                        </div>
+                        <input id="MOrder_NetAmount" readonly type="hidden" />
                     </div>
                 </div>
                 <hr />
@@ -3871,36 +3885,18 @@
             $('#' + prefix + '_TotalAmount').val(total.toFixed(2));
 
         }
-        //Comision de morder
-        // $('#MOrder_Amount, #MOrder_Commission, #MOrder_FixedCommission').on('keyup change input', function () {calculateCommissionMOrder();});
-        // $('#MOrder_Commission').on('input', function () {$(this).data('auto', false);});
-        // function calculateCommissionMOrder() {
-        //     let amount =parseFloat($('#MOrder_Amount').val()) || 0;
-        //     let commissionInput =$('#MOrder_Commission');
-        //     let commissionPercent =parseFloat($('#MOrder_TransactionType').attr('data-commission')) || 0;
-        //     if (commissionInput.data('auto') !== false) {
-        //         let autoCommission =amount * (commissionPercent / 100);
-        //         commissionInput.val(autoCommission.toFixed(2));
-        //     }
-        //     let commission =parseFloat(commissionInput.val()) || 0;
-        //     let fixedCommission =parseFloat($('#MOrder_FixedCommission').val()) || 0;
-        //     let totalCommission =commission + fixedCommission;
-        //     let totalAmount =amount + totalCommission;
-        //     $('#MOrder_TotalCommission').val(totalCommission.toFixed(2));
-        //     $('#MOrder_TotalAmount').val(totalAmount.toFixed(2));
-        // }
-                //////////////////////////////////////////////////////////
-        // AUTO -> MANUAL
-        //////////////////////////////////////////////////////////
 
-        $('#MOrder_Commission').data('auto', true);
+        //comision money order
+                $('#MOrder_Commission').data('auto', true);
 
-        $('#MOrder_Amount, #MOrder_FixedCommission').on('keyup change input', function () {calculateCommissionMOrder();});
+        $('#MOrder_Amount, #MOrder_FixedCommission, #MOrder_DeductFees')
+            .on('keyup change input', function () {
+                calculateCommissionMOrder();
+            });
 
         $('#MOrder_Commission')
             .on('input', function () {
 
-                // El usuario modificó manualmente
                 $(this).data('auto', false);
 
                 calculateCommissionMOrder();
@@ -3912,20 +3908,15 @@
         //////////////////////////////////////////////////////////
 
         function calculateCommissionMOrder() {
-
             let amount =parseFloat($('#MOrder_Amount').val()) || 0;
             let commissionInput =$('#MOrder_Commission');
             let commissionPercent =parseFloat($('#MOrder_TransactionType').attr('data-commission')) || 0;
-        
-
+            //////////////////////////////////////////////////////
+            // AUTO COMMISSION
+            //////////////////////////////////////////////////////
             if (commissionInput.data('auto') !== false) {
-
-                let autoCommission =
-                    amount * (commissionPercent / 100);
-
-                commissionInput.val(
-                    autoCommission.toFixed(2)
-                );
+                let autoCommission =amount * (commissionPercent / 100);
+                commissionInput.val(autoCommission.toFixed(2));
             }
             //////////////////////////////////////////////////////
             // TOTALS
@@ -3933,11 +3924,31 @@
             let commission =parseFloat(commissionInput.val()) || 0;
             let fixedCommission =parseFloat($('#MOrder_FixedCommission').val()) || 0;
             let totalCommission =commission + fixedCommission;
-            let totalAmount =amount + totalCommission;
+            let deductFees =$('#MOrder_DeductFees').is(':checked');
+            let netAmount = amount;
+            let totalAmount = 0;
+            if (!deductFees) {
+                // Modo normal
+                totalAmount =amount + totalCommission;
+                netAmount =amount;
+            }
+            else {
+                // Cliente tiene exactamente ese dinero
+                totalAmount =amount;
+                netAmount =amount - totalCommission;
+                if (netAmount < 0) {
+                    netAmount = 0;
+                }
+            }
+            //////////////////////////////////////////////////////
+            // OUTPUTS
+            //////////////////////////////////////////////////////
             $('#MOrder_TotalCommission').val(totalCommission.toFixed(2));
             $('#MOrder_TotalAmount').val(totalAmount.toFixed(2));
-        };
-        //Comision de morder
+            $('#MOrder_NetAmount').val(netAmount.toFixed(2));
+            $('#MOrder_NetAmountL').text(netAmount.toFixed(2));
+        }
+        //Comision money order
         //comision de paid service
                 //////////////////////////////////////////////////////////
         // AUTO -> MANUAL
@@ -4516,7 +4527,7 @@
             let reference = $('#' + prefix + 'ReferenceNumber').val().trim();
             let type = $('#' + prefix + 'TransactionType').val();
             let company = $('#' + prefix + 'Company').val();
-            let amount = $('#' + prefix + 'Amount').val();
+            //let amount = $('#' + prefix + 'Amount').val();
             let senderName = $('#' + prefix + 'SenderName').val().trim();
             let senderDocType = $('#' + prefix + 'SenderDocumentType').val();
             let senderDocNumber = $('#' + prefix + 'SenderDocumentNumber').val().trim();
@@ -4525,6 +4536,9 @@
             let justifyDetails = $('#' + prefix + 'JustifyDetails').val().trim();
             let justifyAgent =  $('#' + prefix + 'Justify_AgentName').val();
             let justifuDateError =  $('#' + prefix + 'Justify_DateError').val() || '';
+            let amount =  $('#' + prefix + 'NetAmount').val() || '';
+            //let deductFees =  $('#' + prefix + 'DeductFees').val() || '';
+            let deductFees =  $('#' + prefix + 'DeductFees').is(':checked') ? 2 : 1;
 
             if (!reference)
                 return Swal.fire('Error', 'Reference Number is required', 'error');
@@ -4544,6 +4558,7 @@
                 return Swal.fire('Error', 'Phone is required', 'error');
             if (!senderAddress)
                 return Swal.fire('Error', 'Address is required', 'error');
+
             if (!selectedClients[prefix] || selectedClients[prefix] <= 0) {
                 return Swal.fire(
                     'Error',
@@ -4582,6 +4597,7 @@
             formData.append("JustifyDetails",justifyDetails);
             formData.append("Justify_AgentName",justifyAgent);
             formData.append("Justify_DateError",justifuDateError);
+            formData.append("CalculationMode",deductFees);
             
             $('.MOrder_justify-file').each(function () {
                 if (this.files.length > 0) {
