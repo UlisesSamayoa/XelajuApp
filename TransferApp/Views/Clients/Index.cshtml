@@ -107,7 +107,7 @@
                             </div>
                             <div class="col-md-12">
                                 <label>Document Number</label>
-                                <input name="DocumentNumber" class="form-control mb-2" required placeholder="Document Number" />
+                                <input name="DocumentNumber" id="DocumentNumber" class="form-control mb-2" required placeholder="Document Number" />
                             </div>
                             <div class="col-md-6">
                                 <label>Issue Date</label>
@@ -196,6 +196,7 @@
             loadCountriesDropdown('#Country');
             loadDocumentsTypesDropdown('#IdDocumentType');
             applyPhoneMask('#Phone');
+            enableDocumentMask('#IdDocumentType','#DocumentNumber');
         });
         function applyPhoneMask(selector) {
             Inputmask("(999)-999-9999").mask(selector);
@@ -438,31 +439,98 @@
             $('#modalPreview').modal('show');
         }
 
-        function loadDocumentsTypesDropdown(selectId, selectedValue = null) {
+        // function loadDocumentsTypesDropdown(selectId, selectedValue = null) {
+        //     $.ajax({
+        //         url: '/DocumentsTypes/GetAll',
+        //         type: 'GET',
+        //         success: function (data) {
+        //             let select = $(selectId);
+        //             select.empty();
+        //             select.append(`<option value="">Select country</option>`);
+        //             data.forEach(c => {
+        //                 select.append(`
+        //                     <option value="${c.idDocumentType}">
+        //                         ${c.name}
+        //                     </option>
+        //                 `);
+        //             });
+        //             if (selectedValue) {
+        //                 select.val(selectedValue);
+        //             }
+        //         },
+        //         error: function () {
+        //             Swal.fire('Error', 'Failed to load countries', 'error');
+        //         }
+        //     });
+        // }
+
+                function loadDocumentsTypesDropdown(
+            selectId,
+            selectedValue = null
+        ) {
+
             $.ajax({
                 url: '/DocumentsTypes/GetAll',
                 type: 'GET',
                 success: function (data) {
+
                     let select = $(selectId);
+
                     select.empty();
-                    select.append(`<option value="">Select country</option>`);
-                    data.forEach(c => {
+
+                    select.append(`
+                        <option value="">
+                            Select document type
+                        </option>
+                    `);
+
+                    data.forEach(d => {
+
                         select.append(`
-                            <option value="${c.idDocumentType}">
-                                ${c.name}
+                            <option
+                                value="${d.idDocumentType}"
+                                data-mask="${d.maskPattern}">
+                                ${d.name}
                             </option>
                         `);
+
                     });
+
                     if (selectedValue) {
                         select.val(selectedValue);
+                        select.trigger('change');
                     }
                 },
                 error: function () {
-                    Swal.fire('Error', 'Failed to load countries', 'error');
+                    Swal.fire(
+                        'Error',
+                        'Failed to load document types',
+                        'error'
+                    );
                 }
             });
         }
+                function enableDocumentMask(selectSelector, inputSelector) {
 
+            $(document).on(
+                'change',
+                selectSelector,
+                function () {
+
+                    let mask = $(this)
+                        .find(':selected')
+                        .attr('data-mask');
+
+                    if (!mask)
+                        return;
+
+                    Inputmask.remove($(inputSelector)[0]);
+
+                    Inputmask(mask)
+                        .mask($(inputSelector)[0]);
+                }
+            );
+        }
     </script>
 
 }

@@ -142,7 +142,8 @@
         $(document).ready(function () {
         loadClient();
         loadCountriesDropdown('#Country');
-        loadDocumentsTypesDropdown('#IdDocumentType');
+        //loadDocumentsTypesDropdown('#IdDocumentType');
+        loadDocumentsTypesDropdown('#IdDocumentType',0,'#DocumentNumber');
         applyPhoneMask('#Phone');
     });
         const documentTypeMap = {
@@ -150,30 +151,30 @@
         "Passport": "2",
         "License": "3"
     };
-    function loadDocumentsTypesDropdown(selectId, selectedValue = null) {
-            $.ajax({
-                url: '/DocumentsTypes/GetAll',
-                type: 'GET',
-                success: function (data) {
-                    let select = $(selectId);
-                    select.empty();
-                    select.append(`<option value="">Select country</option>`);
-                    data.forEach(c => {
-                        select.append(`
-                            <option value="${c.idDocumentType}">
-                                ${c.name}
-                            </option>
-                        `);
-                    });
-                    if (selectedValue) {
-                        select.val(selectedValue);
-                    }
-                },
-                error: function () {
-                    Swal.fire('Error', 'Failed to load countries', 'error');
-                }
-            });
-        }
+    // function loadDocumentsTypesDropdown(selectId, selectedValue = null) {
+    //         $.ajax({
+    //             url: '/DocumentsTypes/GetAll',
+    //             type: 'GET',
+    //             success: function (data) {
+    //                 let select = $(selectId);
+    //                 select.empty();
+    //                 select.append(`<option value="">Select country</option>`);
+    //                 data.forEach(c => {
+    //                     select.append(`
+    //                         <option value="${c.idDocumentType}">
+    //                             ${c.name}
+    //                         </option>
+    //                     `);
+    //                 });
+    //                 if (selectedValue) {
+    //                     select.val(selectedValue);
+    //                 }
+    //             },
+    //             error: function () {
+    //                 Swal.fire('Error', 'Failed to load countries', 'error');
+    //             }
+    //         });
+    //     }
         function loadClient() {
 
         $.get('/Clients/GetById?id=' + id, function (d) {
@@ -201,7 +202,8 @@
             // $('#Country').val(d.country);
             $('#Address').val(d.address);
             loadCountriesDropdown('#Country', d.country);
-            loadDocumentsTypesDropdown('#IdDocumentType',d.idDocumentType);
+            //loadDocumentsTypesDropdown('#IdDocumentType',d.idDocumentType);
+            loadDocumentsTypesDropdown('#IdDocumentType',d.idDocumentType,'#DocumentNumber');
             if (d.picture) {
                 $('#clientPreview').html(`
                     <img src="${d.picture}"
@@ -349,4 +351,94 @@
                 }
             });
         }
+
+            function loadDocumentsTypesDropdown(
+        selectId,
+        selectedValue = null,
+        inputId = null
+    ) {
+
+        $.ajax({
+            url: '/DocumentsTypes/GetAll',
+            type: 'GET',
+            success: function (data) {
+
+                let select = $(selectId);
+
+                select.empty();
+
+                select.append(`
+                    <option value="">
+                        Select document type
+                    </option>
+                `);
+
+                data.forEach(d => {
+
+                    select.append(`
+                        <option
+                            value="${d.idDocumentType}"
+                            data-mask="${d.maskPattern}">
+                            ${d.name}
+                        </option>
+                    `);
+
+                });
+
+                if (selectedValue) {
+
+                    select.val(selectedValue);
+
+                    // Aplicar máscara automáticamente
+                    if (inputId) {
+
+                        let mask = select
+                            .find(':selected')
+                            .attr('data-mask');
+
+                        if (mask) {
+
+                            Inputmask.remove($(inputId)[0]);
+
+                            Inputmask(mask)
+                                .mask($(inputId)[0]);
+                        }
+                    }
+                }
+
+                // Evento change
+                if (inputId) {
+
+                    select.off('change.documentmask');
+
+                    select.on(
+                        'change.documentmask',
+                        function () {
+
+                            let mask = $(this)
+                                .find(':selected')
+                                .attr('data-mask');
+
+                            if (!mask)
+                                return;
+
+                            Inputmask.remove($(inputId)[0]);
+
+                            Inputmask(mask)
+                                .mask($(inputId)[0]);
+                        }
+                    );
+                }
+            },
+            error: function () {
+                Swal.fire(
+                    'Error',
+                    'Failed to load document types',
+                    'error'
+                );
+            }
+        });
+    }
+
+    
 </script>

@@ -51,7 +51,8 @@
         <input name="Name" id="Name" class="form-control mb-2" />
         <label class="form-label">Description</label>
         <textarea name="Description" id="Description" class="form-control mb-2" placeholder="Description"></textarea>
-
+        <label class="form-label">Document Mask</label>
+        <input name="MaskPattern" id="MaskPattern" class="form-control mb-2" placeholder="000-000" required />
         <div class="mt-3 d-flex gap-2">
             <button type="button" class="btn btn-primary" id="btnUpdate">
                 <i class="bi bi-floppy-fill"></i> Update
@@ -74,6 +75,7 @@
             $('#Id').val(d.idDocumentType);
             $('#Name').val(d.name);
             $('#Description').val(d.description);
+            $('#MaskPattern').val(d.maskPattern);
 
         });
 
@@ -82,12 +84,17 @@
     $('#btnUpdate').click(function () {
         var _Name= $('input[name="Name"]').val().trim();
             var _Description= $('textarea[name="Description"]').val().trim();
+            var _MaskPattern = $('input[name="MaskPattern"]').val();
              if (!_Name) {
                     Swal.fire('Error', 'Name is required', 'error');
                     return;
                 }
                 if (!_Description) {
                         Swal.fire('Error', 'Description is required', 'error');
+                    return;
+                }
+                if (!_MaskPattern) {
+                        Swal.fire('Error', 'Mask is required', 'error');
                     return;
                 }
         $.ajax({
@@ -97,7 +104,8 @@
             data: JSON.stringify({
                 idDocumentType: id,
                  name: _Name,
-                    description:_Description
+                    description:_Description,
+                    maskPattern:_MaskPattern,
             }),
             success: () =>  Swal.fire('Updated!', '', 'success').then(() => location.href = '/DocumentsTypes'),
             error: e => Swal.fire('Error', e.responseJSON.message, 'error')

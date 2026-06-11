@@ -212,7 +212,7 @@
                             </div>
                             <div class="col-4">
                                 <label class="form-label">Sender DocumentType *</label>
-                                <select id="SenderDocumentType" class="form-control mb-2"></select>
+                                <select id="SenderDocumentType" data-target="#SenderDocumentNumber" class="form-control mb-2 document-type"></select>
                             </div>
                             <div class="col-4">
                                 <label class="form-label">Sender Document Number *</label>
@@ -273,7 +273,7 @@
                             </div>
                             <div class="col-3">
                                 <label class="form-label">Receiver DocumentType *</label>
-                                <select id="ReceiverDocumentType" class="form-control mb-2"></select>
+                                <select id="ReceiverDocumentType" data-target="#ReceiverDocumentNumber" class="form-control mb-2 document-type"></select>
                             </div>
                             <div class="col-3">
                                 <label class="form-label">Receiver Document Number *</label>
@@ -386,7 +386,7 @@
 
                         <div class="col-md-6">
                             <label>Document Type</label>
-                            <select id="C_DocumentType" class="form-control mb-2"></select>
+                            <select id="C_DocumentType" data-target="#C_DocumentNumber" class="form-control mb-2 document-type"></select>
                         </div>
 
                         <div class="col-md-6">
@@ -488,7 +488,7 @@
 
                         <div class="col-6">
                             <label>Document Type</label>
-                            <select id="B_DocumentType" class="form-control mb-2"></select>
+                            <select id="B_DocumentType" data-target="#B_DocumentNumber" class="form-control mb-2 document-type"></select>
                         </div>
 
                         <div class="col-6">
@@ -756,7 +756,7 @@
                     </div>
                     <div class="col-4">
                         <label class="form-label">DocumentType *</label>
-                        <select id="SimpleTx_SenderDocumentType" class="form-control mb-2"></select>
+                        <select id="SimpleTx_SenderDocumentType" data-target="#SimpleTx_SenderDocumentNumber" class="form-control mb-2 document-type"></select>
                     </div>
                     <div class="col-4">
                         <label class="form-label">Document Number *</label>
@@ -1048,7 +1048,7 @@
                     </div>
                     <div class="col-4">
                         <label class="form-label">DocumentType *</label>
-                        <select id="MOrder_SenderDocumentType" class="form-control mb-2"></select>
+                        <select id="MOrder_SenderDocumentType" data-target="#MOrder_SenderDocumentNumber" class="form-control mb-2 document-type"></select>
                     </div>
                     <div class="col-4">
                         <label class="form-label">Document Number *</label>
@@ -1224,7 +1224,7 @@
                     </div>
                     <div class="col-4">
                         <label class="form-label">DocumentType *</label>
-                        <select id="PService_SenderDocumentType" class="form-control mb-2"></select>
+                        <select id="PService_SenderDocumentType" data-target="#PService_SenderDocumentNumber" class="form-control mb-2 document-type"></select>
                     </div>
                     <div class="col-4">
                         <label class="form-label">Document Number *</label>
@@ -1351,7 +1351,7 @@
 
                         <div class="col-md-6">
                             <label>Document Type</label>
-                            <select id="SimpleTx_C_DocumentType" class="form-control mb-2"></select>
+                            <select id="SimpleTx_C_DocumentType" data-target="#SimpleTx_C_DocumentNumber" class="form-control mb-2 document-type"></select>
                         </div>
 
                         <div class="col-md-6">
@@ -1508,7 +1508,7 @@
 
                         <div class="col-md-6">
                             <label>Document Type</label>
-                            <select id="SimpleTx_C_DocumentType" class="form-control mb-2"></select>
+                            <select id="SimpleTx_C_DocumentType" data-target="#SimpleTx_C_DocumentNumber" class="form-control mb-2 document-type"></select>
                         </div>
 
                         <div class="col-md-6">
@@ -1876,25 +1876,56 @@
 
         }
 
-                function loadDocumentTypes() {
+        //         function loadDocumentTypes() {
+
+        //     $.get('/DocumentsTypes/GetAll', function (data) {
+
+        //         $('#SenderDocumentType, #ReceiverDocumentType, #SimpleTx_SenderDocumentType,#MOrder_SenderDocumentType,#PService_SenderDocumentType').empty();
+
+        //         data.forEach(d => {
+
+        //             $('#SenderDocumentType, #ReceiverDocumentType, #C_DocumentType,#B_DocumentType, #SimpleTx_SenderDocumentType,#SimpleTx_C_DocumentType,#MOrder_SenderDocumentType,#PService_SenderDocumentType').append(
+        //                 // `<option value="${d.idDocumentType}">${d.name}</option>`
+        //                 `<option value="${d.idDocumentType}" data-mask="${d.maskPattern || ''}">${d.name}</option>`
+        //             );
+
+        //         });
+
+        //     });
+
+        // }
+         function loadDocumentTypes() {
 
             $.get('/DocumentsTypes/GetAll', function (data) {
-
-                $('#SenderDocumentType, #ReceiverDocumentType, #SimpleTx_SenderDocumentType,#MOrder_SenderDocumentType,#PService_SenderDocumentType').empty();
-
+                $('.document-type').empty();
                 data.forEach(d => {
-
-                    $('#SenderDocumentType, #ReceiverDocumentType, #C_DocumentType,#B_DocumentType, #SimpleTx_SenderDocumentType,#SimpleTx_C_DocumentType,#MOrder_SenderDocumentType,#PService_SenderDocumentType').append(
-                        `<option value="${d.idDocumentType}">${d.name}</option>`
-                    );
-
+                    $('.document-type').append(`
+                        <option
+                            value="${d.idDocumentType}"
+                            data-mask="${d.maskPattern || ''}">
+                            ${d.name}
+                        </option>
+                    `);
                 });
-
+                $('.document-type').trigger('change');
             });
-
         }
 
-                $('#SenderCountry').change(function () {
+        $(document).on('change','.document-type',
+            function () {
+                let mask = $(this).find(':selected').attr('data-mask');
+                let targetSelector =$(this).data('target');
+                if (!mask || !targetSelector)
+                    return;
+                let input = $(targetSelector);
+                Inputmask.remove(input[0]);
+                // Inputmask(mask).mask(input[0]);
+                //mask = mask.replaceAll('0', '9');
+                Inputmask(mask).mask(targetSelector);
+            }
+        );
+
+        $('#SenderCountry').change(function () {
 
             let id = $(this).val();
 
