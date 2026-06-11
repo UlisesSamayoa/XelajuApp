@@ -40,7 +40,8 @@ public class TransactionsRepository
                 TransactionFile = rd["TransactionFile"] != DBNull.Value ? rd["TransactionFile"].ToString() : string.Empty,
                 TransactionStatus = rd["TransactionStatus"] != DBNull.Value ? rd["TransactionStatus"].ToString() : string.Empty,
                 Amount = rd["Amount"] != DBNull.Value ? Convert.ToDecimal(rd["Amount"]) : 0,
-                Status = rd["Status"] != DBNull.Value ? Convert.ToInt32(rd["Status"]) : 0
+                Status = rd["Status"] != DBNull.Value ? Convert.ToInt32(rd["Status"]) : 0,
+                CalculationMode = rd["CalculationMode"] != DBNull.Value ? Convert.ToInt32(rd["CalculationMode"]) : 1
             });
         }
         await conn.CloseAsync();
@@ -79,6 +80,7 @@ public class TransactionsRepository
         cmd.Parameters.AddWithValue("@TransactionFile", m.TransactionFile ?? "");
         cmd.Parameters.AddWithValue("@Justify_AgentName", m.Justify_AgentName ?? "");
         cmd.Parameters.AddWithValue("@Justify_DateError", m.Justify_DateError == null ? (object)DBNull.Value : m.Justify_DateError);
+        cmd.Parameters.AddWithValue("@CalculationMode", m.CalculationMode);
         cmd.Parameters.AddWithValue("@UserC", m.UserC);
         await conn.OpenAsync();
         var result = await cmd.ExecuteScalarAsync();
@@ -133,7 +135,8 @@ public class TransactionsRepository
                 Status = rd["Status"] != DBNull.Value ? Convert.ToInt32(rd["Status"]) : 0,
                 TransactionTypeName = rd["TransactionTypeName"] != DBNull.Value ? rd["TransactionTypeName"].ToString() : string.Empty,
                 SenderCountryName = rd["SenderCountryName"] != DBNull.Value ? rd["SenderCountryName"].ToString() : string.Empty,
-                TransactionStatus = rd["TransactionStatus"] != DBNull.Value ? rd["TransactionStatus"].ToString() : string.Empty
+                TransactionStatus = rd["TransactionStatus"] != DBNull.Value ? rd["TransactionStatus"].ToString() : string.Empty,
+                CalculationMode = rd["CalculationMode"] != DBNull.Value ? Convert.ToInt32(rd["CalculationMode"]) : 1
             };
         }
         await conn.CloseAsync();
@@ -161,6 +164,7 @@ public class TransactionsRepository
         cmd.Parameters.AddWithValue("@Justify_DateError", m.Justify_DateError == null ? (object)DBNull.Value : m.Justify_DateError);
         cmd.Parameters.AddWithValue("@SenderPhone", m.SenderPhone);
         cmd.Parameters.AddWithValue("@SenderAddress", m.SenderAddress);
+        cmd.Parameters.AddWithValue("@CalculationMode", m.CalculationMode);
         cmd.Parameters.AddWithValue("@UserC", m.UserC);
         cmd.Parameters.AddWithValue("@IdClient_fk", m.IdClient_fk);
         await conn.OpenAsync();
@@ -190,6 +194,7 @@ public class TransactionsRepository
         cmd.Parameters.AddWithValue("@Justify_DateError", m.Justify_DateError == null ? (object)DBNull.Value : m.Justify_DateError);
         cmd.Parameters.AddWithValue("@SenderPhone", m.SenderPhone);
         cmd.Parameters.AddWithValue("@SenderAddress", m.SenderAddress);
+        cmd.Parameters.AddWithValue("@CalculationMode", m.CalculationMode);
         cmd.Parameters.AddWithValue("@UserC", m.UserC);
         cmd.Parameters.AddWithValue("@IdClient_fk", m.IdClient_fk);
         await conn.OpenAsync();
@@ -219,6 +224,7 @@ public class TransactionsRepository
         cmd.Parameters.AddWithValue("@Justify_DateError", m.Justify_DateError == null ? (object)DBNull.Value : m.Justify_DateError);
         cmd.Parameters.AddWithValue("@SenderPhone", m.SenderPhone);
         cmd.Parameters.AddWithValue("@SenderAddress", m.SenderAddress);
+        cmd.Parameters.AddWithValue("@CalculationMode", m.CalculationMode);
         cmd.Parameters.AddWithValue("@UserC", m.UserC);
         cmd.Parameters.AddWithValue("@IdClient_fk", m.IdClient_fk);
         await conn.OpenAsync();

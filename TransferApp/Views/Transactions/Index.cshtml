@@ -154,10 +154,10 @@
                                 <input type="hidden" id="TransactionType" />
                             </div>
                             <div class="col-2">
-                                <label class="form-label">Amount *</label>
+                                <label class="form-label">Amount * ($<label id="NetAmountL"></label>)</label>
                                 <input id="Amount" type="number" class="form-control mb-2" placeholder="Amount" />
                             </div>
-                            <div class="col-2">
+                            <div class="col-1">
                                 <label class="form-label">%</label>
                                 <input id="Commission" type="number" class="form-control mb-2" placeholder="0.00"/>
                             </div>
@@ -172,6 +172,17 @@
                             <div class="col-2">
                                 <label class="form-label">Total Amount</label>
                                 <input id="TotalAmount" type="number" class="form-control mb-2" placeholder="Total Amount" />
+                            </div>
+                            <div class="col-1">
+                                @* <label class="form-label">Mode</label>
+                                <input id="DeductFees" type="checkbox" class="form-check-input" /> *@
+                                <label class="form-check-label">
+                                    Calculation Mode
+                                </label>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="DeductFees" />
+                                </div>
+                                <input id="NetAmount" readonly type="hidden" />
                             </div>
                         </div>
                     </div>
@@ -2721,29 +2732,10 @@
             return true;
         }
 
-        //comisiones money transfer
-        // $('#Amount, #Commission, #FixedCommission')
-        //     .on('keyup change input', function () {
-        //         calculateCommission();
-        //     });
-        // function calculateCommission() {
-        //     let amount =parseFloat($('#Amount').val()) || 0;
-        //     let commissionInput =$('#Commission');
-        //     let commissionPercent =parseFloat($('#TransactionType').data('commission')) || 0;
-        //     if (commissionInput.data('auto') !== false) {
-        //         let autoCommission =amount * (commissionPercent / 100);
-        //         commissionInput.val(autoCommission.toFixed(2));
-        //     }
-        //     let commission =parseFloat(commissionInput.val()) || 0;
-        //     let fixedCommission =parseFloat($('#FixedCommission').val()) || 0;
-        //     let totalCommission =commission + fixedCommission;
-        //     let totalAmount =amount + totalCommission;
-        //     $('#TotalCommission').val(totalCommission.toFixed(2));
-        //     $('#TotalAmount').val(totalAmount.toFixed(2));
-        // }
+        //comision money transfer
                 $('#Commission').data('auto', true);
 
-        $('#Amount, #Commission, #FixedCommission')
+        $('#Amount, #Commission, #FixedCommission, #DeductFees')
             .on('keyup change input', function () {
 
                 if ($(this).is('#Commission')) {
@@ -2752,42 +2744,56 @@
 
                 calculateCommission();
             });
-
         function calculateCommission() {
-
-            let amount =
-                parseFloat($('#Amount').val()) || 0;
-
-            let commissionInput =
-                $('#Commission');
-
-            let commissionPercent =
-                parseFloat(
-                    $('#TransactionType').data('commission')
-                ) || 0;
-
+            let amount = parseFloat($('#Amount').val()) || 0;
+            let commissionInput =$('#Commission');
+            let commissionPercent =parseFloat($('#TransactionType').data('commission')) || 0;
             let commission = 0;
-
             //////////////////////////////////////////////////////
             // AUTO CALCULATION
             //////////////////////////////////////////////////////
-
             if (commissionInput.data('auto') !== false) {
                 commission =amount * (commissionPercent / 100);
-                commissionInput.val(commission.toFixed(2));
+                commissionInput.val(commission.toFixed(2)
+                );
             }
             else {
                 commission =parseFloat(commissionInput.val()) || 0;
             }
             //////////////////////////////////////////////////////
-            // TOTALS
+            // FEES
             //////////////////////////////////////////////////////
             let fixedCommission =parseFloat($('#FixedCommission').val()) || 0;
             let totalCommission =commission + fixedCommission;
-            let totalAmount =amount + totalCommission;
+            //////////////////////////////////////////////////////
+            // CALCULATION MODE
+            //////////////////////////////////////////////////////
+            let deductFees =$('#DeductFees').is(':checked');
+            let totalAmount = 0;
+            let netAmount = 0;
+            if (!deductFees) {
+                // Modo actual
+                netAmount = amount;
+                totalAmount = amount + totalCommission;
+            }
+            else {
+                // Cliente tiene exactamente ese dinero
+                totalAmount = amount;
+                netAmount = amount - totalCommission;
+                if (netAmount < 0) {
+                    netAmount = 0;
+                }
+            }
+            //////////////////////////////////////////////////////
+            // OUTPUTS
+            //////////////////////////////////////////////////////
             $('#TotalCommission').val(totalCommission.toFixed(2));
             $('#TotalAmount').val(totalAmount.toFixed(2));
+            //$('#Amount').val(netAmount.toFixed(2));
+            $('#NetAmount').val(netAmount.toFixed(2));
+            $('#NetAmountL').text(netAmount);
         }
+
         $('#Commission').on('input', function () {$(this).data('auto', false);});
 
 
@@ -2858,7 +2864,9 @@
             formData.append('IdClient_fk',selectedClientId);
             formData.append('IdBeneficiarie_fk',selectedBeneficiaryId);
             //Nuevos campos
-            formData.append('Amount',$('#Amount').val());
+            formData.append('Amount',$('#NetAmount').val());
+            formData.append('CalculationMode',$('#DeductFees').is(':checked') ? 2 : 1);
+            //formData.append('Amount',$('#Amount').val());
             formData.append('Commission',$('#Commission').val());
             formData.append('FixedCommission',$('#FixedCommission').val());
             formData.append('TotalAmount',$('#TotalAmount').val());
