@@ -554,6 +554,7 @@ public class TransactionsService
         // ====================================
         // GENERATE REAL REFERENCES
         // ====================================
+
         var generatedReferences = new Dictionary<string, long>();
         foreach (var check in m.Checks)
         {
@@ -648,6 +649,7 @@ public class TransactionsService
                     JustifyDetails = m.JustifyDetails,
                     Justify_AgentName = m.Justify_AgentName,
                     Justify_DateError = m.Justify_DateError,
+                    CalculationMode = check.CalculationMode,
                     UserC = m.UserC
                 };
             int idTransaction = await _repo.CreateSimple(tx);

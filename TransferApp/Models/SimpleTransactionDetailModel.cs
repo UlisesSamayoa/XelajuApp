@@ -9,5 +9,6 @@
         public decimal TotalAmount { get; set; }
         public decimal FixedCommission { get; set; }
         public DateTime? IssueDateCheck { get; set; }
+        public int CalculationMode { get; set; }
     }
 }

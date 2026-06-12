@@ -191,7 +191,6 @@ public class TransactionsController : Controller
             {
                 m.Checks = JsonConvert.DeserializeObject<List<SimpleTransactionDetailModel>>(Checks);
             }
-
             await _service.CreateSimpleBatch(m, SimpleTx_ImgJustify);
             return Json(new { success = true });
         }

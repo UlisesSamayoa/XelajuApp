@@ -15,6 +15,7 @@
         public DateTime? IssueDateCheck { get; set; }
         public string Justify_AgentName { get; set; } = string.Empty;
         public DateTime? Justify_DateError { get; set; }
+        public int CalculationMode { get; set; }
         public string UserC { get; set; }
         public List<SimpleTransactionDetailModel> Checks { get; set; }
     }
