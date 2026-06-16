@@ -3870,23 +3870,7 @@
             });
 
         });
-
-        //////////////////////////////////////////////////////////
-        // 🔵 COMMISSION CALCULATION
-        //////////////////////////////////////////////////////////
-            //     $(document).on(
-            // 'keyup change input',
-            // '#MOrder_Amount, #PService_Amount',
-            // function () {
-
-            //     let prefix = $(this)
-            //         .attr('id')
-            //         .replace('_Amount', '');
-
-            //     calculateCommissionSimple(prefix);
-
-            // });
-         function calculateCommissionSimple(prefix) {
+        function calculateCommissionSimple(prefix) {
             let commission = parseFloat(
                 $('#' + prefix + '_TransactionType').attr('data-commission') || 0
             );
@@ -3897,34 +3881,20 @@
             let commissionValue = amount * (commission / 100);
             $('#' + prefix + '_Commission').val(commissionValue.toFixed(2));
             $('#' + prefix + '_TotalAmount').val(total.toFixed(2));
-
         }
-
         //comision money order
-                $('#MOrder_Commission').data('auto', true);
-
-                $('#MOrder_Amount, #MOrder_FixedCommission, #MOrder_DeductFees')
-            .on('keyup change input', function () {
-
+        $('#MOrder_Commission').data('auto', true);
+        $('#MOrder_Amount, #MOrder_FixedCommission, #MOrder_DeductFees').on('keyup change input', function () {
                 calculateCommissionMOrder();
+        });
 
-            });
-
-        $('#MOrder_Commission')
-            .on('input', function () {
-
+        $('#MOrder_Commission').on('input', function () {
                 $(this).data('auto', false);
-
                 calculateCommissionMOrder();
-
-            });
-
+        });
         function calculateCommissionMOrder() {
             let amount =parseFloat($('#MOrder_Amount').val()) || 0;
             let commissionInput =$('#MOrder_Commission');
-            //////////////////////////////////////////////////////
-            // COMMISSION RANGE
-            //////////////////////////////////////////////////////
             let ranges =$('#MOrder_TransactionType').data('ranges');
             let range =getCommissionByAmount(amount,ranges);
             if (!range) {
@@ -3936,22 +3906,13 @@
             }
             let commissionPercent =parseFloat(range.commissionPercent);
             $('#MOrder_CommissionL').text(commissionPercent.toFixed(2));
-            //////////////////////////////////////////////////////
-            // AUTO CALCULATION
-            //////////////////////////////////////////////////////
             if (commissionInput.data('auto') !== false) {
                 let autoCommission =amount *(commissionPercent / 100);
                 commissionInput.val(autoCommission.toFixed(2));
             }
-            //////////////////////////////////////////////////////
-            // FEES
-            //////////////////////////////////////////////////////
             let commission =parseFloat(commissionInput.val()) || 0;
             let fixedCommission =parseFloat($('#MOrder_FixedCommission').val()) || 0;
             let totalCommission =commission +fixedCommission;
-            //////////////////////////////////////////////////////
-            // CALCULATION MODE
-            //////////////////////////////////////////////////////
             let deductFees =$('#MOrder_DeductFees').is(':checked');
             let netAmount = amount;
             let totalAmount = 0;
@@ -3966,74 +3927,22 @@
                     netAmount = 0;
                 }
             }
-            //////////////////////////////////////////////////////
-            // OUTPUTS
-            //////////////////////////////////////////////////////
-
             $('#MOrder_TotalCommission').val(totalCommission.toFixed(2));
             $('#MOrder_TotalAmount').val(totalAmount.toFixed(2));
             $('#MOrder_NetAmount').val(netAmount.toFixed(2));
             $('#MOrder_NetAmountL').text(netAmount.toFixed(2));
         }
-        // $('#MOrder_Amount, #MOrder_FixedCommission, #MOrder_DeductFees')
-        //     .on('keyup change input', function () {
-        //         calculateCommissionMOrder();
-        //     });
-
-        // $('#MOrder_Commission')
-        //     .on('input', function () {
-
-        //         $(this).data('auto', false);
-
-        //         calculateCommissionMOrder();
-
-        //     });
-
-        // function calculateCommissionMOrder() {
-        //     let amount =parseFloat($('#MOrder_Amount').val()) || 0;
-        //     let commissionInput =$('#MOrder_Commission');
-        //     let commissionPercent =parseFloat($('#MOrder_TransactionType').attr('data-commission')) || 0;
-        //     if (commissionInput.data('auto') !== false) {
-        //         let autoCommission =amount * (commissionPercent / 100);
-        //         commissionInput.val(autoCommission.toFixed(2));
-        //     }
-        //     let commission =parseFloat(commissionInput.val()) || 0;
-        //     let fixedCommission =parseFloat($('#MOrder_FixedCommission').val()) || 0;
-        //     let totalCommission =commission + fixedCommission;
-        //     let deductFees =$('#MOrder_DeductFees').is(':checked');
-        //     let netAmount = amount;
-        //     let totalAmount = 0;
-        //     if (!deductFees) {
-        //         totalAmount =amount + totalCommission;
-        //         netAmount =amount;
-        //     }
-        //     else {
-        //         totalAmount =amount;
-        //         netAmount =amount - totalCommission;
-        //         if (netAmount < 0) {
-        //             netAmount = 0;
-        //         }
-        //     }
-        //     $('#MOrder_TotalCommission').val(totalCommission.toFixed(2));
-        //     $('#MOrder_TotalAmount').val(totalAmount.toFixed(2));
-        //     $('#MOrder_NetAmount').val(netAmount.toFixed(2));
-        //     $('#MOrder_NetAmountL').text(netAmount.toFixed(2));
-        // }
         // //Comision money order
         //comision de paid service
-                       $('#PService_Commission').data('auto', true);
-
+        $('#PService_Commission').data('auto', true);
         $('#PService_Amount, #PService_FixedCommission, #PService_DeductFees').on('keyup change input', function () {
-                calculateCommissionPService();
-            });
-
+            calculateCommissionPService();
+        });
         $('#PService_Commission').on('input', function () {
                 $(this).data('auto', false);
                 calculateCommissionPService();
-            });
-
+        });
         function calculateCommissionPService() {
-
             let amount =parseFloat($('#PService_Amount').val()) || 0;
             let commissionInput =$('#PService_Commission');
             let ranges =$('#PService_TransactionType').data('ranges');
@@ -4079,20 +3988,100 @@
         
         //comision de paid service
         //comisiones de cheque
-       
-        //         $(document).on('keyup change input','.simpletx-amount, .simpletx-commission, .simpletx-fixed',
-        //     function () {
-        //         let row = $(this).closest('.simpletx-row');
-        //         calculateCheckCommission(row,$(this).hasClass('simpletx-commission'));
-        //         calculateChecksTotals();
-        //         }
-        //     );
+        $(document).on('keyup change input','.simpletx-amount, .simpletx-commission, .simpletx-fixed',
+            function () {
+                let row =$(this).closest('.simpletx-row');
+                if ($(this).hasClass('simpletx-commission')) {
+                    row.find('.simpletx-commission').data('auto', false);
+                }
+                calculateCheckCommission(row);
+                calculateChecksTotals();
+            }
+        );
+        function calculateCheckCommission(row) {
+            let commissionInput =row.find('.simpletx-commission');
+            let amount =parseFloat(row.find('.simpletx-amount').val()) || 0;
+            let fixedFee =parseFloat(row.find('.simpletx-fixed').val()) || 0;
+            let ranges = $('#SimpleTx_TransactionType').data('ranges');
+            let range =getCommissionByAmount(amount,ranges);
+            if (!range) {
+                commissionInput.val('');
+                row.find('.simpletx-totalfee').val('');
+                row.find('.simpletx-total').val('');
+                row.data('simpletx-net-amount',0);
+                return;
+            }
+            let commissionPercent = parseFloat(range.commissionPercent);
+            commissionInput.attr('title','Range: $' +range.minAmount +' - $' +range.maxAmount +' | Commission: ' +commissionPercent.toFixed(2) +'%');
+            let percentFee = 0;
+            if (commissionInput.data('auto')!== false) {
+                percentFee =amount *(commissionPercent / 100);
+                commissionInput.val(percentFee.toFixed(2));
+            }
+            else {
+                percentFee =parseFloat(commissionInput.val()) || 0;
+            }
+            let totalFee =percentFee +fixedFee;
+            let deductFees = $('#SimpleTx_DeductFees').is(':checked');
+            let totalAmount = 0;
+            let netAmount = amount;
+            if (!deductFees) {
+                totalAmount =amount +totalFee;
+            }
+            else {
+                totalAmount =amount;
+                netAmount =amount -totalFee;
+                if (netAmount < 0) {netAmount = 0;}
+            }
+            row.data('simpletx-net-amount',netAmount);
+            row.find('.simpletx-totalfee').val(totalFee.toFixed(2));
+            row.find('.simpletx-total').val(totalAmount.toFixed(2));
+            row.find('.simpletx-amount').attr('title','Net Amount: ' +netAmount.toFixed(2));
+        }
 
-        // function calculateCheckCommission(row,commissionEdited = false) {
-        //     let commissionInput =row.find('.simpletx-commission');
-        //     if (commissionEdited) {
-        //         commissionInput.data('auto', false);
+        function calculateChecksTotals() {
+            let totalAmount = 0;
+            let totalFees = 0;
+            let grandTotal = 0;
+            let netAmount = 0;
+            $('.simpletx-row').each(function () {
+                let row = $(this);
+                totalAmount +=parseFloat(row.find('.simpletx-amount').val()) || 0;
+                totalFees +=parseFloat(row.find('.simpletx-totalfee').val()) || 0;
+                grandTotal +=parseFloat(row.find('.simpletx-total').val()) || 0;
+                netAmount +=parseFloat(row.data('simpletx-net-amount')) || 0;
+            });
+            $('#SimpleTx_SumAmount').val(totalAmount.toFixed(2));
+            $('#SimpleTx_SumFees').val(totalFees.toFixed(2));
+            $('#SimpleTx_GrandTotal').val(grandTotal.toFixed(2));
+            $('#SimpleTx_NetAmountL').text(netAmount.toFixed(2));
+        }
+        $('#SimpleTx_DeductFees').change(function () {
+                $('.simpletx-row').each(
+                    function () {
+                        calculateCheckCommission($(this));
+                    }
+                );
+                calculateChecksTotals();
+        });
+        function getCommissionByAmount( amount,ranges) {
+            if (!ranges ||ranges.length === 0)
+                return null;
+            let range =ranges.find(r =>amount >=parseFloat(r.minAmount) && amount <=parseFloat(r.maxAmount));
+            return range || null;
+        }
+
+        // $(document).on('keyup change input','.simpletx-amount, .simpletx-commission, .simpletx-fixed', function () {
+        //         let row = $(this).closest('.simpletx-row');
+        //         if ($(this).hasClass('simpletx-commission')) {
+        //             row.find('.simpletx-commission').data('auto', false);
+        //         }
+        //         calculateCheckCommission(row);
+        //         calculateChecksTotals();
         //     }
+        // );
+        // function calculateCheckCommission(row) {
+        //     let commissionInput =row.find('.simpletx-commission');
         //     let commissionPercent =parseFloat($('#SimpleTx_TransactionType').attr('data-commission')) || 0;
         //     let amount =parseFloat(row.find('.simpletx-amount').val()) || 0;
         //     let fixedFee =parseFloat(row.find('.simpletx-fixed').val()) || 0;
@@ -4104,112 +4093,48 @@
         //     else {
         //         percentFee =parseFloat(commissionInput.val()) || 0;
         //     }
-        //     let totalFee =percentFee + fixedFee;
-        //     let totalAmount =amount + totalFee;
+        //     let totalFee = percentFee + fixedFee;
+        //     let deductFees =$('#SimpleTx_DeductFees').is(':checked');
+        //     let totalAmount = 0;
+        //     let netAmount = amount;
+        //     if (!deductFees) {
+        //         totalAmount = amount + totalFee;
+        //     }
+        //     else {
+        //         totalAmount = amount;
+        //         netAmount = amount - totalFee;
+        //         if (netAmount < 0) {
+        //             netAmount = 0;
+        //         }
+        //     }
+        //     row.data('.simpletx-net-amount', netAmount);
         //     row.find('.simpletx-totalfee').val(totalFee.toFixed(2));
         //     row.find('.simpletx-total').val(totalAmount.toFixed(2));
-        // }
-                $(document).on(
-            'keyup change input',
-            '.simpletx-amount, .simpletx-commission, .simpletx-fixed',
-            function () {
-
-                let row = $(this).closest('.simpletx-row');
-
-                // Si editaron manualmente la comisión
-                if ($(this).hasClass('simpletx-commission')) {
-                    row.find('.simpletx-commission')
-                        .data('auto', false);
-                }
-
-                calculateCheckCommission(row);
-                calculateChecksTotals();
-            }
-        );
-
-        function calculateCheckCommission(row) {
-            let commissionInput =row.find('.simpletx-commission');
-            let commissionPercent =parseFloat($('#SimpleTx_TransactionType').attr('data-commission')) || 0;
-            let amount =parseFloat(row.find('.simpletx-amount').val()) || 0;
-            let fixedFee =parseFloat(row.find('.simpletx-fixed').val()) || 0;
-            let percentFee = 0;
-            //////////////////////////////////////////////////////
-            // AUTO CALCULATION
-            //////////////////////////////////////////////////////
-
-            if (commissionInput.data('auto') !== false) {
-                percentFee =amount * (commissionPercent / 100);
-                commissionInput.val(percentFee.toFixed(2));
-            }
-            else {
-                percentFee =parseFloat(commissionInput.val()) || 0;
-            }
-
-            //////////////////////////////////////////////////////
-            // TOTALS
-            //////////////////////////////////////////////////////
-            // let totalFee =percentFee + fixedFee;
-            // let totalAmount =amount + totalFee;
-            // row.find('.simpletx-totalfee').val(totalFee.toFixed(2));
-            // row.find('.simpletx-total').val(totalAmount.toFixed(2));
-            //NUEVO
-            let totalFee = percentFee + fixedFee;
-            let deductFees =$('#SimpleTx_DeductFees').is(':checked');
-            let totalAmount = 0;
-            let netAmount = amount;
-            if (!deductFees) {
-                totalAmount = amount + totalFee;
-            }
-            else {
-                totalAmount = amount;
-                netAmount = amount - totalFee;
-                if (netAmount < 0) {
-                    netAmount = 0;
-                }
-            }
-            row.data('.simpletx-net-amount', netAmount);
-            row.find('.simpletx-totalfee').val(totalFee.toFixed(2));
-            row.find('.simpletx-total').val(totalAmount.toFixed(2));
-            row.find('.simpletx-amount').attr('title','New Amount: ' + netAmount.toFixed(2));
-            }
-        // function calculateChecksTotals() {
-        //     let totalAmount = 0;
-        //     let totalFees = 0;
-        //     let grandTotal = 0;
-        //     $('.simpletx-row').each(function () {
-        //         let row = $(this);
-        //         totalAmount +=parseFloat(row.find('.simpletx-amount').val()) || 0;
-        //         totalFees +=parseFloat(row.find('.simpletx-totalfee').val()) || 0;
-        //         grandTotal +=parseFloat(row.find('.simpletx-total').val()) || 0;
+        //     row.find('.simpletx-amount').attr('title','New Amount: ' + netAmount.toFixed(2));
+        //     }
+        //     function calculateChecksTotals() {
+        //         let totalAmount = 0;
+        //         let totalFees = 0;
+        //         let grandTotal = 0;
+        //         let netAmount = 0;
+        //         $('.simpletx-row').each(function () {
+        //             let row = $(this);
+        //             totalAmount +=parseFloat(row.find('.simpletx-amount').val()) || 0;
+        //             totalFees +=parseFloat(row.find('.simpletx-totalfee').val()) || 0;
+        //             grandTotal +=parseFloat(row.find('.simpletx-total').val()) || 0;
+        //             netAmount +=parseFloat(row.data('.simpletx-net-amount')) || 0;
+        //         });
+        //         $('#SimpleTx_SumAmount').val(totalAmount.toFixed(2));
+        //         $('#SimpleTx_SumFees').val(totalFees.toFixed(2));
+        //         $('#SimpleTx_GrandTotal').val(grandTotal.toFixed(2));
+        //         $('#SimpleTx_NetAmountL').text(netAmount.toFixed(2));
+        //     }
+        //     $('#SimpleTx_DeductFees').change(function () {
+        //         $('.simpletx-row').each(function () {
+        //             calculateCheckCommission($(this));
+        //         });
+        //         calculateChecksTotals();
         //     });
-        //     $('#SimpleTx_SumAmount').val(totalAmount.toFixed(2));
-        //     $('#SimpleTx_SumFees').val(totalFees.toFixed(2));
-        //     $('#SimpleTx_GrandTotal').val(grandTotal.toFixed(2));
-        // }
-            function calculateChecksTotals() {
-                let totalAmount = 0;
-                let totalFees = 0;
-                let grandTotal = 0;
-                let netAmount = 0;
-                $('.simpletx-row').each(function () {
-                    let row = $(this);
-                    totalAmount +=parseFloat(row.find('.simpletx-amount').val()) || 0;
-                    totalFees +=parseFloat(row.find('.simpletx-totalfee').val()) || 0;
-                    grandTotal +=parseFloat(row.find('.simpletx-total').val()) || 0;
-                    netAmount +=parseFloat(row.data('.simpletx-net-amount')) || 0;
-                });
-                $('#SimpleTx_SumAmount').val(totalAmount.toFixed(2));
-                $('#SimpleTx_SumFees').val(totalFees.toFixed(2));
-                $('#SimpleTx_GrandTotal').val(grandTotal.toFixed(2));
-                $('#SimpleTx_NetAmountL').text(netAmount.toFixed(2));
-            }
-
-            $('#SimpleTx_DeductFees').change(function () {
-                $('.simpletx-row').each(function () {
-                    calculateCheckCommission($(this));
-                });
-                calculateChecksTotals();
-            });
         function ObtenerTipoTransaccion(NumeroT,Prefijo) {
 
             $.get('/TransactionsTypes/GetByNumber?id='+NumeroT, function (data) {
