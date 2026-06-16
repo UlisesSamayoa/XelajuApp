@@ -4021,65 +4021,56 @@
         // }
         // //Comision money order
         //comision de paid service
-               $('#PService_Commission').data('auto', true);
+                       $('#PService_Commission').data('auto', true);
 
-        $('#PService_Amount, #PService_Commission, #PService_FixedCommission, #PService_DeductFees')
-            .on('keyup change input', function () {
-
-                if ($(this).is('#PService_Commission')) {
-                    $('#PService_Commission').data('auto', false);
-                }
-
+        $('#PService_Amount, #PService_FixedCommission, #PService_DeductFees').on('keyup change input', function () {
                 calculateCommissionPService();
             });
 
-        //////////////////////////////////////////////////////////
-        // COMMISSION CALCULATION
-        //////////////////////////////////////////////////////////
+        $('#PService_Commission').on('input', function () {
+                $(this).data('auto', false);
+                calculateCommissionPService();
+            });
 
         function calculateCommissionPService() {
+
             let amount =parseFloat($('#PService_Amount').val()) || 0;
             let commissionInput =$('#PService_Commission');
-            let commissionPercent =parseFloat($('#PService_TransactionType').attr('data-commission')) || 0;
+            let ranges =$('#PService_TransactionType').data('ranges');
+            let range =getCommissionByAmount(amount,ranges);
+            if (!range) {
+                $('#PService_Commission').val('');
+                $('#PService_TotalCommission').val('');
+                $('#PService_TotalAmount').val('');
+                $('#PService_CommissionL').text('0');
+                return;
+            }
+            let commissionPercent =parseFloat(range.commissionPercent);
+            $('#PService_CommissionL').text(commissionPercent.toFixed(2));
             let commission = 0;
-            //////////////////////////////////////////////////////
-            // AUTO CALCULATION
-            //////////////////////////////////////////////////////
             if (commissionInput.data('auto') !== false) {
-                commission =amount * (commissionPercent / 100);
-                commissionInput.val(commission.toFixed(2)
-                );
+                commission =amount *(commissionPercent / 100);
+                commissionInput.val(commission.toFixed(2));
             }
             else {
-                commission =parseFloat(commissionInput.val()) || 0;
+                commission = parseFloat(commissionInput.val()) || 0;
             }
-            //////////////////////////////////////////////////////
-            // FEES
-            //////////////////////////////////////////////////////
             let fixedCommission =parseFloat($('#PService_FixedCommission').val()) || 0;
-            let totalCommission =commission + fixedCommission;
-            //////////////////////////////////////////////////////
-            // CALCULATION MODE
-            //////////////////////////////////////////////////////
+            let totalCommission =commission +fixedCommission;
             let deductFees =$('#PService_DeductFees').is(':checked');
             let netAmount = amount;
             let totalAmount = 0;
             if (!deductFees) {
-                // Modo normal
-                netAmount = amount;
-                totalAmount = amount + totalCommission;
+                netAmount =amount;
+                totalAmount =amount +totalCommission;
             }
             else {
-                // Cliente tiene exactamente ese dinero
-                totalAmount = amount;
-                netAmount = amount - totalCommission;
+                totalAmount =amount;
+                netAmount =amount -totalCommission;
                 if (netAmount < 0) {
                     netAmount = 0;
                 }
             }
-            //////////////////////////////////////////////////////
-            // OUTPUTS
-            //////////////////////////////////////////////////////
             $('#PService_TotalCommission').val(totalCommission.toFixed(2));
             $('#PService_TotalAmount').val(totalAmount.toFixed(2));
             $('#PService_NetAmount').val(netAmount.toFixed(2));
