@@ -1018,7 +1018,7 @@
                     </div>
                     <div class="col-1">
                         <label class="form-label">Fixed</label>
-                        <input id="MOrder_FixedCommission" type="number" value="2" class="form-control mb-2" placeholder="0.0" />
+                        <input id="MOrder_FixedCommission" type="number" value="0" class="form-control mb-2" placeholder="0.0" />
                     </div>
                     <div class="col-1">
                         <label class="form-label">Total Fee</label>
@@ -3903,9 +3903,11 @@
         //comision money order
                 $('#MOrder_Commission').data('auto', true);
 
-        $('#MOrder_Amount, #MOrder_FixedCommission, #MOrder_DeductFees')
+                $('#MOrder_Amount, #MOrder_FixedCommission, #MOrder_DeductFees')
             .on('keyup change input', function () {
+
                 calculateCommissionMOrder();
+
             });
 
         $('#MOrder_Commission')
@@ -3917,39 +3919,49 @@
 
             });
 
-        //////////////////////////////////////////////////////////
-        // COMMISSION CALCULATION
-        //////////////////////////////////////////////////////////
-
         function calculateCommissionMOrder() {
             let amount =parseFloat($('#MOrder_Amount').val()) || 0;
             let commissionInput =$('#MOrder_Commission');
-            let commissionPercent =parseFloat($('#MOrder_TransactionType').attr('data-commission')) || 0;
             //////////////////////////////////////////////////////
-            // AUTO COMMISSION
+            // COMMISSION RANGE
+            //////////////////////////////////////////////////////
+            let ranges =$('#MOrder_TransactionType').data('ranges');
+            let range =getCommissionByAmount(amount,ranges);
+            if (!range) {
+                $('#MOrder_Commission').val('');
+                $('#MOrder_TotalCommission').val('');
+                $('#MOrder_TotalAmount').val('');
+                $('#MOrder_CommissionL').text('0');
+                return;
+            }
+            let commissionPercent =parseFloat(range.commissionPercent);
+            $('#MOrder_CommissionL').text(commissionPercent.toFixed(2));
+            //////////////////////////////////////////////////////
+            // AUTO CALCULATION
             //////////////////////////////////////////////////////
             if (commissionInput.data('auto') !== false) {
-                let autoCommission =amount * (commissionPercent / 100);
+                let autoCommission =amount *(commissionPercent / 100);
                 commissionInput.val(autoCommission.toFixed(2));
             }
             //////////////////////////////////////////////////////
-            // TOTALS
+            // FEES
             //////////////////////////////////////////////////////
             let commission =parseFloat(commissionInput.val()) || 0;
             let fixedCommission =parseFloat($('#MOrder_FixedCommission').val()) || 0;
-            let totalCommission =commission + fixedCommission;
+            let totalCommission =commission +fixedCommission;
+            //////////////////////////////////////////////////////
+            // CALCULATION MODE
+            //////////////////////////////////////////////////////
             let deductFees =$('#MOrder_DeductFees').is(':checked');
             let netAmount = amount;
             let totalAmount = 0;
             if (!deductFees) {
-                // Modo normal
-                totalAmount =amount + totalCommission;
+                totalAmount =amount +totalCommission;
                 netAmount =amount;
             }
             else {
-                // Cliente tiene exactamente ese dinero
                 totalAmount =amount;
-                netAmount =amount - totalCommission;
+                netAmount =amount -totalCommission;
                 if (netAmount < 0) {
                     netAmount = 0;
                 }
@@ -3957,12 +3969,57 @@
             //////////////////////////////////////////////////////
             // OUTPUTS
             //////////////////////////////////////////////////////
+
             $('#MOrder_TotalCommission').val(totalCommission.toFixed(2));
             $('#MOrder_TotalAmount').val(totalAmount.toFixed(2));
             $('#MOrder_NetAmount').val(netAmount.toFixed(2));
             $('#MOrder_NetAmountL').text(netAmount.toFixed(2));
         }
-        //Comision money order
+        // $('#MOrder_Amount, #MOrder_FixedCommission, #MOrder_DeductFees')
+        //     .on('keyup change input', function () {
+        //         calculateCommissionMOrder();
+        //     });
+
+        // $('#MOrder_Commission')
+        //     .on('input', function () {
+
+        //         $(this).data('auto', false);
+
+        //         calculateCommissionMOrder();
+
+        //     });
+
+        // function calculateCommissionMOrder() {
+        //     let amount =parseFloat($('#MOrder_Amount').val()) || 0;
+        //     let commissionInput =$('#MOrder_Commission');
+        //     let commissionPercent =parseFloat($('#MOrder_TransactionType').attr('data-commission')) || 0;
+        //     if (commissionInput.data('auto') !== false) {
+        //         let autoCommission =amount * (commissionPercent / 100);
+        //         commissionInput.val(autoCommission.toFixed(2));
+        //     }
+        //     let commission =parseFloat(commissionInput.val()) || 0;
+        //     let fixedCommission =parseFloat($('#MOrder_FixedCommission').val()) || 0;
+        //     let totalCommission =commission + fixedCommission;
+        //     let deductFees =$('#MOrder_DeductFees').is(':checked');
+        //     let netAmount = amount;
+        //     let totalAmount = 0;
+        //     if (!deductFees) {
+        //         totalAmount =amount + totalCommission;
+        //         netAmount =amount;
+        //     }
+        //     else {
+        //         totalAmount =amount;
+        //         netAmount =amount - totalCommission;
+        //         if (netAmount < 0) {
+        //             netAmount = 0;
+        //         }
+        //     }
+        //     $('#MOrder_TotalCommission').val(totalCommission.toFixed(2));
+        //     $('#MOrder_TotalAmount').val(totalAmount.toFixed(2));
+        //     $('#MOrder_NetAmount').val(netAmount.toFixed(2));
+        //     $('#MOrder_NetAmountL').text(netAmount.toFixed(2));
+        // }
+        // //Comision money order
         //comision de paid service
                $('#PService_Commission').data('auto', true);
 
