@@ -4008,7 +4008,7 @@
                 commissionInput.val('');
                 row.find('.simpletx-totalfee').val('');
                 row.find('.simpletx-total').val('');
-                row.data('simpletx-net-amount',0);
+                row.data('.simpletx-net-amount',0);
                 return;
             }
             let commissionPercent = parseFloat(range.commissionPercent);
@@ -4033,7 +4033,7 @@
                 netAmount =amount -totalFee;
                 if (netAmount < 0) {netAmount = 0;}
             }
-            row.data('simpletx-net-amount',netAmount);
+            row.data('.simpletx-net-amount',netAmount);
             row.find('.simpletx-totalfee').val(totalFee.toFixed(2));
             row.find('.simpletx-total').val(totalAmount.toFixed(2));
             row.find('.simpletx-amount').attr('title','Net Amount: ' +netAmount.toFixed(2));
@@ -4049,7 +4049,7 @@
                 totalAmount +=parseFloat(row.find('.simpletx-amount').val()) || 0;
                 totalFees +=parseFloat(row.find('.simpletx-totalfee').val()) || 0;
                 grandTotal +=parseFloat(row.find('.simpletx-total').val()) || 0;
-                netAmount +=parseFloat(row.data('simpletx-net-amount')) || 0;
+                netAmount +=parseFloat(row.data('.simpletx-net-amount')) || 0;
             });
             $('#SimpleTx_SumAmount').val(totalAmount.toFixed(2));
             $('#SimpleTx_SumFees').val(totalFees.toFixed(2));
