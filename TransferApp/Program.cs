@@ -33,6 +33,8 @@ builder.Services.AddScoped<ParametersService>();
 builder.Services.AddScoped<TransactionAttachmentRepository>();
 builder.Services.AddScoped<ReferenceNumberRepository>();
 builder.Services.AddScoped<ReferenceNumberService>();
+builder.Services.AddScoped<ClientCompaniesRepository>();
+builder.Services.AddScoped<ClientCompaniesService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

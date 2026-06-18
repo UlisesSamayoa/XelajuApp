@@ -3384,21 +3384,21 @@
             }
         //CALCULO DE REFERENCE PARA MONEY ORDER
         //CALCULO DE REFERENCE PARA PAID SERVICE
-                        function PService_companyChanged() {
+                function PService_companyChanged() {
                     const companyId = $('#PService_Company').val();
                     if (!companyId) {
-                                $('#PService_ReferenceNumber').val('');
+                        $('#PService_ReferenceNumber').val('');
                         return;
                     }
                     $.get(
                         '/ReferenceNumber/GetReferencePreview',
                         {
-                            senderCompany: companyId,
-                            transactionType: 4
+                          senderCompany: companyId,
+                          transactionType: 4
                         },
                         function (preview) {
 
-                                    $('#PService_ReferenceNumber').val(preview);
+                          $('#PService_ReferenceNumber').val(preview);
                         }
                     );
                 }

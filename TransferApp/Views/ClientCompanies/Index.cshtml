@@ -1,0 +1,473 @@
+﻿@{
+    ViewData["Title"] = "ClientCompanies";
+    Layout = "_Layout";
+}
+@* <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> *@
+
+<style>
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #4338ca;
+        --bg: #f1f5f9;
+    }
+
+    body {
+        background: var(--bg);
+    }
+
+    .card-custom {
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        border: none;
+    }
+
+    .btn-custom {
+        background: var(--primary);
+        color: white;
+        border-radius: 10px;
+        transition: 0.3s;
+    }
+
+        .btn-custom:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+    #ParentClientName {
+        background: #eef2ff;
+        font-weight: 500;
+    }
+
+    .fade-in {
+        animation: fadeIn 0.4s ease-in-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(5px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="container-fluid mt-4 px-4">
+    <div class="card card-custom p-4">
+        <div class="d-flex justify-content-between mb-3">
+            <h3><i class="bi bi-person-heart"></i> Client Company</h3>
+            <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalClientCompany">
+                <i class="bi bi-plus"></i> Add Client Companies
+            </button>
+        </div>
+        <table id="tblClientCompanies" class="table table-hover w-100">
+            <thead class="table-light">
+                <tr>
+                    <th>Client</th>
+                    <th>Company</th>
+                    <th>Account Number</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+        </table>
+
+    </div>
+</div>
+
+<div class="modal fade" id="modalClientCompany">
+    <div class="modal-dialog">
+        <div class="modal-content card-custom p-3">
+            <h5>New Client Account</h5>
+            <form id="formClientCompany">
+                <label>Client</label>
+                <div class="input-group mb-2">
+                    <input id="ClientName" class="form-control" readonly placeholder="Select client..." />
+                    <button type="button" class="btn btn-outline-primary" onclick="openClientModal()">🔍</button>
+                </div>
+                <input type="hidden" id="IdClient" />
+                <label>Company</label>
+                <select id="IdCompany"
+                        class="form-control mb-2">
+                </select>
+
+                <label>Account Number</label>
+                <input id="AccountNumber"
+                       class="form-control mb-2"
+                       placeholder="Account Number" />
+
+            </form>
+
+            <div class="modal-footer">
+                <button class="btn btn-custom"
+                        id="btnSaveClientCompany">
+                    Save
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalClients">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content card-custom p-3">
+
+            <h5>👤 Select Client</h5>
+
+            <input id="searchClient" class="form-control mb-3"
+                   placeholder="Search by name, document or phone..." />
+
+            <table id="tblClientsModal" class="table table-hover w-100">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Document</th>
+                        <th>Phone</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+            </table>
+
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script> *@
+    <script>
+
+        let table;
+        let timer;
+        $(document).ready(function () {
+            table = loadTable();
+            loadPaidServiceCompanies("IdCompany");
+            // loadCountriesDropdown('#Country');
+            // loadDocumentsTypesDropdown('#IdDocumentType');
+            //applyPhoneMask('#Phone');
+            // enableDocumentMask('#IdDocumentType','#DocumentNumber');
+        });
+            // function applyPhoneMask(selector) {
+            //         Inputmask("(999)-999-9999").mask(selector);
+            //     }
+
+        function loadTable() {
+            return $('#tblClientCompanies').DataTable({
+                ajax: {
+                    url: '/ClientCompanies/GetAll',
+                    dataSrc: ''
+                },
+                columns: [
+                    { data: 'clientName' },
+                    { data: 'companyName' },
+                    { data: 'accountNumber' },
+                    {
+                        data: 'idClientCompany',
+                        render: id => `
+                            <button
+                                class="btn btn-danger btn-sm"
+                                onclick="deleteItem(${id})">
+
+                                <i class="bi bi-trash-fill"></i>
+
+                            </button>
+                        `
+                    }
+                ]
+            });
+        }
+
+        $('#btnSaveClientCompany').click(function () {
+            let data = {
+                idClient:$('#IdClient').val(),
+                idCompany:$('#IdCompany').val(),
+                accountNumber:$('#AccountNumber').val()
+            };
+            if (!data.idClient) {
+                Swal.fire(
+                    'Error',
+                    'Client is required',
+                    'error'
+                );
+                return;
+            }
+
+            if (!data.idCompany) {
+                Swal.fire(
+                    'Error',
+                    'Company is required',
+                    'error'
+                );
+                return;
+            }
+
+            if (!data.accountNumber) {
+                Swal.fire(
+                    'Error',
+                    'Account Number is required',
+                    'error'
+                );
+                return;
+            }
+            $.ajax({
+                url: '/ClientCompanies/Create',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: () => {
+                    $('#modalClientCompany').modal('hide');
+                    table.ajax.reload();
+                    $('#formClientCompany')[0].reset();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Saved!',
+                        timer: 1200,
+                        showConfirmButton: false
+                    });
+                },
+                error: e => {
+
+                    Swal.fire(
+                        'Error',
+                        e.responseJSON?.message,
+                        'error'
+                    );
+                }
+            });
+        });
+
+        function deleteItem(id) {
+            Swal.fire({
+                title: 'Delete record?',
+                text: 'This action cannot be undone',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete'
+            }).then((result) => {
+
+                if (!result.isConfirmed)
+                    return;
+
+                $.post(
+                    '/ClientCompanies/Delete?id=' + id,
+                    function () {
+
+                        table.ajax.reload();
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted!',
+                            timer: 1200,
+                            showConfirmButton: false
+                        });
+                    }
+                );
+
+            });
+
+        }
+
+        function openClientModal(){
+
+            $('#modalClients').modal('show');
+
+            if (!window.clientTableLoaded) {
+                loadClientsModal();
+                window.clientTableLoaded = true;
+            }
+        }
+
+                function loadClientsModal(){
+
+                window.tblClientsModal = $('#tblClientsModal').DataTable({
+                    data: [],
+                    columns:[
+                        { data:'fullName' },
+                        { data:'documentNumber' },
+                        { data:'phone' },
+                        {
+                            data:null,
+                            render:d=>`
+                                <button class="btn btn-success btn-sm"
+                                    onclick="selectClient(${d.idClient}, '${d.fullName}')">
+                                    Select
+                                </button>
+                            `
+                        }
+                    ],
+                    language:{
+                        emptyTable:'Type to search clients...'
+                    }
+                });
+
+            }
+
+            $('#searchClient').on('keyup', function () {
+
+                clearTimeout(timer);
+
+                let term = this.value;
+
+                timer = setTimeout(() => {
+
+                    if(term.length < 2){
+                        tblClientsModal.clear().draw();
+                        return;
+                    }
+
+                    $.get('/Clients/Search?term=' + term, function(data){
+
+                        tblClientsModal.clear().rows.add(data).draw();
+
+                    });
+
+                }, 400);
+
+            });
+
+        function selectClient(id, name){
+
+            //$('#IdClient_fk').val(id);
+            $('#IdClient').val(id);
+            $('#ClientName').val(name);
+
+            $('#modalClients').modal('hide');
+
+            Swal.fire({
+                icon:'success',
+                title:'Client selected',
+                text:name,
+                timer:1200,
+                showConfirmButton:false
+            });
+        }
+        // function loadDocumentsTypesDropdown(selectId,selectedValue = null) {
+
+        //             $.ajax({
+        //                 url: '/DocumentsTypes/GetAll',
+        //                 type: 'GET',
+        //                 success: function (data) {
+
+        //                     let select = $(selectId);
+
+        //                     select.empty();
+
+        //                     select.append(`
+        //                         <option value="">
+        //                             Select document type
+        //                         </option>
+        //                     `);
+
+        //                     data.forEach(d => {
+
+        //                         select.append(`
+        //                             <option
+        //                                 value="${d.idDocumentType}"
+        //                                 data-mask="${d.maskPattern}">
+        //                                 ${d.name}
+        //                             </option>
+        //                         `);
+
+        //                     });
+
+        //                     if (selectedValue) {
+        //                         select.val(selectedValue);
+        //                         select.trigger('change');
+        //                     }
+        //                 },
+        //                 error: function () {
+        //                     Swal.fire(
+        //                         'Error',
+        //                         'Failed to load document types',
+        //                         'error'
+        //                     );
+        //                 }
+        //             });
+        //         }
+
+                //     function loadCountriesDropdown(selectId, selectedValue = null) {
+                //     $.ajax({
+                //         url: '/Countries/GetAll',
+                //         type: 'GET',
+                //         success: function (data) {
+                //             let select = $(selectId);
+                //             select.empty();
+                //             select.append(`<option value="">Select country</option>`);
+                //             data.forEach(c => {
+                //                 select.append(`
+                //                     <option value="${c.idCountry}">
+                //                         ${c.name}
+                //                     </option>
+                //                 `);
+                //             });
+                //             if (selectedValue) {
+                //                 select.val(selectedValue);
+                //             }
+                //         },
+                //         error: function () {
+                //             Swal.fire('Error', 'Failed to load countries', 'error');
+                //         }
+                //     });
+                // }
+
+
+
+            // function enableDocumentMask(selectSelector, inputSelector) {
+
+            //            $(document).on(
+            //                'change',
+            //                selectSelector,
+            //                function () {
+
+            //                    let mask = $(this)
+            //                        .find(':selected')
+            //                        .attr('data-mask');
+
+            //                    if (!mask)
+            //                        return;
+
+            //                    Inputmask.remove($(inputSelector)[0]);
+
+            //                    Inputmask(mask)
+            //                        .mask($(inputSelector)[0]);
+            //                }
+            //            );
+            //        }
+
+        function loadPaidServiceCompanies(selectId, selectedValue = null) {
+
+            $.get(
+                '/Companies/GetByTransactionType?transactionType=4',
+                function (data) {
+
+                    let select = $('#' + selectId);
+
+                    select.empty();
+
+                    select.append(`
+                        <option value="">
+                            Select Company
+                        </option>
+                    `);
+
+                    data.forEach(c => {
+
+                        select.append(`
+                            <option value="${c.idCompany}">
+                                ${c.name}
+                            </option>
+                        `);
+
+                    });
+
+                    if (selectedValue) {
+                        select.val(selectedValue);
+                    }
+                }
+            );
+        }
+    </script>
+}
