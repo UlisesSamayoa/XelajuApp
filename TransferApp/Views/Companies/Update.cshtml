@@ -106,6 +106,10 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Service Code</label>
+                    <input name="ServiceCode" id="ServiceCode" class="form-control mb-2" />
+                </div>
             </div>
 
             <div class="mt-3 d-flex gap-2">
@@ -163,6 +167,7 @@
             $('#PhoneContactPerson').val(data.phoneContactPerson);
             $('#StatusCompany').val(data.statusCompany);
             $('#StatusCompanyComment').val(data.statusCompanyComment);
+            $('#ServiceCode').val(data.serviceCode);
             loadCountriesDropdown('#Country', data.idCountry);
             loadCompaniesDropdown('#TransactionType',data.transactionType);
         },
@@ -193,6 +198,7 @@
                 StatusCompanyComment: $('#StatusCompanyComment').val(),
                 UserU: "admin"
             };
+            let transactionType = parseInt(data.TransactionType);
              if (!data.Name) {
                 Swal.fire('Error', 'Name is required', 'error');
                 return;
@@ -201,10 +207,10 @@
                 Swal.fire('Error', 'Country is required', 'error');
                 return;
             }
-            if (!data.SwiftCode) {
-                Swal.fire('Error', 'SwiftCode is required', 'error');
-                return;
-            }
+            // if (!data.SwiftCode) {
+            //     Swal.fire('Error', 'SwiftCode is required', 'error');
+            //     return;
+            // }
             if (!data.Phone) {
                 Swal.fire('Error', 'Phone is required', 'error');
                 return;
@@ -212,6 +218,35 @@
             if (!data.TransactionType) {
                 Swal.fire('Error', 'TransactionType is required', 'error');
                 return;
+            }
+            if (transactionType === 4) {
+                let serviceCode = $('#ServiceCode').val()?.trim() || '';
+                if (!serviceCode) {
+                    Swal.fire('Error', 'Service Code is required', 'error');
+                    return;
+                }
+                data.ServiceCode = serviceCode;
+            } else {
+
+                if (!data.SwiftCode) {
+                    Swal.fire('Error', 'Swift Code is required', 'error');
+                    return;
+                }
+
+                if (!data.ContactPerson) {
+                    Swal.fire('Error', 'Contact Person is required', 'error');
+                    return;
+                }
+
+                if (!data.Position) {
+                    Swal.fire('Error', 'Position is required', 'error');
+                    return;
+                }
+
+                if (!data.PhoneContactPerson) {
+                    Swal.fire('Error', 'Phone Contact Person is required', 'error');
+                    return;
+                }
             }
 
         $.ajax({

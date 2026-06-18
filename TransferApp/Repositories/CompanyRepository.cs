@@ -30,6 +30,7 @@ public class CompanyRepository
             cmd.Parameters.AddWithValue("@TransactionType", model.TransactionType);
             cmd.Parameters.AddWithValue("@StatusCompany", model.StatusCompany ?? "Excellent");
             cmd.Parameters.AddWithValue("@UserC", model.UserC);
+            cmd.Parameters.AddWithValue("@ServiceCode", model.ServiceCode ?? "");
 
             await conn.OpenAsync();
             await cmd.ExecuteNonQueryAsync();
@@ -70,7 +71,8 @@ public class CompanyRepository
                 TransactionTypeName = reader["TransactionTypeName"].ToString(),
                 StatusCompany = reader["StatusCompany"].ToString(),
                 StatusCompanyComment = reader["StatusCompanyComment"].ToString(),
-                Status = (int)reader["Status"]
+                Status = (int)reader["Status"],
+                ServiceCode = reader["ServiceCode"].ToString(),
             });
         }
         await conn.CloseAsync();
@@ -113,7 +115,7 @@ public class CompanyRepository
     public async Task<CompaniesModel?> GetById(int id)
     {
         using var conn = _db.CreateConnection();
-        using var cmd = new SqlCommand("SELECT IdCompany, Name, TransactionType, SwiftCode FROM Companies WHERE IdCompany = @Id", conn);
+        using var cmd = new SqlCommand("SELECT IdCompany, Name, TransactionType, SwiftCode,Phone,ServiceCode,Country,Position,contactPerson,phoneContactPerson,statusCompany,statusCompanyComment,idCountry FROM Companies WHERE IdCompany = @Id", conn);
         cmd.Parameters.AddWithValue("@Id", id);
         await conn.OpenAsync();
         using var reader = await cmd.ExecuteReaderAsync();
@@ -124,7 +126,16 @@ public class CompanyRepository
                 IdCompany = Convert.ToInt32(reader["IdCompany"]),
                 Name = reader["Name"].ToString(),
                 TransactionType = Convert.ToInt32(reader["TransactionType"]),
-                SwiftCode = reader["SwiftCode"].ToString()
+                SwiftCode = reader["SwiftCode"].ToString(),
+                Phone = reader["Phone"].ToString(),
+                ServiceCode = reader["ServiceCode"].ToString(),
+                Country = reader["Country"].ToString(),
+                IdCountry = reader["IdCountry"].ToString(),
+                Position = reader["Position"].ToString(),
+                ContactPerson = reader["contactPerson"].ToString(),
+                PhoneContactPerson = reader["phoneContactPerson"].ToString(),
+                StatusCompany = reader["statusCompany"].ToString(),
+                StatusCompanyComment = reader["statusCompanyComment"].ToString()
             };
         }
         return null;
@@ -149,6 +160,7 @@ public class CompanyRepository
             cmd.Parameters.AddWithValue("@StatusCompany", model.StatusCompany);
             cmd.Parameters.AddWithValue("@StatusCompanyComment", model.StatusCompanyComment);
             cmd.Parameters.AddWithValue("@UserU", model.UserU);
+            cmd.Parameters.AddWithValue("@ServiceCode", model.ServiceCode ?? "");
             await conn.OpenAsync();
             await cmd.ExecuteNonQueryAsync();
             await conn.CloseAsync();

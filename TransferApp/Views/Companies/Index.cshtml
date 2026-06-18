@@ -150,7 +150,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <label class="form-label">Swift Code</label>
-                            <input name="SwiftCode" class="form-control mb-2" placeholder="Swift Code" />
+                            <input name="SwiftCode" id="SwiftCode" class="form-control mb-2" placeholder="Swift Code" />
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Phone</label>
@@ -176,6 +176,16 @@
                             <label>Phone Contact person</label>
                             <input name="PhoneContactPerson" id="PhoneContactPerson" class="form-control mb-2" placeholder="Phone Contact Person" />
                         </div>
+                    </div>
+                    <div id="serviceSection" style="display:none;">
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label">Service Code</label>
+                                <input id="ServiceCode" class="form-control mb-2" placeholder="Service Code" />
+                            </div>
+                        </div>
+
                     </div>
                 </form>
             </div>
@@ -259,6 +269,35 @@
                   applyPhoneMask('#Phone');
                       applyPhoneMask('#PhoneContactPerson');
         });
+
+        $('#TransactionType').change(function () {
+            let type = parseInt($(this).val());
+            if (type === 4) {
+                $('#financialSection').hide();
+                $('#serviceSection').show();
+                $('#SwiftCode').val('').prop('disabled', true);
+                $('#ContactPerson').val('').prop('disabled', true);
+                $('#Position').val('').prop('disabled', true);
+                $('#PhoneContactPerson').val('').prop('disabled', true);
+            }
+            else {
+                $('#financialSection').show();
+                $('#serviceSection').hide();
+                $('#SwiftCode').prop('disabled', false);
+                $('#ContactPerson').prop('disabled', false);
+                $('#Position').prop('disabled', false);
+                $('#PhoneContactPerson').prop('disabled', false);
+                $('#ServiceCode').val('');
+        }
+
+        });
+
+
+        $('#modalCompany').on('shown.bs.modal', function () {
+            $('#TransactionType').trigger('change');
+        });
+
+
             function applyPhoneMask(selector) {
                 Inputmask("(999)-999-9999").mask(selector);
             }
@@ -355,47 +394,174 @@
         }
 
 
-                   $('#btnSave').click(function () {
+        // $('#btnSave').click(function () {
+        //     let ServiceCode = 0;
+        //     let ServiceCategory = 0;
+        //     let data = {
+        //         Name: $('input[name="Name"]').val().trim(),
+        //         Country: $('#Country option:selected').text(),
+        //         IdCountry: $('#Country').val(),
+        //         SwiftCode: $('input[name="SwiftCode"]').val(),
+        //         Phone: $('input[name="Phone"]').val(),
+        //         TransactionType: $('#TransactionType').val(),
+        //         PhoneContactPerson: $('#PhoneContactPerson').val(),
+        //         ContactPerson: $('#ContactPerson').val(),
+        //         Position: $('#Position').val(),
+        //         UserC: "admin"
+        //     };
+        //     let transactionType = parseInt(data.TransactionType);
+        //     if (!data.Name) {
+        //         Swal.fire('Error', 'Name is required', 'error');
+        //         return;
+        //     }
+        //     if (!data.IdCountry) {
+        //         Swal.fire('Error', 'Country is required', 'error');
+        //         return;
+        //     }
+        //     if(transactionType === 4){
+        //         ServiceCode = $('#ServiceCode').val();
+        //         ServiceCategory = $('#ServiceCategory').val();
+        //         if (!ServiceCode) {
+        //           Swal.fire('Error', 'ServiceCode is required', 'error');
+        //           return;
+        //         }else{
+        //             data.ServiceCode = ServiceCode;
+        //         }
+        //         if (!ServiceCategory) {
+        //           Swal.fire('Error', 'ServiceCategory is required', 'error');
+        //           return;
+        //         }else{
+        //               data.ServiceCategory = ServiceCategory;
+        //         }
+        //     }else{
+        //        if (!data.SwiftCode) {
+        //          Swal.fire('Error', 'SwiftCode is required', 'error');
+        //          return;
+        //        }
+        //     }
+            
+        //     if (!data.Phone) {
+        //         Swal.fire('Error', 'Phone is required', 'error');
+        //         return;
+        //     }
+        //     if (!data.TransactionType) {
+        //         Swal.fire('Error', 'TransactionType is required', 'error');
+        //         return;
+        //     }
+        //     $.ajax({
+        //         url: '/Companies/Create',
+        //         type: 'POST',
+        //         contentType: 'application/json',
+        //         data: JSON.stringify(data),
+
+        //         beforeSend: () => {
+        //             Swal.fire({
+        //                 title: 'Saving...',
+        //                 allowOutsideClick: false,
+        //                 didOpen: () => Swal.showLoading()
+        //             });
+        //         },
+
+        //         success: function (res) {
+        //             Swal.fire({
+        //                 icon: 'success',
+        //                 title: res.message,
+        //                 timer: 1500,
+        //                 showConfirmButton: false
+        //             });
+
+        //             $('#formCompany')[0].reset();
+        //             $('#modalCompany').modal('hide');
+        //             table.ajax.reload();
+        //         },
+
+        //         error: function (err) {
+        //             Swal.fire({
+        //                 icon: 'error',
+        //                 title: 'Error',
+        //                 text: err.responseJSON?.message || 'Something went wrong'
+        //             });
+        //         }
+        //     });
+        // });
+                $('#btnSave').click(function () {
 
             let data = {
                 Name: $('input[name="Name"]').val().trim(),
                 Country: $('#Country option:selected').text(),
                 IdCountry: $('#Country').val(),
-                SwiftCode: $('input[name="SwiftCode"]').val(),
-                Phone: $('input[name="Phone"]').val(),
+                SwiftCode: $('#SwiftCode').val()?.trim() || '',
+                Phone: $('#Phone').val()?.trim() || '',
                 TransactionType: $('#TransactionType').val(),
-                    PhoneContactPerson: $('#PhoneContactPerson').val(),
-                ContactPerson: $('#ContactPerson').val(),
-                Position: $('#Position').val(),
+                PhoneContactPerson: $('#PhoneContactPerson').val()?.trim() || '',
+                ContactPerson: $('#ContactPerson').val()?.trim() || '',
+                Position: $('#Position').val()?.trim() || '',
                 UserC: "admin"
             };
+
+            let transactionType = parseInt(data.TransactionType);
+
+            // VALIDACIONES GENERALES
 
             if (!data.Name) {
                 Swal.fire('Error', 'Name is required', 'error');
                 return;
             }
+
             if (!data.IdCountry) {
                 Swal.fire('Error', 'Country is required', 'error');
                 return;
             }
-            if (!data.SwiftCode) {
-                Swal.fire('Error', 'SwiftCode is required', 'error');
-                return;
-            }
+
             if (!data.Phone) {
                 Swal.fire('Error', 'Phone is required', 'error');
                 return;
             }
+
             if (!data.TransactionType) {
-                Swal.fire('Error', 'TransactionType is required', 'error');
+                Swal.fire('Error', 'Transaction Type is required', 'error');
                 return;
             }
+
+            // PAID SERVICE
+
+            if (transactionType === 4) {
+                let serviceCode = $('#ServiceCode').val()?.trim() || '';
+                if (!serviceCode) {
+                    Swal.fire('Error', 'Service Code is required', 'error');
+                    return;
+                }
+                data.ServiceCode = serviceCode;
+            }
+            // FINANCIAL COMPANIES
+            else {
+
+                if (!data.SwiftCode) {
+                    Swal.fire('Error', 'Swift Code is required', 'error');
+                    return;
+                }
+
+                if (!data.ContactPerson) {
+                    Swal.fire('Error', 'Contact Person is required', 'error');
+                    return;
+                }
+
+                if (!data.Position) {
+                    Swal.fire('Error', 'Position is required', 'error');
+                    return;
+                }
+
+                if (!data.PhoneContactPerson) {
+                    Swal.fire('Error', 'Phone Contact Person is required', 'error');
+                    return;
+                }
+            }
+
             $.ajax({
                 url: '/Companies/Create',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(data),
-
                 beforeSend: () => {
                     Swal.fire({
                         title: 'Saving...',
@@ -403,20 +569,19 @@
                         didOpen: () => Swal.showLoading()
                     });
                 },
-
                 success: function (res) {
+
                     Swal.fire({
                         icon: 'success',
                         title: res.message,
                         timer: 1500,
                         showConfirmButton: false
                     });
-
                     $('#formCompany')[0].reset();
                     $('#modalCompany').modal('hide');
                     table.ajax.reload();
+                    $('#TransactionType').trigger('change');
                 },
-
                 error: function (err) {
                     Swal.fire({
                         icon: 'error',
