@@ -61,4 +61,28 @@ public class ClientCompaniesRepository
         await cmd.ExecuteNonQueryAsync();
         await conn.CloseAsync();
     }
+
+    public async Task<List<CompaniesModel>> GetPaidServiceCompaniesByClient(int clientId)
+    {
+        var list = new List<CompaniesModel>();
+        using var conn = _db.CreateConnection();
+        using var cmd = new SqlCommand("sp_GetPaidServiceCompaniesByClient", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@IdClient", clientId);
+        await conn.OpenAsync();
+        using var rd = await cmd.ExecuteReaderAsync();
+        while (await rd.ReadAsync())
+        {
+            list.Add(new CompaniesModel
+            {
+                IdCompany = (int)rd["IdCompany"],
+                Name = rd["Name"].ToString(),
+                ServiceCode = rd["ServiceCode"].ToString(),
+                AccountNumber = rd["AccountNumber"].ToString(),
+                HasAccount = rd["HasAccount"].ToString()
+            });
+        }
+        return list;
+    }
+
 }

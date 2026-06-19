@@ -1188,7 +1188,7 @@
 
                 </div> *@
                 <div class="row">
-                    <div class="col-2">
+                    <div class="col-3">
                         <label class="form-label">Reference Number *</label>
                         <input id="PService_ReferenceNumber" class="form-control mb-2" placeholder="Reference Number" readonly />
                         <input type="hidden" id="PService_TransactionType" />
@@ -1217,7 +1217,7 @@
                         <label class="form-label">Total Amount</label>
                         <input id="PService_TotalAmount" type="number" class="form-control mb-2" readonly placeholder="0.0" />
                     </div>
-                    <div class="col-1">
+                    <div class="col-3">
                         <label class="form-check-label">
                             Calculation Mode
                         </label>
@@ -3384,24 +3384,80 @@
             }
         //CALCULO DE REFERENCE PARA MONEY ORDER
         //CALCULO DE REFERENCE PARA PAID SERVICE
-                function PService_companyChanged() {
-                    const companyId = $('#PService_Company').val();
-                    if (!companyId) {
-                        $('#PService_ReferenceNumber').val('');
-                        return;
-                    }
-                    $.get(
-                        '/ReferenceNumber/GetReferencePreview',
-                        {
-                          senderCompany: companyId,
-                          transactionType: 4
-                        },
-                        function (preview) {
+                // function PService_companyChanged() {
+                //     const companyId = $('#PService_Company').val();
+                //     let ClientID = selectedClients["PService_"]
+                //     if (!companyId) {
+                //         $('#PService_ReferenceNumber').val('');
+                //         return;
+                //     }
+                //     if (ClientID == 0 || ClientID == null) {
+                //         Swal.fire(
+                //             'Error',
+                //             'Client is required',
+                //             'error'
+                //         );
+                //         return;
+                //     }
+                //     $.get(
+                //         '/ReferenceNumber/GetReferencePreview_PS',
+                //         {
+                //           senderCompany: companyId,
+                //           transactionType: 4,
+                //           ClientID : ClientID
+                //         },
+                //         function (preview) {
 
-                          $('#PService_ReferenceNumber').val(preview);
-                        }
+                //           $('#PService_ReferenceNumber').val(preview);
+                //         }
+                //     );
+                // }
+                        function PService_companyChanged() {
+
+            const companyId = $('#PService_Company').val();
+            let ClientID = selectedClients["PService_"];
+
+            if (!companyId) {
+                $('#PService_ReferenceNumber').val('');
+                return;
+            }
+
+            if (ClientID == 0 || ClientID == null) {
+                Swal.fire(
+                    'Error',
+                    'Client is required',
+                    'error'
+                );
+                return;
+            }
+
+            $.ajax({
+                url: '/ReferenceNumber/GetReferencePreview_PS',
+                method: 'GET',
+                data: {
+                    senderCompany: companyId,
+                    transactionType: 4,
+                    ClientID: ClientID
+                },
+                success: function (preview) {
+
+                    $('#PService_ReferenceNumber').val(preview);
+
+                },
+                error: function (xhr) {
+
+                    $('#PService_ReferenceNumber').val('');
+
+                    Swal.fire(
+                        'Account not found',
+                        xhr.responseJSON?.message ||
+                        'The selected client does not have an account associated with this company.',
+                        'warning'
                     );
+
                 }
+            });
+        }
                 //CALCULO DE REFERENCE PARA PAID SERVICE
         let currentSimpleTxIndex = 0;
         let simpleTxIndex = 1;
@@ -3659,22 +3715,13 @@
         //////////////////////////////////////////////////////////
 
         function Global_selectClient(id) {
-
             $.get('/Clients/GetById?id=' + id, function (c) {
-
                 selectedClients[currentPrefix] = c.idClient;
-
                 $('#' + currentPrefix + 'SenderName').val(c.firstName + ' ' + c.lastName);
-
                 $('#' + currentPrefix + 'SenderDocumentNumber').val(c.documentNumber);
-
                 $('#' + currentPrefix + 'SenderPhone').val(c.phone);
-
                 $('#' + currentPrefix + 'SenderAddress').val(c.address);
-
                 $('#' + currentPrefix + 'SenderDocumentType').val(c.idDocumentType);
-                    // $('#' + currentPrefix + 'SenderIssueDate').val(c.issueDate);
-                    // $('#' + currentPrefix + 'SenderExpirationDate').val(c.expeditionDate);
                     if (c.expirationDate) {
                         let date = new Date(c.expirationDate);
                         if (!isNaN(date)) {
@@ -3690,17 +3737,21 @@
                         }
                     }
 
-                $('#SimpleTx_modalSearchClient').modal('hide');
+                    //////////////////////////////////////////////
+                    // PAID SERVICE
+                    //////////////////////////////////////////////
+                    if (currentPrefix === "PService_") {
+                        loadPaidServiceCompanies(c.idClient);
+                    }
 
+                $('#SimpleTx_modalSearchClient').modal('hide');
                 Swal.fire({
                     icon: 'success',
                     title: 'Client loaded',
                     timer: 1000,
                     showConfirmButton: false
                 });
-
             });
-
         }
 
         //////////////////////////////////////////////////////////
@@ -3829,23 +3880,20 @@
                 processData: false,
 
                 success: function (res) {
-
                     selectedClients[currentPrefix] = res.idClient;
-
                     $('#' + currentPrefix + 'SenderName').val(_FirstName + ' ' + _LastName);
-
                     $('#' + currentPrefix + 'SenderDocumentNumber').val(_DocumentNumber);
-
                     $('#' + currentPrefix + 'SenderPhone').val(_Phone);
-
                     $('#' + currentPrefix + 'SenderAddress').val(_Address);
-
                     $('#' + currentPrefix + 'SenderDocumentType').val(_IdDocumentType);
                     $('#' + currentPrefix + 'SenderIssueDate').val(_IssueDate);
                     $('#' + currentPrefix + 'SenderExpirationDate').val(_ExpirationDate);
-
+                    if (currentPrefix === "PService_") {
+                        $('#PService_Company').empty();
+                        $('#PService_ReferenceNumber').val('');
+                        loadPaidServiceCompanies(res.idClient);
+                    }
                     $('#SimpleTx_modalNewClient').modal('hide');
-
                     Swal.fire({
                         icon: 'success',
                         title: 'Client created',
@@ -4154,7 +4202,7 @@
                       //$('#' + Prefijo + '_TransactionType').attr('data-commission', t.commission);
                       $('#' + Prefijo + '_TransactionType').data('ranges', t.commissionRanges);
                       $('#' + Prefijo + '_CommissionL').text(t.commission);
-                     if(Prefijo != "SimpleTx"){
+                      if(Prefijo == "MOrder"){
                          loadCompaniesByTransactionType(NumeroT,Prefijo+"_Company");
                      }
                     }
@@ -4162,6 +4210,9 @@
 
             });
         }
+
+         
+
         // function loadSimpleTxCompaniesUSA() {
         //     $.get('/Companies/GetByCountry?countryId=11', function (data) {
         //         let SimpleTx_select = $('#SimpleTx_Company');
@@ -4724,6 +4775,50 @@
             });
         });
 
+        function loadPaidServiceCompanies(clientId){
+            let select = $('#PService_Company');
+            select.empty();
+            select.prop('disabled', true);
+            $.get(
+                '/ClientCompanies/GetPaidServiceCompaniesByClient',
+                {
+                    clientId: clientId
+                },
+                function(data){
+                    select.append(
+                        '<option value="">Select Company</option>'
+                    );
+                            data.forEach(c => {
+
+            let disabled =
+                c.hasAccount == 0
+                    ? 'disabled'
+                    : '(No Account)';
+
+            select.append(`
+                <option
+                    value="${c.idCompany}"
+                    data-account="${c.accountNumber || ''}"
+                    data-servicecode="${c.serviceCode || ''}"
+                    ${disabled}>
+                    ${c.name}
+                </option>
+            `);
+
+        });
+                    select.prop('disabled', false);
+                }
+            );
+        }
+        $('#PService_Company').change(function(){
+            let option =$(this).find(':selected');
+            let accountNumber = option.data('account');
+            let serviceCode = option.data('servicecode');
+            console.log(accountNumber);
+            console.log(serviceCode);
+
+        });
+
         $('#btnSavePService').click(async function () {
 
             let prefix = "PService_";
@@ -5032,7 +5127,7 @@
         //     });
         // }
 
-                function loadCompaniesByTransactionType(transactionType, selectId, selectedValue = null) {
+        function loadCompaniesByTransactionType(transactionType, selectId, selectedValue = null) {
                     $('#SimpleTx_Company').val('');
             $.get(
                 '/Companies/GetByTransactionType?transactionType=' + transactionType,
@@ -5054,13 +5149,6 @@
                         select = $('#' + selectId);
                     }
                     select.empty();
-                    // data.forEach(c => {
-                    //     select.append(
-                    //         `<option value="${c.idCompany}">
-                    //             ${c.name}
-                    //         </option>`
-                    //     );
-                    // });
                        data.forEach(c => {
                         select.append(
                             `<option

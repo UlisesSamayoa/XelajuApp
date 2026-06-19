@@ -17,6 +17,8 @@
         public string StatusCompanyComment { get; set; }
         //NUEVOS CAMPOS
         public string ServiceCode { get; set; }
+        public string AccountNumber { get; set; }
+        public string HasAccount { get; set; }
         public int Status { get; set; }
         public DateTime DateC { get; set; }
         public string UserC { get; set; }

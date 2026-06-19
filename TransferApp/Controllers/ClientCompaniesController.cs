@@ -45,10 +45,14 @@ public class ClientCompaniesController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         await _service.Delete(id, "admin");
-
-        return Json(new
-        {
-            success = true
-        });
+        return Json(new { success = true });
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetPaidServiceCompaniesByClient(int clientId)
+    {
+        var data = await _service.GetPaidServiceCompaniesByClient(clientId);
+        return Json(data);
+    }
+
 }

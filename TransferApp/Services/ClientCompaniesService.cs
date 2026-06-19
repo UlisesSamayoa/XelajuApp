@@ -22,4 +22,9 @@ public class ClientCompaniesService
     {
         await _repo.Delete(id, user);
     }
+    public async Task<List<CompaniesModel>> GetPaidServiceCompaniesByClient(int clientId)
+    {
+        return await _repo.GetPaidServiceCompaniesByClient(clientId);
+    }
+
 }
