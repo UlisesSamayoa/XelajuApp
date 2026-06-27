@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 using TransferApp.Models;
+using TransferApp.Repositories;
 
 public class TransactionsController : Controller
 {
@@ -9,19 +10,32 @@ public class TransactionsController : Controller
     private readonly ClientsService _clientes;
     private readonly BeneficiariesService _beneficiaries;
     private readonly ParametersService _parameters;
-
-    public TransactionsController(TransactionsService service, ClientsService clientes, BeneficiariesService beneficiaries, ParametersService parameters)
+    private readonly TransactionAttachmentRepository _AttachRepo;
+    public TransactionsController(TransactionsService service, ClientsService clientes, BeneficiariesService beneficiaries, ParametersService parameters, TransactionAttachmentRepository AttachRepo)
     {
         _service = service;
-
         _clientes = clientes;
-
         _beneficiaries = beneficiaries;
-
         _parameters = parameters;
+        _AttachRepo = AttachRepo;
     }
     public IActionResult Index() => View();
-
+    [HttpGet]
+    public async Task<IActionResult> GetAttachments(int idTransaction)
+    {
+        try
+        {
+            var attachments = await _service.GetAttachments(idTransaction);
+            return Json(attachments);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
+        }
+    }
     [HttpGet]
     public async Task<IActionResult> GetAll()
         => Json(await _service.GetAll());
@@ -205,70 +219,96 @@ public class TransactionsController : Controller
         }
     }
 
+    //[HttpGet]
+    //public async Task<IActionResult> ViewTransactionFile(int id)
+    //{
+    //    var tx = await _service.GetById(id);
+
+    //    if (tx == null)
+    //        return NotFound();
+
+    //    if (string.IsNullOrWhiteSpace(tx.TransactionFile))
+    //        return NotFound();
+
+    //    if (!System.IO.File.Exists(tx.TransactionFile))
+    //        return NotFound();
+
+    //    var ext = Path.GetExtension(tx.TransactionFile).ToLower();
+
+    //    string contentType = ext switch
+    //    {
+    //        ".jpg" => "image/jpeg",
+    //        ".jpeg" => "image/jpeg",
+    //        ".png" => "image/png",
+    //        ".pdf" => "application/pdf",
+    //        _ => "application/octet-stream"
+    //    };
+
+    //    var bytes = await System.IO.File.ReadAllBytesAsync(
+    //        tx.TransactionFile
+    //    );
+
+    //    return File(bytes, contentType);
+    //}
     [HttpGet]
-    public async Task<IActionResult> ViewTransactionFile(int id)
+    public async Task<IActionResult> ViewAttachment(long id)
     {
-        var tx = await _service.GetById(id);
-
-        if (tx == null)
+        var file = await _AttachRepo.GetAttachmentById(id);
+        if (file == null)
             return NotFound();
-
-        if (string.IsNullOrWhiteSpace(tx.TransactionFile))
+        if (!System.IO.File.Exists(file.FilePath))
             return NotFound();
-
-        if (!System.IO.File.Exists(tx.TransactionFile))
-            return NotFound();
-
-        var ext = Path.GetExtension(tx.TransactionFile).ToLower();
-
-        string contentType = ext switch
-        {
-            ".jpg" => "image/jpeg",
-            ".jpeg" => "image/jpeg",
-            ".png" => "image/png",
-            ".pdf" => "application/pdf",
-            _ => "application/octet-stream"
-        };
-
-        var bytes = await System.IO.File.ReadAllBytesAsync(
-            tx.TransactionFile
-        );
-
-        return File(bytes, contentType);
+        var bytes = await System.IO.File.ReadAllBytesAsync(file.FilePath);
+        return File(bytes, file.ContentType);
     }
     [HttpGet]
-    public async Task<IActionResult> DownloadTransactionFile(int id)
+    public async Task<IActionResult> DownloadAttachment(long id)
     {
-        var tx = await _service.GetById(id);
-
-        if (tx == null)
+        var file = await _AttachRepo.GetAttachmentById(id);
+        if (file == null)
             return NotFound();
-
-        if (string.IsNullOrWhiteSpace(tx.TransactionFile))
+        if (!System.IO.File.Exists(file.FilePath))
             return NotFound();
-
-        if (!System.IO.File.Exists(tx.TransactionFile))
-            return NotFound();
-
-        var ext = Path.GetExtension(tx.TransactionFile).ToLower();
-
-        string contentType = ext switch
-        {
-            ".jpg" => "image/jpeg",
-            ".jpeg" => "image/jpeg",
-            ".png" => "image/png",
-            ".pdf" => "application/pdf",
-            _ => "application/octet-stream"
-        };
-
-        var bytes = await System.IO.File.ReadAllBytesAsync(
-            tx.TransactionFile
+        var bytes = await System.IO.File.ReadAllBytesAsync(file.FilePath);
+        return File(
+            bytes,
+            file.ContentType,
+            file.OriginalFileName
         );
-
-        var fileName = Path.GetFileName(tx.TransactionFile);
-
-        return File(bytes, contentType, fileName);
     }
+    //[HttpGet]
+    //public async Task<IActionResult> DownloadTransactionFile(int id)
+    //{
+    //    var tx = await _service.GetById(id);
+
+    //    if (tx == null)
+    //        return NotFound();
+
+    //    if (string.IsNullOrWhiteSpace(tx.TransactionFile))
+    //        return NotFound();
+
+    //    if (!System.IO.File.Exists(tx.TransactionFile))
+    //        return NotFound();
+
+    //    var ext = Path.GetExtension(tx.TransactionFile).ToLower();
+
+    //    string contentType = ext switch
+    //    {
+    //        ".jpg" => "image/jpeg",
+    //        ".jpeg" => "image/jpeg",
+    //        ".png" => "image/png",
+    //        ".pdf" => "application/pdf",
+    //        _ => "application/octet-stream"
+    //    };
+
+    //    var bytes = await System.IO.File.ReadAllBytesAsync(
+    //        tx.TransactionFile
+    //    );
+
+    //    var fileName = Path.GetFileName(tx.TransactionFile);
+
+    //    return File(bytes, contentType, fileName);
+    //}
 
     [HttpPost]
     public async Task<IActionResult> ChangeStatus(int idTransaction, string status, string transactionsStatusComment)
@@ -285,6 +325,27 @@ public class TransactionsController : Controller
         catch (Exception ex)
         {
             return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddEvidence(int idTransaction, List<IFormFile> files, string user, int transactionType, string clientName, string clientDocument, string referenceNumber)
+    {
+        try
+        {
+            await _service.AddEvidence(idTransaction, files, user);
+            return Json(new
+            {
+                success = true,
+                message = "Evidence uploaded successfully."
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
         }
     }
 

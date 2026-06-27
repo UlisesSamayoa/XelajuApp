@@ -104,7 +104,6 @@
                     <th>Sender Document</th>
                     <th>Name</th>
                     <th>Sender Company</th>
-                    <th>Receiver Company</th>
                     <th>Transaction Type</th>
                     <th>Status</th>
                     <th>Amount</th>
@@ -511,13 +510,14 @@
 
 <div class="modal fade" id="modalTxDetails">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg">
+        <div class="modal-content border-0 shadow">
 
             <!-- HEADER -->
             <div class="modal-header bg-dark text-white">
+
                 <div>
                     <h5 class="mb-0">
-                        <i class="bi bi-receipt"></i>
+                        <i class="bi bi-receipt-cutoff"></i>
                         Transaction Details
                     </h5>
 
@@ -525,15 +525,20 @@
                 </div>
 
                 <button class="btn-close btn-close-white"
-                        data-bs-dismiss="modal"></button>
+                        data-bs-dismiss="modal">
+                </button>
+
             </div>
 
             <div class="modal-body">
 
-                <!-- SUMMARY -->
-                <div class="row g-3 mb-4">
+                <!-- ========================= -->
+                <!-- RESUMEN -->
+                <!-- ========================= -->
 
-                    <div class="col-md-2">
+                <div class="row g-3">
+
+                    <div class="col-md-3">
                         <div class="card shadow-sm h-100">
                             <div class="card-body">
                                 <small class="text-muted">Reference</small>
@@ -542,34 +547,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-2">
-                        <div class="card shadow-sm h-100">
-                            <div class="card-body">
-                                <small class="text-muted">Amount</small>
-                                <h6 id="dAmount"></h6>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2">
-                        <div class="card shadow-sm h-100">
-                            <div class="card-body">
-                                <small class="text-muted">Commission</small>
-                                <h6 id="dCommission"></h6>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2">
-                        <div class="card shadow-sm h-100 bg-light">
-                            <div class="card-body">
-                                <small class="text-muted">Total</small>
-                                <h5 id="dTotal"></h5>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <div class="card shadow-sm h-100">
                             <div class="card-body">
                                 <small class="text-muted">Company</small>
@@ -578,142 +556,269 @@
                         </div>
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <div class="card shadow-sm h-100">
                             <div class="card-body">
                                 <small class="text-muted">Status</small>
-                                <h6 id="dStatus"></h6>
+                                <div id="dStatus"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <small class="text-muted">Date</small>
+                                <h6 id="dDate"></h6>
                             </div>
                         </div>
                     </div>
 
                 </div>
 
-                <!-- PEOPLE -->
-                <div class="row">
+                <!-- ========================= -->
+                <!-- FINANCIAL -->
+                <!-- ========================= -->
 
-                    <!-- SENDER -->
-                    <div class="col-md-6">
-                        <div class="card shadow-sm h-100">
+                <div class="card shadow-sm mt-4">
 
-                            <div class="card-header bg-primary text-white">
-                                Sender
-                            </div>
+                    <div class="card-header bg-light">
 
-                            <div class="card-body">
+                        <strong>
+                            <i class="bi bi-cash-stack"></i>
+                            Financial Summary
+                        </strong>
 
-                                <div class="row mb-2">
-                                    <div class="col-4 fw-bold">Name</div>
-                                    <div class="col-8" id="dSender"></div>
-                                </div>
-
-                                <div class="row mb-2">
-                                    <div class="col-4 fw-bold">Document</div>
-                                    <div class="col-8" id="dSenderDoc"></div>
-                                </div>
-
-                                <div class="row mb-2">
-                                    <div class="col-4 fw-bold">Phone</div>
-                                    <div class="col-8" id="dSenderPhone"></div>
-                                </div>
-
-                                <div class="row mb-2">
-                                    <div class="col-4 fw-bold">Address</div>
-                                    <div class="col-8" id="dSenderAddress"></div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-4 fw-bold">Country</div>
-                                    <div class="col-8" id="dSenderCountry"></div>
-                                </div>
-
-                            </div>
-                        </div>
                     </div>
 
-                    <!-- RECEIVER -->
-                    <div class="col-md-6" id="receiverBlock">
+                    <div class="card-body">
 
-                        <div class="card shadow-sm h-100">
+                        <div class="row text-center">
 
-                            <div class="card-header bg-success text-white">
-                                Receiver
+                            <div class="col-md-2">
+                                <small class="text-muted">Amount</small>
+                                <h5 id="dAmount"></h5>
                             </div>
 
-                            <div class="card-body">
-
-                                <div class="row mb-2">
-                                    <div class="col-4 fw-bold">Name</div>
-                                    <div class="col-8" id="dReceiver"></div>
-                                </div>
-
-                                <div class="row mb-2">
-                                    <div class="col-4 fw-bold">Document</div>
-                                    <div class="col-8" id="dReceiverDoc"></div>
-                                </div>
-
-                                <div class="row mb-2">
-                                    <div class="col-4 fw-bold">Phone</div>
-                                    <div class="col-8" id="dReceiverPhone"></div>
-                                </div>
-
-                                <div class="row mb-2">
-                                    <div class="col-4 fw-bold">Address</div>
-                                    <div class="col-8" id="dReceiverAddress"></div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-4 fw-bold">Country</div>
-                                    <div class="col-8" id="dReceiverCountry"></div>
-                                </div>
-
+                            <div class="col-md-2">
+                                <small class="text-muted">Rate</small>
+                                <h5 id="dRate"></h5>
                             </div>
+
+                            <div class="col-md-2">
+                                <small class="text-muted">Fixed Fee</small>
+                                <h5 id="dFixedFee"></h5>
+                            </div>
+
+                            <div class="col-md-2">
+                                <small class="text-muted">Variable Fee</small>
+                                <h5 id="dVariableFee"></h5>
+                            </div>
+
+                            <div class="col-md-2">
+                                <small class="text-muted">Commission</small>
+                                <h5 id="dCommission"></h5>
+                            </div>
+
+                            <div class="col-md-2">
+                                <small class="text-muted">Total</small>
+                                <h4 class="text-success" id="dTotal"></h4>
+                            </div>
+
                         </div>
 
                     </div>
 
                 </div>
 
-                <!-- NOTES -->
+                <!-- ========================= -->
+                <!-- PARTICIPANTS -->
+                <!-- ========================= -->
+
                 <div class="row mt-4">
 
                     <div class="col-md-6">
 
                         <div class="card shadow-sm h-100">
 
-                            <div class="card-header">
-                                Notes / Justification
+                            <div class="card-header bg-primary text-white">
+
+                                <span id="lblSenderTitle">
+                                    Sender
+                                </span>
+
                             </div>
 
                             <div class="card-body">
-                                <p id="dJustify"></p>
+
+                                <table class="table table-sm table-borderless">
+
+                                    <tr>
+                                        <th width="35%">Name</th>
+                                        <td id="dSender"></td>
+                                    </tr>
+
+                                    <tr>
+                                        <th>Document</th>
+                                        <td id="dSenderDoc"></td>
+                                    </tr>
+
+                                    <tr>
+                                        <th>Phone</th>
+                                        <td id="dSenderPhone"></td>
+                                    </tr>
+
+                                    <tr>
+                                        <th>Country</th>
+                                        <td id="dSenderCountry"></td>
+                                    </tr>
+
+                                    <tr>
+                                        <th>Address</th>
+                                        <td id="dSenderAddress"></td>
+                                    </tr>
+
+                                </table>
+
                             </div>
 
                         </div>
 
                     </div>
 
-                    <div class="col-md-6">
-                        <div class="card shadow-sm text-center">
-                            <div class="card-header">
-                                <h6>Evidence</h6>
-                            </div>
-                            <div class="card-body">
-                                <img id="imgJustifyPreview"
-                                     class="img-fluid rounded border mb-2"
-                                     style="max-height:250px; object-fit:contain; display:none;">
-                                     <br />
-                                @* <a id="btnDownloadEvidence"class="btn btn-primary btn-sm"style="display:none;"target="_blank"><i class="bi bi-download"></i> Download File</a> *@
-                                <a id="btnDownloadEvidence"class="btn btn-primary btn-sm"style="display:none;"><i class="bi bi-download"></i> Download File</a>
+                    <div class="col-md-6" id="receiverBlock">
+
+                        <div class="card shadow-sm h-100">
+
+                            <div class="card-header bg-success text-white">
+
+                                <span id="lblReceiverTitle">
+                                    Receiver
+                                </span>
+
                             </div>
 
+                            <div class="card-body">
+
+                                <table class="table table-sm table-borderless">
+
+                                    <tr>
+                                        <th width="35%">Name</th>
+                                        <td id="dReceiver"></td>
+                                    </tr>
+
+                                    <tr>
+                                        <th>Document</th>
+                                        <td id="dReceiverDoc"></td>
+                                    </tr>
+
+                                    <tr>
+                                        <th>Phone</th>
+                                        <td id="dReceiverPhone"></td>
+                                    </tr>
+
+                                    <tr>
+                                        <th>Country</th>
+                                        <td id="dReceiverCountry"></td>
+                                    </tr>
+
+                                    <tr>
+                                        <th>Address</th>
+                                        <td id="dReceiverAddress"></td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                     </div>
-
                 </div>
-
+                <!-- ========================= -->
+                <!-- NOTES -->
+                <!-- ========================= -->
+                <div class="card shadow-sm mt-4">
+                    <div class="card-header">
+                        <i class="bi bi-chat-left-text"></i>
+                        Notes / Justification
+                    </div>
+                    <div class="card-body">
+                        <p id="dJustify" class="mb-0"></p>
+                    </div>
+                </div>
+                <!-- ========================= -->
+                <!-- EVIDENCE -->
+                <!-- ========================= -->
+                <div class="card shadow-sm mt-4">
+                    <div class="card-header d-flex justify-content-between">
+                        <span><i class="bi bi-images"></i> Evidence </span>
+                        <span id="dEvidenceCount" class="badge bg-primary">0</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" id="evidenceContainer"> </div>
+                    </div>
+                </div>
             </div>
+        </div>
+    </div>
+</div>
 
+<div class="modal fade" id="modalTransactionEvidence">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content shadow border-0">
+            <div class="modal-header bg-dark text-white">
+                <div>
+                    <h5 class="mb-0"> <i class="bi bi-images"></i>Add Transaction Evidence</h5>
+                    <small>
+                        Upload additional documents requested after the transaction was completed.
+                    </small>
+                </div>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"> </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="Evidence_IdTransaction">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            Reference
+                        </label>
+                        <input id="Evidence_Reference" class="form-control" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            Client
+                        </label>
+                        <input id="Evidence_Client" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">
+                        Select Evidence
+                    </label>
+                    <input id="Evidence_Files" class="form-control" type="file" multiple accept=".jpg,.jpeg,.png,.pdf">
+                    <small class="text-muted">
+                        You can upload one or multiple files.
+                    </small>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        Selected Files
+                    </div>
+                    <div class="card-body">
+                        <div id="Evidence_FileList">
+                            <span class="text-muted">
+                                No files selected.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancel
+                </button>
+                <button id="btnSaveEvidence" class="btn btn-primary">
+                    <i class="bi bi-upload"></i>
+                    Upload Evidence
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -1626,7 +1731,7 @@
 
             applyPhoneMask('#SimpleTx_C_Phone');
             $('#filterTransactioType').on('keyup', function () {
-                tableTx.column(5).search(this.value).draw();
+                tableTx.column(4).search(this.value).draw();
             });
             // const today = new Date().toISOString().split('T')[0];
             // $('.issue-date').attr('max', today);
@@ -1691,9 +1796,6 @@
                     },
                     {
                         data: 'senderCompanyName',
-                    },
-                    {
-                        data: 'receiverCountryName'
                     },
                     {
                         data: 'transactionTypeName'
@@ -1769,7 +1871,10 @@
                     className: 'tmin-w',
                 render: function (data, type, row) {
                 return `
-
+                    <button class="btn btn-secondary btn-sm"
+                        onclick="loadTransactionAddFiles(${row.idTransaction})">
+                        <i class="bi bi-images"></i>
+                    </button>
                     ${row.transactionType == 1 ? `
                         <button class="btn btn-warning btn-sm"
                             onclick="openChangeStatusModal(
@@ -1860,6 +1965,91 @@
                 }
             });
         }
+
+        function loadTransactionAddFiles(id){
+            $.get('/Transactions/GetById?id=' + id,function(t){
+                $('#Evidence_IdTransaction').val(t.idTransaction);
+                $('#Evidence_Reference').val(t.referenceNumber);
+                $('#Evidence_Client').val(t.senderName);
+                $('#Evidence_Files').val('');
+                $('#Evidence_FileList').html(`<span class="text-muted">No files selected.</span>`);
+                $('#modalTransactionEvidence').modal('show');
+            });
+        }
+            $('#Evidence_Files').change(function(){
+                let container = $('#Evidence_FileList');
+                container.empty();
+                let files = this.files;
+                if(files.length == 0){
+                    container.html(`
+                        <span class="text-muted">
+                            No files selected.
+                        </span>
+                    `);
+                    return;
+                }
+                Array.from(files).forEach(function(file,index){
+
+                    container.append(`
+                        <div class="d-flex justify-content-between align-items-center border rounded p-2 mb-2">
+                            <div>
+                                <i class="bi bi-file-earmark"></i>
+                                ${file.name}
+                            </div>
+                            <span class="badge bg-primary">
+                                ${(file.size/1024).toFixed(1)} KB
+                            </span>
+                        </div>
+                    `);
+                });
+            });
+                $('#btnSaveEvidence').click(function(){
+                    let files = $('#Evidence_Files')[0].files;
+                    if(files.length == 0){
+                        Swal.fire(
+                            'Error',
+                            'Select at least one evidence file.',
+                            'error'
+                        );
+                        return;
+                    }
+                    let form = new FormData();
+                    form.append('idTransaction',$('#Evidence_IdTransaction').val());
+                    for(let i=0;i<files.length;i++){
+                        form.append('files',files[i]);
+                    }
+                    Swal.fire({
+                        title:'Uploading...',
+                        allowOutsideClick:false,
+                        didOpen:()=>Swal.showLoading()
+                    });
+                    $.ajax({
+                        url:'/Transactions/AddEvidence',
+                        type:'POST',
+                        data:form,
+                        processData:false,
+                        contentType:false,
+                        success:function(res){
+                            $('#modalTransactionEvidence').modal('hide');
+                            $('#Evidence_Files').val('');
+                            $('#Evidence_FileList').html('');
+                            Swal.fire({
+                                icon:'success',
+                                title:'Evidence uploaded',
+                                text:res.message,
+                                timer:1200,
+                                showConfirmButton:false
+                            });
+                        },
+                        error:function(xhr){
+                            Swal.fire(
+                                'Error',
+                                xhr.responseJSON?.message ?? 'Unexpected error',
+                                'error'
+                            );
+                        }
+                    });
+                });
 
                 function loadCountries() {
 
@@ -5004,16 +5194,13 @@
 
             $.get('/Transactions/GetById?id=' + id, function (t) {
 
+                //-------------------------
                 // HEADER
+                //-------------------------
+
                 $('#dTransactionType').text(t.transactionTypeName);
 
                 $('#dReference').text(t.referenceNumber);
-
-                $('#dAmount').text('$' + t.amount);
-
-                $('#dCommission').text(t.commission + '%');
-
-                $('#dTotal').text('$' + t.totalAmount);
 
                 $('#dCompany').text(
                     t.senderCompanyName ||
@@ -5021,141 +5208,258 @@
                     '-'
                 );
 
-                // $('#dStatus').html(
-                //     t.status == 1
-                //         ? '<span class="badge bg-success">Completed</span>'
-                //         : '<span class="badge bg-danger">Cancelled</span>'
+                $('#dDate').text(
+                    t.transactionDate ?? '-'
+                );
+
+                //-------------------------
+                // FINANCIAL
+                //-------------------------
+
+                $('#dAmount').text('$' + Number(t.amount).toFixed(2));
+
+                // Estos tres vienen del SP nuevo
+                $('#dRate').text(
+                    t.commissionRate != null
+                        ? t.commissionRate + ' %'
+                        : '-'
+                );
+
+                $('#dFixedFee').text(
+                    '$' + Number(t.fixedCommission || 0).toFixed(2)
+                );
+
+                // $('#dVariableFee').text(
+                //     '$' + Number(t.Commission || 0).toFixed(2)
                 // );
-                        let statusHtml = '';
+
+                $('#dCommission').text(
+                    '$' + Number(t.Commission || 0).toFixed(2)
+                );
+
+                $('#dTotal').text(
+                    '$' + Number(t.totalAmount).toFixed(2)
+                );
+
+                //-------------------------
+                // STATUS
+                //-------------------------
+
+                let statusHtml = '';
 
                 switch (t.transactionStatus) {
 
                     case 'Completed':
 
                         statusHtml = `
-                            <span class="badge bg-success"
-                                  style="
-                                    padding:8px 14px;
-                                    border-radius:20px;
-                                    font-size:13px;
-                                  ">
+                            <span class="badge bg-success px-3 py-2">
                                 <i class="bi bi-check-circle-fill"></i>
                                 Completed
-                            </span>
-                        `;
+                            </span>`;
                         break;
 
                     case 'Pending':
 
                         statusHtml = `
-                            <span class="badge bg-warning text-dark"
-                                  style="
-                                    padding:8px 14px;
-                                    border-radius:20px;
-                                    font-size:13px;
-                                  ">
+                            <span class="badge bg-warning text-dark px-3 py-2">
                                 <i class="bi bi-clock-fill"></i>
                                 Pending
-                            </span>
-                        `;
+                            </span>`;
                         break;
 
                     case 'Rejected':
 
                         statusHtml = `
-                            <span class="badge bg-danger"
-                                  style="
-                                    padding:8px 14px;
-                                    border-radius:20px;
-                                    font-size:13px;
-                                  ">
+                            <span class="badge bg-danger px-3 py-2">
                                 <i class="bi bi-x-circle-fill"></i>
                                 Rejected
-                            </span>
-                        `;
+                            </span>`;
                         break;
 
                     default:
 
                         statusHtml = `
-                            <span class="badge bg-secondary"
-                                  style="
-                                    padding:8px 14px;
-                                    border-radius:20px;
-                                    font-size:13px;
-                                  ">
-                                <i class="bi bi-question-circle-fill"></i>
+                            <span class="badge bg-secondary px-3 py-2">
                                 Unknown
-                            </span>
-                        `;
+                            </span>`;
                         break;
+
                 }
 
                 $('#dStatus').html(statusHtml);
 
+                //-------------------------
+                // TITULOS
+                //-------------------------
 
+                switch (t.transactionType) {
 
+                    case 1: // Check
 
+                        $('#lblSenderTitle').text('Client');
+                        $('#receiverBlock').hide();
+                        break;
+
+                    case 2: // Money Order
+
+                        $('#lblSenderTitle').text('Sender');
+                        $('#lblReceiverTitle').text('Receiver');
+                        $('#receiverBlock').show();
+                        break;
+
+                    case 3: // Money Transfer
+
+                        $('#lblSenderTitle').text('Client');
+                        $('#receiverBlock').hide();
+                        break;
+
+                    case 4: // Paid Service
+
+                        $('#lblSenderTitle').text('Customer');
+                        $('#lblReceiverTitle').text('Service Company');
+                        $('#receiverBlock').show();
+                        break;
+
+                    default:
+
+                        $('#lblSenderTitle').text('Sender');
+                        $('#lblReceiverTitle').text('Receiver');
+                        $('#receiverBlock').show();
+                        break;
+                }
+
+                //-------------------------
                 // SENDER
+                //-------------------------
+
                 $('#dSender').text(t.senderName);
                 $('#dSenderDoc').text(t.senderDocumentNumber);
                 $('#dSenderPhone').text(t.senderPhone);
-                $('#dSenderAddress').text(t.senderAddress);
                 $('#dSenderCountry').text(t.senderCountryName);
+                $('#dSenderAddress').text(t.senderAddress);
 
-                // 🔥 VALIDAR SI ES SIMPLE
-                if (t.isSimpleTransaction) {
+                //-------------------------
+                // RECEIVER
+                //-------------------------
 
-                    $('#receiverBlock').hide();
-
-                } else {
+                if (!t.isSimpleTransaction) {
 
                     $('#receiverBlock').show();
 
                     $('#dReceiver').text(t.receiverName);
                     $('#dReceiverDoc').text(t.receiverDocumentNumber);
                     $('#dReceiverPhone').text(t.receiverPhone);
-                    $('#dReceiverAddress').text(t.receiverAddress);
                     $('#dReceiverCountry').text(t.receiverCountryName);
+                    $('#dReceiverAddress').text(t.receiverAddress);
 
                 }
+
+                //-------------------------
+                // NOTES
+                //-------------------------
 
                 $('#dJustify').text(
                     t.justifyDetails || 'No notes'
                 );
-                    if (t.transactionFile) {
 
-                        let previewUrl ='/Transactions/ViewTransactionFile?id='+ t.idTransaction;
-                        let downloadUrl ='/Transactions/DownloadTransactionFile?id='+ t.idTransaction;
-                        $('#imgJustifyPreview').attr('src', previewUrl).show();
-                        $('#btnDownloadEvidence').show().off('click').on('click', function (e) {
-                                e.preventDefault();
-                                window.location.href = downloadUrl;
-                            });
-                    } else {
+                //-------------------------
+                // EVIDENCE
+                //-------------------------
 
-                        $('#imgJustifyPreview').hide();
+                $('#evidenceContainer').empty();
 
-                        $('#btnDownloadEvidence').hide();
+                $('#dEvidenceCount').text('0');
 
-                    }
+                /*
+                Próximo paso
 
+                $.get('/Transactions/GetAttachments?id=' + id,function(files){
+
+                    $('#dEvidenceCount').text(files.length);
+
+                    files.forEach(f=>{
+
+                        $('#evidenceContainer').append(`
+                            <div class="col-md-3 mb-3">
+
+                                <div class="card h-100">
+
+                                    <img src="/Transactions/ViewAttachment?id=${f.idTransactionAttachment}"
+                                         class="card-img-top"
+                                         style="height:180px;object-fit:cover">
+
+                                    <div class="card-body text-center">
+
+                                        <a class="btn btn-primary btn-sm"
+                                           href="/Transactions/DownloadAttachment?id=${f.idTransactionAttachment}">
+                                            <i class="bi bi-download"></i>
+                                        </a>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        `);
+
+                    });
+
+                });
+                */
+
+                //-------------------------
+                // SHOW
+                //-------------------------
+                loadTransactionAttachments(id)
                 $('#modalTxDetails').modal('show');
-
             });
 
         }
-        //         function loadCompaniesByCountry(countryId, type) {
-        //     $.get('/Companies/GetByCountry?countryId=' + countryId, function (data) {
-        //         let select = type === 'Sender'? $('#SenderCompany') : $('#ReceiverCompany');
-        //         select.empty();
-        //         data.forEach(c => {
-        //             select.append(
-        //                 `<option value="${c.idCompany}">${c.name}</option>`
-        //             );
-        //         });
-        //     });
-        // }
+
+
+                function loadTransactionAttachments(idTransaction) {
+
+            $.get('/Transactions/GetAttachments?idTransaction=' + idTransaction, function (files) {
+                $('#dEvidenceCount').text(files.length);
+                let container = $('#evidenceContainer');
+                container.empty();
+                if (files.length === 0) {
+                    container.html(`
+                        <div class="col-12 text-center text-muted py-4">
+                            <i class="bi bi-images fs-1"></i>
+                            <br>
+                            No evidence available.
+                        </div>
+                    `);
+                    return;
+                }
+                files.forEach(file => {
+                    container.append(`
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                            <div class="card shadow-sm h-100">
+                                <img
+                                    src="/Transactions/ViewAttachment?id=${file.idTransactionAttachment}"
+                                    class="card-img-top"
+                                    style="height:180px;object-fit:cover;cursor:pointer"
+                                    onclick="window.open('/Transactions/ViewAttachment?id=${file.idTransactionAttachment}','_blank')">
+                                <div class="card-body text-center">
+                                    <small class="text-muted d-block mb-2">
+                                        ${file.originalFileName}
+                                    </small>
+                                    <a
+                                        href="/Transactions/DownloadAttachment?id=${file.idTransactionAttachment}"
+                                        class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-download"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                });
+            });
+        }
+
+
 
         function loadCompaniesByTransactionType(transactionType, selectId, selectedValue = null) {
                     $('#SimpleTx_Company').val('');

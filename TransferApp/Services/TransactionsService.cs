@@ -703,5 +703,55 @@ public class TransactionsService
 
         return long.Parse(match.Groups[1].Value);
     }
+    //public async Task AddEvidence(int idTransaction, List<IFormFile> files, string user, int transactionType, string clientName, string clientDocument, string referenceNumber)
+    //{
+    //    if (files == null || !files.Any())
+    //        throw new Exception("No files selected.");
+
+    //    foreach (var file in files)
+    //    {
+    //        string filePath = SaveTransactionFile(file, transactionType, clientName, clientDocument, referenceNumber);
+
+    //        await _repoAttach.CreateAttachment(
+    //            new TransactionAttachmentModel
+    //            {
+    //                IdTransaction = idTransaction,
+    //                FileName = Path.GetFileName(filePath),
+    //                OriginalFileName = file.FileName,
+    //                FileExtension = Path.GetExtension(file.FileName),
+    //                ContentType = file.ContentType,
+    //                FilePath = filePath,
+    //                AttachmentType = "ADDITIONAL_EVIDENCE",
+    //                FileSize = file.Length,
+    //                CreatedBy = user
+    //            });
+    //    }
+    //}
+
+    public async Task AddEvidence(int idTransaction, List<IFormFile> files, string user)
+    {
+        if (files == null || !files.Any())
+            throw new Exception("No files selected.");
+        var transaction = await _repo.GetById(idTransaction);
+        if (transaction == null)
+            throw new Exception("Transaction not found.");
+        foreach (var file in files)
+        {
+            string filePath = SaveTransactionFile(file, transaction.TransactionType, transaction.SenderName, transaction.SenderDocumentNumber, transaction.ReferenceNumber);
+            await _repoAttach.CreateAttachment(
+                new TransactionAttachmentModel
+                {
+                    IdTransaction = idTransaction,
+                    FileName = Path.GetFileName(filePath),
+                    OriginalFileName = file.FileName,
+                    FileExtension = Path.GetExtension(file.FileName),
+                    ContentType = file.ContentType,
+                    FilePath = filePath,
+                    AttachmentType = "ADDITIONAL_EVIDENCE",
+                    FileSize = file.Length,
+                    CreatedBy = user
+                });
+        }
+    }
 
 }

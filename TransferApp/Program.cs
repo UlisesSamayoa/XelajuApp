@@ -31,6 +31,7 @@ builder.Services.AddScoped<TransactionsService>();
 builder.Services.AddScoped<ParametersRepository>();
 builder.Services.AddScoped<ParametersService>();
 builder.Services.AddScoped<TransactionAttachmentRepository>();
+builder.Services.AddScoped<TransactionAttachmentService>();
 builder.Services.AddScoped<ReferenceNumberRepository>();
 builder.Services.AddScoped<ReferenceNumberService>();
 builder.Services.AddScoped<ClientCompaniesRepository>();

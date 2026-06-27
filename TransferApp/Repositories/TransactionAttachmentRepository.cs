@@ -28,7 +28,7 @@ namespace TransferApp.Repositories
             {
                 list.Add(new TransactionAttachmentModel
                 {
-                    IdTransactionAttachment = Convert.ToInt64(reader["IdTransactionAttachment"]),
+                    IdTransactionAttachment = Convert.ToInt64(reader["Id"]),
                     IdTransaction = Convert.ToInt32(reader["IdTransaction"]),
                     FileName = reader["FileName"]?.ToString() ?? string.Empty,
                     OriginalFileName = reader["OriginalFileName"]?.ToString() ?? string.Empty,
@@ -43,7 +43,39 @@ namespace TransferApp.Repositories
             }
             return list;
         }
+        public async Task<TransactionAttachmentModel?> GetAttachmentById(long idAttachment)
+        {
+            using var conn = _db.CreateConnection();
+            using var cmd = new SqlCommand(@"SELECT TOP 1 * FROM TransactionAttachments WHERE Id = @Id", conn);
 
+            cmd.Parameters.AddWithValue("@Id", idAttachment);
+
+            await conn.OpenAsync();
+
+            using var reader = await cmd.ExecuteReaderAsync();
+
+            if (await reader.ReadAsync())
+            {
+                return new TransactionAttachmentModel
+                {
+                    IdTransactionAttachment = Convert.ToInt64(reader["Id"]),
+                    IdTransaction = Convert.ToInt32(reader["IdTransaction"]),
+                    FileName = reader["FileName"]?.ToString() ?? "",
+                    OriginalFileName = reader["OriginalFileName"]?.ToString() ?? "",
+                    FileExtension = reader["FileExtension"]?.ToString() ?? "",
+                    ContentType = reader["ContentType"]?.ToString() ?? "",
+                    FilePath = reader["FilePath"]?.ToString() ?? "",
+                    AttachmentType = reader["AttachmentType"]?.ToString() ?? "",
+                    FileSize = reader["FileSize"] == DBNull.Value
+                        ? null
+                        : Convert.ToInt64(reader["FileSize"]),
+                    CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
+                    CreatedBy = reader["CreatedBy"]?.ToString() ?? ""
+                };
+            }
+
+            return null;
+        }
         public async Task<long> CreateAttachment(TransactionAttachmentModel m)
         {
             using var conn = _db.CreateConnection();
