@@ -241,6 +241,37 @@ public class CompanyRepository
         await conn.CloseAsync();
         return list;
     }
+    public async Task<List<CompaniesModel>> GetByTransactionType_Service(int transactionType)
+    {
+        List<CompaniesModel> list = new();
+
+        using var conn = _db.CreateConnection();
+        using var cmd = new SqlCommand("sp_GetCompaniesByTransactionType_Service", conn);
+
+        cmd.CommandType = CommandType.StoredProcedure;
+
+        cmd.Parameters.AddWithValue(
+            "@TransactionType",
+            transactionType
+        );
+
+        await conn.OpenAsync();
+
+        using SqlDataReader dr = await cmd.ExecuteReaderAsync();
+
+        while (await dr.ReadAsync())
+        {
+            list.Add(new CompaniesModel
+            {
+                IdCompany = Convert.ToInt32(dr["IdCompany"]),
+                Name = dr["Name"].ToString(),
+                SwiftCode = dr["SwiftCode"].ToString()
+            });
+        }
+
+        await conn.CloseAsync();
+        return list;
+    }
     public async Task ChangeStatus(int idCompany, string status, string StatusCompanyComment)
     {
         using var conn = _db.CreateConnection();

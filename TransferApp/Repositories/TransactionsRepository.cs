@@ -228,6 +228,7 @@ public class TransactionsRepository
         cmd.Parameters.AddWithValue("@SenderPhone", m.SenderPhone);
         cmd.Parameters.AddWithValue("@SenderAddress", m.SenderAddress);
         cmd.Parameters.AddWithValue("@CalculationMode", m.CalculationMode);
+        cmd.Parameters.AddWithValue("@ServiceCompanyPS", m.ServiceCompanyPS);
         cmd.Parameters.AddWithValue("@UserC", m.UserC);
         cmd.Parameters.AddWithValue("@IdClient_fk", m.IdClient_fk);
         await conn.OpenAsync();

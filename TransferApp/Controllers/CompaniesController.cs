@@ -80,7 +80,12 @@ public class CompaniesController : Controller
     public async Task<IActionResult> GetByTransactionType(int transactionType)
     {
         var result = await _service.GetByTransactionType(transactionType);
-
+        return Ok(result);
+    }
+    [HttpGet]
+    public async Task<IActionResult> GetByTransactionType_Service(int transactionType)
+    {
+        var result = await _service.GetByTransactionType_Service(transactionType);
         return Ok(result);
     }
 

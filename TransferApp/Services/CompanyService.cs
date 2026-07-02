@@ -42,7 +42,10 @@ public class CompanyService
     {
         return await _repo.GetByTransactionType(transactionType);
     }
-
+    public async Task<List<CompaniesModel>> GetByTransactionType_Service(int transactionType)
+    {
+        return await _repo.GetByTransactionType_Service(transactionType);
+    }
     public async Task ChangeStatus(int idCompany, string status, string StatusCompanyComment)
     {
         if (

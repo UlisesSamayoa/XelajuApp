@@ -22,6 +22,7 @@
         public string Justify_AgentName { get; set; } = string.Empty;
         public DateTime? Justify_DateError { get; set; }
         public int CalculationMode { get; set; }
+        public string ServiceCompanyPS { get; set; }
         public int? Status { get; set; }
 
         public DateTime? DateC { get; set; }

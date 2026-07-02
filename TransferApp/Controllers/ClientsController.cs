@@ -90,7 +90,7 @@ public class ClientsController : Controller
             return BadRequest(new { message = ex.Message });
         }
     }
-    
+
     [HttpGet]
     public async Task<IActionResult>
     ExistsClient(string documentNumber)
@@ -108,4 +108,25 @@ public class ClientsController : Controller
             });
         }
     }
+
+    [HttpGet]
+    public async Task<IActionResult> ProfileImage(int id)
+    {
+        var client = await _service.GetById(id);
+        if (client == null || string.IsNullOrEmpty(client.Picture))
+            return NotFound();
+        if (!System.IO.File.Exists(client.Picture))
+            return NotFound();
+        var ext = Path.GetExtension(client.Picture).ToLower();
+        string contentType = ext switch
+        {
+            ".jpg" => "image/jpeg",
+            ".jpeg" => "image/jpeg",
+            ".png" => "image/png",
+            _ => "application/octet-stream"
+        };
+        //return PhysicalFile(client.Picture, contentType);
+        return PhysicalFile(client.Picture, contentType, Path.GetFileName(client.Picture));
+    }
+
 }

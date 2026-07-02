@@ -54,6 +54,7 @@
         public string? Notes { get; set; }
         public int CalculationMode { get; set; }
         public string CalculationModeName { get; set; }
+        public string ServiceCompanyPS { get; set; }
         public int? Status { get; set; }
         public DateTime? DateC { get; set; }
         public string? UserC { get; set; }

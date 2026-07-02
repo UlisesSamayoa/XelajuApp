@@ -224,12 +224,12 @@
                     { data: 'countryName' },
                     {
                         data: 'picture',
-                        render: f => f
-                            ? `<img src="${f}"
-                                onclick="openPreview('${f}')"
-                                style="height:50px;width:50px;object-fit:cover;
-                                    border-radius:8px;cursor:pointer;" />`
-                            : '<span class="text-muted">No photo</span>'
+                        render: (data, type, row) =>
+                            data
+                                ? `<img src="/Clients/ProfileImage/${row.idClient}"
+                                    onclick="openPreview('/Clients/ProfileImage/${row.idClient}')"
+                                    style="height:50px;width:50px;object-fit:cover;border-radius:8px;cursor:pointer;">`
+                                : '<span class="text-muted">No photo</span>'
                     },
                     {
                         data: 'idClient',

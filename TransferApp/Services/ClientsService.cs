@@ -42,40 +42,87 @@ public class ClientsService
 
     public async Task<ClientsModel> GetById(int id) => await _repo.GetById(id);
 
-    //public async Task Create(ClientsModel model, IFormFile file)
-    //{
-    //    model.Picture = SaveImage(file, model.DocumentNumber);
-    //    await _repo.Create(model);
-    //}
     public async Task<int> Create(ClientsModel model, IFormFile file)
     {
+        CreateClientProfileFolder($"{model.FirstName} {model.LastName}", model.DocumentNumber);
         if (file != null && file.Length > 0)
         {
-            var fileName = $"{model.FirstName}_{DateTime.Now:yyyyMMddHHmmss}{Path.GetExtension(file.FileName)}";
-
-            var path = Path.Combine("wwwroot/uploads/clients", fileName);
-
-            using (var stream = new FileStream(path, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-            model.Picture = "/uploads/clients/" + fileName;
+            model.Picture = SaveClientProfile(
+                file,
+                $"{model.FirstName} {model.LastName}",
+                model.DocumentNumber);
         }
         else
         {
-            model.Picture = "/uploads/clients/default.png";
+            model.Picture = null;
         }
-
         return await _repo.Create(model);
     }
 
+
+    //public async Task<int> Create(ClientsModel model, IFormFile file)
+    //{
+    //    if (file != null && file.Length > 0)
+    //    {
+    //        if (file != null && file.Length > 0)
+    //        {
+    //            model.Picture = SaveClientProfile(file, $"{model.FirstName} {model.LastName}", model.DocumentNumber);
+    //        }
+    //        else
+    //        {
+    //            model.Picture = null;
+    //        }
+    //    }
+    //    else
+    //    {
+    //        model.Picture = "/uploads/clients/default.png";
+    //    }
+
+    //    return await _repo.Create(model);
+    //}
+
+    private string SaveClientProfile(IFormFile file, string clientName, string clientDocument)
+    {
+        if (file == null)
+            return null;
+        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+        var ext = Path.GetExtension(file.FileName).ToLower();
+        if (!allowedExtensions.Contains(ext))
+            throw new Exception("Invalid file type");
+        if (file.Length > 5 * 1024 * 1024)
+            throw new Exception("File too large (max 5MB)");
+        string profileFolder = CreateClientProfileFolder(clientName, clientDocument);
+        foreach (var existingFile in Directory.GetFiles(profileFolder))
+        {
+            File.Delete(existingFile);
+        }
+        clientName = CleanPathValue(clientName);
+        string fileName = $"{clientName}{ext}";
+        string fullPath = Path.Combine(profileFolder, fileName);
+        using (var stream = new FileStream(fullPath, FileMode.Create)) { file.CopyTo(stream); }
+        return fullPath;
+    }
+
+
+    //public async Task Update(ClientsModel model, IFormFile file)
+    //{
+    //    if (file != null)
+    //        model.Picture = SaveImage(file, model.DocumentNumber);
+    //    else
+    //        model.Picture = (await _repo.GetById(model.IdClient)).Picture;
+
+    //    await _repo.Update(model);
+    //}
     public async Task Update(ClientsModel model, IFormFile file)
     {
-        if (file != null)
-            model.Picture = SaveImage(file, model.DocumentNumber);
+        if (file != null && file.Length > 0)
+        {
+            model.Picture = SaveClientProfile(file, $"{model.FirstName} {model.LastName}", model.DocumentNumber);
+        }
         else
+        {
             model.Picture = (await _repo.GetById(model.IdClient)).Picture;
-
+        }
         await _repo.Update(model);
     }
 
@@ -93,4 +140,27 @@ public class ClientsService
     {
         return await _repo.ExistsClient(documentNumber);
     }
+
+    private string CleanPathValue(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+        foreach (char c in Path.GetInvalidFileNameChars())
+        {
+            value = value.Replace(c.ToString(), "");
+        }
+        return value.Trim();
+    }
+    private string CreateClientProfileFolder(string clientName, string clientDocument)
+    {
+        string basePath = @"C:\TransactionFiles";
+        clientName = CleanPathValue(clientName);
+        clientDocument = CleanPathValue(clientDocument);
+        string clientFolder = $"{clientName}_{clientDocument}";
+        string profileFolder = Path.Combine(basePath, clientFolder, "Profile");
+        if (!Directory.Exists(profileFolder)) Directory.CreateDirectory(profileFolder);
+        return profileFolder;
+    }
+
+
 }

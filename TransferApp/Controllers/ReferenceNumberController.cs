@@ -27,11 +27,11 @@ namespace TransferApp.Controllers
         //    );
         //}
         [HttpGet]
-        public async Task<IActionResult> GetReferencePreview_PS(int senderCompany, int transactionType, int ClientID)
+        public async Task<IActionResult> GetReferencePreview_PS(int senderCompanyService, int senderCompany, int transactionType, int ClientID)
         {
             try
             {
-                var preview = await _service.GetReferencePreview_PS(senderCompany, transactionType, ClientID);
+                var preview = await _service.GetReferencePreview_PS(senderCompanyService, senderCompany, transactionType, ClientID);
                 return Json(preview);
             }
             catch (Exception ex)

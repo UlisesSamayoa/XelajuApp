@@ -1262,67 +1262,48 @@
             <h5>New Paid Service</h5>
 
             <form id="formPService">
-
-                <!-- 🔵 HEADER -->
-                @* <div class="row">
-                    <div class="col-3">
-                        <label class="form-label">Reference Number *</label>
-                        <input id="PService_ReferenceNumber" class="form-control mb-2" placeholder="Reference Number" />
-                    </div>
-                    <div class="col-2">
-                        <label class="form-label">Transaction Type *</label>
-                        <input id="PService_TransactionTypeName" type="text" class="form-control mb-2" readonly />
-                        <input type="hidden" id="PService_TransactionType"/>
-                    </div>
-                    <div class="col-2">
-                        <label class="form-label">Company *</label>
-                        <select id="PService_Company" class="form-control mb-2"></select>
-                    </div>
-                    <div class="col-2">
-                        <label class="form-label">Amount *</label>
-                        <input id="PService_Amount" type="number" class="form-control mb-2" placeholder="Amount" />
-                    </div>
-                    <div class="col-1">
-                        <label class="form-label">Commission</label>
-                        <input id="PService_Commission" type="number" class="form-control mb-2" readonly placeholder="0.0" />
-                    </div>
-                    <div class="col-2">
-                        <label class="form-label">Total Amount</label>
-                        <input id="PService_TotalAmount" type="number" class="form-control mb-2" readonly placeholder="0.0" />
-                    </div>
-
-                </div> *@
                 <div class="row">
-                    <div class="col-3">
-                        <label class="form-label">Reference Number *</label>
-                        <input id="PService_ReferenceNumber" class="form-control mb-2" placeholder="Reference Number" readonly />
-                        <input type="hidden" id="PService_TransactionType" />
+                    <div class="col-10">
+                        <div class="row">
+                            <div class="col-4">
+                                <label class="form-label">Reference Number *</label>
+                                <input id="PService_ReferenceNumber" class="form-control mb-2" placeholder="Reference Number" readonly />
+                                <input type="hidden" id="PService_TransactionType" />
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label">Company *</label>
+                                <select id="PService_Company" class="form-control mb-2" ></select>
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label"> Service Company *</label>
+                                <select id="ServiceCompanyPS" class="form-control mb-2" onchange="PService_companyChanged()"></select>
+                            </div>
+
+                            <div class="col-4">
+                                <label class="form-label">Amount * ($<label id="PService_NetAmountL"></label>)</label>
+                                <input id="PService_Amount" type="number" class="form-control mb-2" placeholder="Amount" />
+                            </div>
+                            <div class="col-2">
+                                <label class="form-label"><label id="PService_CommissionL"></label>%</label>
+                                <input id="PService_Commission" type="number" data-auto="true" class="form-control mb-2" placeholder="0.0" />
+                            </div>
+                            <div class="col-2">
+                                <label class="form-label">Fixed</label>
+                                <input id="PService_FixedCommission" type="number" value="2" class="form-control mb-2" placeholder="0.0" />
+                            </div>
+                            <div class="col-2">
+                                <label class="form-label">Total Fee</label>
+                                <input id="PService_TotalCommission" type="number" class="form-control mb-2" readonly placeholder="0.0" />
+                            </div>
+                            <div class="col-2">
+                                <label class="form-label">Total Amount</label>
+                                <input id="PService_TotalAmount" type="number" class="form-control mb-2" readonly placeholder="0.0" />
+                            </div>
+                        </div>
                     </div>
+
                     <div class="col-2">
-                        <label class="form-label">Company *</label>
-                        <select id="PService_Company" class="form-control mb-2" onchange="PService_companyChanged()" ></select>
-                    </div>
-                    <div class="col-2">
-                        <label class="form-label">Amount * ($<label id="PService_NetAmountL"></label>)</label>
-                        <input id="PService_Amount" type="number" class="form-control mb-2" placeholder="Amount" />
-                    </div>
-                    <div class="col-1">
-                        <label class="form-label"><label id="PService_CommissionL"></label>%</label>
-                        <input id="PService_Commission" type="number" data-auto="true" class="form-control mb-2" placeholder="0.0" />
-                    </div>
-                    <div class="col-1">
-                        <label class="form-label">Fixed</label>
-                        <input id="PService_FixedCommission" type="number" value="2" class="form-control mb-2" placeholder="0.0" />
-                    </div>
-                    <div class="col-1">
-                        <label class="form-label">Total Fee</label>
-                        <input id="PService_TotalCommission" type="number" class="form-control mb-2" readonly placeholder="0.0" />
-                    </div>
-                    <div class="col-2">
-                        <label class="form-label">Total Amount</label>
-                        <input id="PService_TotalAmount" type="number" class="form-control mb-2" readonly placeholder="0.0" />
-                    </div>
-                    <div class="col-3">
+                        <br /><br />
                         <label class="form-check-label">
                             Calculation Mode
                         </label>
@@ -3602,44 +3583,16 @@
             }
         //CALCULO DE REFERENCE PARA MONEY ORDER
         //CALCULO DE REFERENCE PARA PAID SERVICE
-                // function PService_companyChanged() {
-                //     const companyId = $('#PService_Company').val();
-                //     let ClientID = selectedClients["PService_"]
-                //     if (!companyId) {
-                //         $('#PService_ReferenceNumber').val('');
-                //         return;
-                //     }
-                //     if (ClientID == 0 || ClientID == null) {
-                //         Swal.fire(
-                //             'Error',
-                //             'Client is required',
-                //             'error'
-                //         );
-                //         return;
-                //     }
-                //     $.get(
-                //         '/ReferenceNumber/GetReferencePreview_PS',
-                //         {
-                //           senderCompany: companyId,
-                //           transactionType: 4,
-                //           ClientID : ClientID
-                //         },
-                //         function (preview) {
-
-                //           $('#PService_ReferenceNumber').val(preview);
-                //         }
-                //     );
-                // }
-                        function PService_companyChanged() {
-
+               
+            function PService_companyChanged() {
+            //Se cambia el ServiceCode por SwifCode por que se calculara por medio del la compañia financiera + cuenta
+            const companyIdService = $('#ServiceCompanyPS').val();
             const companyId = $('#PService_Company').val();
             let ClientID = selectedClients["PService_"];
-
             if (!companyId) {
                 $('#PService_ReferenceNumber').val('');
                 return;
             }
-
             if (ClientID == 0 || ClientID == null) {
                 Swal.fire(
                     'Error',
@@ -3648,11 +3601,11 @@
                 );
                 return;
             }
-
             $.ajax({
                 url: '/ReferenceNumber/GetReferencePreview_PS',
                 method: 'GET',
                 data: {
+                    senderCompanyService: companyIdService,
                     senderCompany: companyId,
                     transactionType: 4,
                     ClientID: ClientID
@@ -4424,6 +4377,9 @@
                       $('#' + Prefijo + '_CommissionL').text(t.commission);
                       if(Prefijo == "MOrder"){
                          loadCompaniesByTransactionType(NumeroT,Prefijo+"_Company");
+                     }else if(Prefijo == "PService"){
+                         loadCompaniesByTransactionType(NumeroT,Prefijo+"_Company");
+                         loadCompaniesByTransactionType_Service(NumeroT,"ServiceCompanyPS");
                      }
                     }
                 });
@@ -4996,7 +4952,8 @@
         });
 
         function loadPaidServiceCompanies(clientId){
-            let select = $('#PService_Company');
+            //let select = $('#PService_Company');
+            let select = $('#ServiceCompanyPS');
             select.empty();
             select.prop('disabled', true);
             $.get(
@@ -5030,7 +4987,7 @@
                 }
             );
         }
-        $('#PService_Company').change(function(){
+        $('#ServiceCompanyPS').change(function(){
             let option =$(this).find(':selected');
             let accountNumber = option.data('account');
             let serviceCode = option.data('servicecode');
@@ -5497,6 +5454,42 @@
             );
         }
 
+        function loadCompaniesByTransactionType_Service(transactionType, selectId, selectedValue = null) {
+                    $('#SimpleTx_Company').val('');
+            $.get(
+                '/Companies/GetByTransactionType_Service?transactionType=' + transactionType,
+                function (data) {
+                    let select;
+                    let select2;
+                    if (selectId == "TransactionType") {
+                        select = $('#SenderCompany');
+                        select2 = $('#ReceiverCompany');
+                            select2.empty();
+                            data.forEach(c => {
+                                select2.append(
+                                    `<option value="${c.idCompany}">
+                                        ${c.name}
+                                    </option>`
+                                );
+                            });
+                    } else {
+                        select = $('#' + selectId);
+                    }
+                    select.empty();
+                       data.forEach(c => {
+                        select.append(
+                            `<option
+                                value="${c.idCompany}"
+                                data-swift="${c.swiftCode || ''}">
+                                ${c.name}
+                            </option>`
+                        );
+                    });
+                }
+
+            );
+        }
+
                 function openChangeStatusModal(id, currentStatus) {
 
             $('#ChangeStatus_IdTransaction').val(id);
@@ -5664,7 +5657,7 @@
 
         });
         function loadCompaniesForAccount() {
-            $.get('/Companies/GetByTransactionType?transactionType=4',function(data) {
+            $.get('/Companies/GetByTransactionType_Service?transactionType=4',function(data) {
                     let select = $('#CC_Company');
                     select.empty();
                     select.append('<option value="">Select Company</option>');
