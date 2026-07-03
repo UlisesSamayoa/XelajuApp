@@ -48,6 +48,7 @@ public class TransactionsTypesService
                 range.IdTypeTransaction = idTypeTransaction;
                 range.UserC = m.UserC;
                 range.NumberT = m.NumberT;
+                //range.CommissionType = m.CommissionType;
                 await _repo.CreateCommissionRange(range);
             }
         }

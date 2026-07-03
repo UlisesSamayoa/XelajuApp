@@ -201,7 +201,7 @@
                 MinAmount:parseFloat($(this).find('.commission-min').val()) || 0,
                 MaxAmount:parseFloat($(this).find('.commission-max').val()) || 0,
                 CommissionPercent:parseFloat($(this).find('.commission-percent').val()) || 0,
-                    CommissionType:parseFloat($(this).find('.commission-type').val()) || 1
+                CommissionType:$(this).find('.commission-type').val() || 1
             });
         });
         let data = {

@@ -112,6 +112,7 @@ public class TransactionsTypesRepository
                     MinAmount = Convert.ToDecimal(rd["MinAmount"]),
                     MaxAmount = Convert.ToDecimal(rd["MaxAmount"]),
                     CommissionPercent = Convert.ToDecimal(rd["CommissionPercent"]),
+                    CommissionType = Convert.ToInt32(rd["CommissionType"]),
                     Status = Convert.ToInt32(rd["Status"])
                 });
         }
@@ -158,6 +159,7 @@ public class TransactionsTypesRepository
         cmd.Parameters.AddWithValue("@MinAmount", m.MinAmount);
         cmd.Parameters.AddWithValue("@MaxAmount", m.MaxAmount);
         cmd.Parameters.AddWithValue("@CommissionPercent", m.CommissionPercent);
+        cmd.Parameters.AddWithValue("@CommissionType", m.CommissionType);
         cmd.Parameters.AddWithValue("@UserC", m.UserC);
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();

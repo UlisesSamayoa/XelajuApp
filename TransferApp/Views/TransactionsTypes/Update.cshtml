@@ -86,7 +86,8 @@
                     addCommissionRange(
                         r.minAmount,
                         r.maxAmount,
-                        r.commissionPercent
+                        r.commissionPercent,
+                        r.commissionType
                     );
                 });
                 }
@@ -101,7 +102,8 @@
             commissionRanges.push({
                 minAmount:parseFloat($(this).find('.range-min').val()) || 0,
                 maxAmount:parseFloat($(this).find('.range-max').val()) || 0,
-                commissionPercent:parseFloat($(this).find('.range-percent').val()) || 0
+                commissionPercent:parseFloat($(this).find('.range-percent').val()) || 0,
+                CommissionType:$(this).find('.range-type').val() || 1
             });
         });
         let data = {
@@ -144,13 +146,14 @@
         function addCommissionRange(
         minAmount = '',
         maxAmount = '',
-        commissionPercent = ''
+        commissionPercent = '',
+        commissionType = ''
     ) {
 
         let html = `
             <div class="row g-2 mb-2 commission-row">
 
-                <div class="col-4">
+                <div class="col-2">
                     <input
                         type="number"
                         class="form-control range-min"
@@ -158,7 +161,7 @@
                         value="${minAmount}">
                 </div>
 
-                <div class="col-4">
+                <div class="col-2">
                     <input
                         type="number"
                         class="form-control range-max"
@@ -166,7 +169,7 @@
                         value="${maxAmount}">
                 </div>
 
-                <div class="col-3">
+                <div class="col-2">
                     <input
                         type="number"
                         step="0.01"
@@ -174,8 +177,14 @@
                         placeholder="%"
                         value="${commissionPercent}">
                 </div>
+                <div class="col-4">
+                <select class="form-control range-type">
+                    <option value="0" ${commissionType == 0 ? 'selected' : ''}>Federal</option>
+                    <option value="1" ${commissionType == 1 ? 'selected' : ''}>Fee</option>
+                </select>
+                </div>
 
-                <div class="col-1">
+                <div class="col-2 text-center">
                     <button
                         type="button"
                         class="btn btn-danger btnRemoveRange">
