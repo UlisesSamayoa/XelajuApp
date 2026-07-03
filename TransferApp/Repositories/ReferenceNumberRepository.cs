@@ -35,11 +35,12 @@ namespace TransferApp.Repositories
             var result = await cmd.ExecuteScalarAsync();
             return result?.ToString() ?? "";
         }
-        public async Task<string> GetNextReferenceNumber_PS(int senderCompany, int transactionType, int ClientID)
+        public async Task<string> GetNextReferenceNumber_PS(string senderCompanyService, int senderCompany, int transactionType, int ClientID)
         {
             using var conn = _db.CreateConnection();
-            using var cmd = new SqlCommand("sp_GetNextReferenceNumber", conn);
+            using var cmd = new SqlCommand("sp_GetNextReferenceNumber_PS", conn);
             cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@SenderCompanyService", senderCompanyService);
             cmd.Parameters.AddWithValue("@SenderCompany", senderCompany);
             cmd.Parameters.AddWithValue("@TransactionType", transactionType);
             cmd.Parameters.AddWithValue("@IdClient", ClientID);
@@ -61,8 +62,9 @@ namespace TransferApp.Repositories
         public async Task<string> GetReferencePreview_PS(int senderCompanyService, int senderCompany, int transactionType, int ClientID)
         {
             using var conn = _db.CreateConnection();
-            using var cmd = new SqlCommand("sp_GetReferencePreview", conn);
+            using var cmd = new SqlCommand("sp_GetReferencePreview_PS", conn);
             cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@SenderCompanyService", senderCompanyService);
             cmd.Parameters.AddWithValue("@SenderCompany", senderCompany);
             cmd.Parameters.AddWithValue("@TransactionType", transactionType);
             cmd.Parameters.AddWithValue("@IdClient", ClientID);

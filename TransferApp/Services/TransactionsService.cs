@@ -192,7 +192,7 @@ public class TransactionsService
         // ====================================
         // GENERATE REFERENCE
         // ====================================
-        m.ReferenceNumber = await _repoRefe.GetNextReferenceNumber_PS(m.Company, m.TransactionType, m.IdClient_fk);
+        m.ReferenceNumber = await _repoRefe.GetNextReferenceNumber_PS(m.ServiceCompanyPS, m.Company, m.TransactionType, m.IdClient_fk);
         if (files != null && files.Any())
         {
             foreach (var file in files)

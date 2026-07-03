@@ -1265,16 +1265,16 @@
                 <div class="row">
                     <div class="col-10">
                         <div class="row">
-                            <div class="col-4">
+                            <div class="col-6">
                                 <label class="form-label">Reference Number *</label>
                                 <input id="PService_ReferenceNumber" class="form-control mb-2" placeholder="Reference Number" readonly />
                                 <input type="hidden" id="PService_TransactionType" />
                             </div>
-                            <div class="col-4">
+                            <div class="col-3">
                                 <label class="form-label">Company *</label>
-                                <select id="PService_Company" class="form-control mb-2" ></select>
+                                <select id="PService_Company" class="form-control mb-2" onchange="PService_companyChanged()"></select>
                             </div>
-                            <div class="col-4">
+                            <div class="col-3">
                                 <label class="form-label"> Service Company *</label>
                                 <select id="ServiceCompanyPS" class="form-control mb-2" onchange="PService_companyChanged()"></select>
                             </div>
@@ -3584,23 +3584,64 @@
         //CALCULO DE REFERENCE PARA MONEY ORDER
         //CALCULO DE REFERENCE PARA PAID SERVICE
                
-            function PService_companyChanged() {
-            //Se cambia el ServiceCode por SwifCode por que se calculara por medio del la compañia financiera + cuenta
-            const companyIdService = $('#ServiceCompanyPS').val();
+        // function PService_companyChanged() {
+        //     //Se cambia el ServiceCode por SwifCode por que se calculara por medio del la compañia financiera + cuenta
+        //     const companyIdService = $('#ServiceCompanyPS').val();
+        //     const companyId = $('#PService_Company').val();
+        //     let ClientID = selectedClients["PService_"];
+        //     if (!companyId) {
+        //         $('#PService_ReferenceNumber').val('');
+        //         return;
+        //     }
+        //     if (ClientID == 0 || ClientID == null) {
+        //         Swal.fire(
+        //             'Error',
+        //             'Client is required',
+        //             'error'
+        //         );
+        //         return;
+        //     }
+        //     $.ajax({
+        //         url: '/ReferenceNumber/GetReferencePreview_PS',
+        //         method: 'GET',
+        //         data: {
+        //             senderCompanyService: companyIdService,
+        //             senderCompany: companyId,
+        //             transactionType: 4,
+        //             ClientID: ClientID
+        //         },
+        //         success: function (preview) {
+
+        //             $('#PService_ReferenceNumber').val(preview);
+
+        //         },
+        //         error: function (xhr) {
+
+        //             $('#PService_ReferenceNumber').val('');
+
+        //             Swal.fire(
+        //                 'Account not found',
+        //                 xhr.responseJSON?.message ||
+        //                 'The selected client does not have an account associated with this company.',
+        //                 'warning'
+        //             );
+
+        //         }
+        //     });
+        // }
+        function PService_companyChanged() {
             const companyId = $('#PService_Company').val();
-            let ClientID = selectedClients["PService_"];
-            if (!companyId) {
+            const companyIdService = $('#ServiceCompanyPS').val();
+            const clientId = selectedClients["PService_"];
+            if (!companyId || !companyIdService) {
                 $('#PService_ReferenceNumber').val('');
                 return;
             }
-            if (ClientID == 0 || ClientID == null) {
-                Swal.fire(
-                    'Error',
-                    'Client is required',
-                    'error'
-                );
+            if (!clientId) {
+                Swal.fire('Error','Client is required','error');
                 return;
             }
+
             $.ajax({
                 url: '/ReferenceNumber/GetReferencePreview_PS',
                 method: 'GET',
@@ -3608,24 +3649,19 @@
                     senderCompanyService: companyIdService,
                     senderCompany: companyId,
                     transactionType: 4,
-                    ClientID: ClientID
+                    ClientID: clientId
                 },
                 success: function (preview) {
-
                     $('#PService_ReferenceNumber').val(preview);
-
                 },
                 error: function (xhr) {
-
                     $('#PService_ReferenceNumber').val('');
-
                     Swal.fire(
                         'Account not found',
                         xhr.responseJSON?.message ||
                         'The selected client does not have an account associated with this company.',
                         'warning'
                     );
-
                 }
             });
         }
@@ -5002,6 +5038,7 @@
             let reference = $('#' + prefix + 'ReferenceNumber').val().trim();
             let type = $('#' + prefix + 'TransactionType').val();
             let company = $('#' + prefix + 'Company').val();
+            let serviceCompanyPS = $('#ServiceCompanyPS').val();
             //let amount = $('#' + prefix + 'Amount').val();
             let senderName = $('#' + prefix + 'SenderName').val().trim();
             let senderDocType = $('#' + prefix + 'SenderDocumentType').val();
@@ -5074,6 +5111,7 @@
             formData.append("Justify_AgentName",justifyAgent);
             formData.append("Justify_DateError",justifuDateError);
             formData.append("CalculationMode",deductFees);
+            formData.append("ServiceCompanyPS",serviceCompanyPS);
 
              $('.PService_justify-file').each(function () {
                 if (this.files.length > 0) {
