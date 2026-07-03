@@ -138,11 +138,11 @@
                                 <input id="Commission" type="number" class="form-control mb-2" placeholder="0.00"/>
                             </div>
                             <div class="col-1">
-                                <label class="form-label">Fixed</label>
+                                <label class="form-label">Fee</label>
                                 <input id="FixedCommission" type="number" value="2" class="form-control mb-2" placeholder="0.00" />
                             </div>
                             <div class="col-2">
-                                <label class="form-label">Total Fee</label>
+                                <label class="form-label">% / Fee</label>
                                 <input id="TotalCommission" type="text" class="form-control mb-2" placeholder="0.00" readonly />
                             </div>
                             <div class="col-2">
@@ -967,13 +967,13 @@
                             </div>
                             <div class="col-1">
                                 <label class="form-label">
-                                    Fixed
+                                    Fee
                                 </label>
                                     <input id="SimpleTx_Commission_Fix" type="number" class="form-control simpletx-fixed" value="2" />
                             </div>
                            <div class="col-1">
                                 <label class="form-label">
-                                    Total Fee
+                                        % / Fee
                                 </label>
                                     <input id="SimpleTx_TotalCommission" type="number" class="form-control simpletx-totalfee" placeholder="0.00" readonly />
                             </div>
@@ -998,7 +998,7 @@
                         <div class="row mt-3">
                            <div class="col-2"></div>
                             <div class="col-1">
-                                <div class="input-group">
+                                @* <div class="input-group">
                                     <label class="form-check-label">
                                         Calculation Mode
                                     </label>
@@ -1006,7 +1006,8 @@
                                         <input class="form-check-input" type="checkbox" id="SimpleTx_DeductFees" />
                                     </div>
                                     <input id="SimpleTx_NetAmount" readonly type="hidden" />
-                                </div>
+                                </div> *@
+                                <input id="SimpleTx_NetAmount" readonly type="hidden" />
                             </div>
                             <div class="col-1 text-end">
                                 <br />
@@ -1018,7 +1019,8 @@
                             </div>
 
                             <div class="col-2">
-                                <label>Total Fees</label>
+                                @* <label>Total Fees</label> *@
+                                <label>% / Fees</label>
                                 <input id="SimpleTx_SumFees" class="form-control" readonly placeholder="$0.00" />
                             </div>
 
@@ -1122,11 +1124,12 @@
                         <input id="MOrder_Commission" type="number" data-auto="true" class="form-control mb-2" placeholder="0.0" />
                     </div>
                     <div class="col-1">
-                        <label class="form-label">Fixed</label>
+                        <label class="form-label">Fee</label>
                         <input id="MOrder_FixedCommission" type="number" value="0" class="form-control mb-2" placeholder="0.0" />
                     </div>
                     <div class="col-1">
-                        <label class="form-label">Total Fee</label>
+                        @* <label class="form-label">Total Fee</label> *@
+                        <label class="form-label">% / Fee</label>
                         <input id="MOrder_TotalCommission" type="number" class="form-control mb-2" readonly placeholder="0.0" />
                     </div>
                     <div class="col-2">
@@ -1288,11 +1291,12 @@
                                 <input id="PService_Commission" type="number" data-auto="true" class="form-control mb-2" placeholder="0.0" />
                             </div>
                             <div class="col-2">
-                                <label class="form-label">Fixed</label>
+                                <label class="form-label">Fee</label>
                                 <input id="PService_FixedCommission" type="number" value="2" class="form-control mb-2" placeholder="0.0" />
                             </div>
                             <div class="col-2">
-                                <label class="form-label">Total Fee</label>
+                                @* <label class="form-label">Total Fee</label> *@
+                                <label class="form-label">% / Fee</label>
                                 <input id="PService_TotalCommission" type="number" class="form-control mb-2" readonly placeholder="0.0" />
                             </div>
                             <div class="col-2">
@@ -4279,20 +4283,28 @@
                 percentFee =parseFloat(commissionInput.val()) || 0;
             }
             let totalFee =percentFee +fixedFee;
-            let deductFees = $('#SimpleTx_DeductFees').is(':checked');
-            let totalAmount = 0;
-            let netAmount = amount;
-            if (!deductFees) {
-                totalAmount =amount +totalFee;
-            }
-            else {
-                totalAmount =amount;
-                netAmount =amount -totalFee;
-                if (netAmount < 0) {netAmount = 0;}
-            }
+            // let deductFees = $('#SimpleTx_DeductFees').is(':checked');
+            // let totalAmount = 0;
+            // let netAmount = amount;
+            // if (!deductFees) {
+            //     totalAmount =amount +totalFee;
+            // }
+            // else {
+            //     totalAmount =amount;
+            //     netAmount =amount -totalFee;
+            //     if (netAmount < 0) {netAmount = 0;}
+            // }
+            let totalAmount = amount;
+            let netAmount = amount - totalFee;
+            if (netAmount < 0)
+            netAmount = 0;
+
             row.data('.simpletx-net-amount',netAmount);
             row.find('.simpletx-totalfee').val(totalFee.toFixed(2));
-            row.find('.simpletx-total').val(totalAmount.toFixed(2));
+            //SE DESACTIVA EL PRIMERO PARA DEJAR EL NET AMOUNT PARA QUE SALGA EL RESTADO
+            //row.find('.simpletx-total').val(totalAmount.toFixed(2));
+            row.find('.simpletx-total').val(netAmount.toFixed(2));
+            //SE DESACTIVA EL PRIMERO PARA DEJAR EL NET AMOUNT PARA QUE SALGA EL RESTADO
             row.find('.simpletx-amount').attr('title','Net Amount: ' +netAmount.toFixed(2));
         }
 
@@ -4310,88 +4322,27 @@
             });
             $('#SimpleTx_SumAmount').val(totalAmount.toFixed(2));
             $('#SimpleTx_SumFees').val(totalFees.toFixed(2));
-            $('#SimpleTx_GrandTotal').val(grandTotal.toFixed(2));
+            //SE DESACTIVA EL PRIMERO PARA DEJAR EL NET AMOUNT PARA QUE SALGA EL RESTADO
+            //$('#SimpleTx_GrandTotal').val(grandTotal.toFixed(2));
+            $('#SimpleTx_GrandTotal').val(netAmount.toFixed(2));
+            //SE DESACTIVA EL PRIMERO PARA DEJAR EL NET AMOUNT PARA QUE SALGA EL RESTADO
             $('#SimpleTx_NetAmountL').text(netAmount.toFixed(2));
         }
-        $('#SimpleTx_DeductFees').change(function () {
-                $('.simpletx-row').each(
-                    function () {
-                        calculateCheckCommission($(this));
-                    }
-                );
-                calculateChecksTotals();
-        });
+        // $('#SimpleTx_DeductFees').change(function () {
+        //         $('.simpletx-row').each(
+        //             function () {
+        //                 calculateCheckCommission($(this));
+        //             }
+        //         );
+        //         calculateChecksTotals();
+        // });
         function getCommissionByAmount( amount,ranges) {
             if (!ranges ||ranges.length === 0)
                 return null;
             let range =ranges.find(r =>amount >=parseFloat(r.minAmount) && amount <=parseFloat(r.maxAmount));
             return range || null;
         }
-
-        // $(document).on('keyup change input','.simpletx-amount, .simpletx-commission, .simpletx-fixed', function () {
-        //         let row = $(this).closest('.simpletx-row');
-        //         if ($(this).hasClass('simpletx-commission')) {
-        //             row.find('.simpletx-commission').data('auto', false);
-        //         }
-        //         calculateCheckCommission(row);
-        //         calculateChecksTotals();
-        //     }
-        // );
-        // function calculateCheckCommission(row) {
-        //     let commissionInput =row.find('.simpletx-commission');
-        //     let commissionPercent =parseFloat($('#SimpleTx_TransactionType').attr('data-commission')) || 0;
-        //     let amount =parseFloat(row.find('.simpletx-amount').val()) || 0;
-        //     let fixedFee =parseFloat(row.find('.simpletx-fixed').val()) || 0;
-        //     let percentFee = 0;
-        //     if (commissionInput.data('auto') !== false) {
-        //         percentFee =amount * (commissionPercent / 100);
-        //         commissionInput.val(percentFee.toFixed(2));
-        //     }
-        //     else {
-        //         percentFee =parseFloat(commissionInput.val()) || 0;
-        //     }
-        //     let totalFee = percentFee + fixedFee;
-        //     let deductFees =$('#SimpleTx_DeductFees').is(':checked');
-        //     let totalAmount = 0;
-        //     let netAmount = amount;
-        //     if (!deductFees) {
-        //         totalAmount = amount + totalFee;
-        //     }
-        //     else {
-        //         totalAmount = amount;
-        //         netAmount = amount - totalFee;
-        //         if (netAmount < 0) {
-        //             netAmount = 0;
-        //         }
-        //     }
-        //     row.data('.simpletx-net-amount', netAmount);
-        //     row.find('.simpletx-totalfee').val(totalFee.toFixed(2));
-        //     row.find('.simpletx-total').val(totalAmount.toFixed(2));
-        //     row.find('.simpletx-amount').attr('title','New Amount: ' + netAmount.toFixed(2));
-        //     }
-        //     function calculateChecksTotals() {
-        //         let totalAmount = 0;
-        //         let totalFees = 0;
-        //         let grandTotal = 0;
-        //         let netAmount = 0;
-        //         $('.simpletx-row').each(function () {
-        //             let row = $(this);
-        //             totalAmount +=parseFloat(row.find('.simpletx-amount').val()) || 0;
-        //             totalFees +=parseFloat(row.find('.simpletx-totalfee').val()) || 0;
-        //             grandTotal +=parseFloat(row.find('.simpletx-total').val()) || 0;
-        //             netAmount +=parseFloat(row.data('.simpletx-net-amount')) || 0;
-        //         });
-        //         $('#SimpleTx_SumAmount').val(totalAmount.toFixed(2));
-        //         $('#SimpleTx_SumFees').val(totalFees.toFixed(2));
-        //         $('#SimpleTx_GrandTotal').val(grandTotal.toFixed(2));
-        //         $('#SimpleTx_NetAmountL').text(netAmount.toFixed(2));
-        //     }
-        //     $('#SimpleTx_DeductFees').change(function () {
-        //         $('.simpletx-row').each(function () {
-        //             calculateCheckCommission($(this));
-        //         });
-        //         calculateChecksTotals();
-        //     });
+ 
         function ObtenerTipoTransaccion(NumeroT,Prefijo) {
 
             $.get('/TransactionsTypes/GetByNumber?id='+NumeroT, function (data) {
