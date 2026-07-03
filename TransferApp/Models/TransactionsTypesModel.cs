@@ -8,6 +8,7 @@
         public string Description { get; set; }
         public int NumberT { get; set; }
         public int Status { get; set; }
+        public int CommissionType { get; set; }
         public DateTime DateC { get; set; }
         public string UserC { get; set; }
         public DateTime DateU { get; set; }

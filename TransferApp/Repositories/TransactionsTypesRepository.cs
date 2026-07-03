@@ -59,7 +59,7 @@ public class TransactionsTypesRepository
                 Commission = (decimal)rd["Commission"],
                 Description = rd["Description"].ToString(),
                 NumberT = (int)rd["NumberT"],
-                Status = (int)rd["Status"],
+                Status = (int)rd["Status"]
             };
         }
         await conn.CloseAsync();

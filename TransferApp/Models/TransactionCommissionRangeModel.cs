@@ -7,6 +7,7 @@
         public decimal MinAmount { get; set; }
         public decimal MaxAmount { get; set; }
         public decimal CommissionPercent { get; set; }
+        public int CommissionType { get; set; }
         public int Status { get; set; }
         public int NumberT { get; set; }
         public DateTime? DateC { get; set; }
