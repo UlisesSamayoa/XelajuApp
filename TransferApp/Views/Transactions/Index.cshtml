@@ -1670,6 +1670,16 @@
             const localDate = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0];
             $('.issue-date').attr('max', localDate);
             applyCheckDateValidation();
+
+            //fechas para los Justify date
+            const today = new Date();
+            const todayString =today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+            $('#Justify_DateError').val(todayString);
+            $('#SimpleTx_Justify_DateError').val(todayString);
+            $('#MOrder_Justify_DateError').val(todayString);
+            $('#PService_Justify_DateError').val(todayString);
+
+
         });
         // function applyCheckDateValidation() {
         //     const today = new Date();
