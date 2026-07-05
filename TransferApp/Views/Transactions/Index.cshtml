@@ -139,7 +139,7 @@
                             </div>
                             <div class="col-1">
                                 <label class="form-label">Fee</label>
-                                <input id="FixedCommission" type="number" value="2" class="form-control mb-2" placeholder="0.00" />
+                                <input id="FixedCommission" type="number" value="0" class="form-control mb-2" placeholder="0.00" />
                             </div>
                             <div class="col-2">
                                 <label class="form-label">% / Fee</label>
@@ -875,59 +875,6 @@
                 <hr />
                 <div class="row">
                     <div class="" id="DivBaseCheck">
-                       @*  <div class="row">
-                            <div class="col-11">
-                                <div class="row">
-                                    <div class="col-3">
-                                        <label class="form-label">Reference Number *</label>
-                                        <input id="SimpleTx_ReferenceNumber" class="form-control mb-2" placeholder="Reference Number" />
-                                    </div>
-                                    <div class="col-3">
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <label class="form-label">Select Company</label>
-                                            </div>
-                                            <div class="col-12">
-                                                <button class="btn btn-primary" onclick="loadModalSearchCompany(1)">Search <i class="bi bi-search"></i></button>&nbsp;&nbsp;
-                                                <button class="btn btn-success" onclick="loadModalNewCompany(1)">New <i class="bi bi-plus-lg"></i></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <label class="form-label">Company *</label>
-                                        
-                                        <input id="SimpleTx_CompanyText" class="form-control mb-2" readonly/>
-                                        <input type="hidden" id="SimpleTx_Company" />
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="form-label">Amount *</label>
-                                        <input id="SimpleTx_Amount" type="number" class="form-control mb-2" placeholder="Amount" />
-                                    </div>
-                                    <div class="col-3">
-                                        <label class="form-label">Check commission</label>
-                                        <input id="SimpleTx_Commission" type="number" class="form-control mb-2" placeholder="0.0" />
-                                    </div>
-                                    <div class="col-3">
-                                        <label class="form-label">Fixed commission</label>
-                                        <input id="SimpleTx_Commission_Fix" type="number" class="form-control mb-2" placeholder="0.0" value="2" />
-                                    </div>
-                                    <div class="col-3">
-                                        <label class="form-label">Total commission</label>
-                                        <input id="SimpleTx_Commission_Fix" type="number" class="form-control mb-2" placeholder="0.0" />
-                                    </div>
-                                    <div class="col-3">
-                                        <label class="form-label">Total Amount</label>
-                                        <input id="SimpleTx_TotalAmount" type="number" class="form-control mb-2" placeholder="0.0" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-1">
-                                <div class="col-1">
-                                    <label class="form-label"><br /><br /></label>
-                                    <button class="btn btn-success"><i class="bi bi-plus-lg" onclick="SimpleTx_addCheckFile()"></i></button>
-                                </div>
-                            </div>
-                        </div> *@
                         <div id="SimpleTxContainer">
 
                         <div class="row align-items-end g-2 mb-2 simpletx-row">
@@ -969,7 +916,7 @@
                                 <label class="form-label">
                                     Fee
                                 </label>
-                                    <input id="SimpleTx_Commission_Fix" type="number" class="form-control simpletx-fixed" value="2" />
+                                    <input id="SimpleTx_Commission_Fix" type="number" class="form-control simpletx-fixed" value="0" />
                             </div>
                            <div class="col-1">
                                 <label class="form-label">
@@ -2957,55 +2904,190 @@
 
                 calculateCommission();
             });
-        function calculateCommission() {
+        // function calculateCommission() {
+        //     let amount = parseFloat($('#Amount').val()) || 0;
+        //     let commissionInput =$('#Commission');
+        //     //let commissionPercent =parseFloat($('#TransactionType').data('commission')) || 0;
+        //     let ranges = $('#TransactionType').data('ranges');
+        //     let range =getCommissionByAmount(amount,ranges);
+        //     if (!range) {
+        //         $('#Commission').val('');
+        //         $('#TotalCommission').val('');
+        //         $('#TotalAmount').val('');
+        //         $('#CommissionL').text('0');
+        //         return;
+        //     }
+        //     let commissionPercent =parseFloat(range.commissionPercent);
+        //     $('#CommissionL').text(commissionPercent.toFixed(2));
+        //     let commission = 0;
+
+        //     if (commissionInput.data('auto') !== false) {
+        //         commission =amount * (commissionPercent / 100);
+        //         commissionInput.val(commission.toFixed(2)
+        //         );
+        //     }
+        //     else {
+        //         commission =parseFloat(commissionInput.val()) || 0;
+        //     }
+
+        //     let fixedCommission =parseFloat($('#FixedCommission').val()) || 0;
+        //     let totalCommission =commission + fixedCommission;
+
+        //     let deductFees =$('#DeductFees').is(':checked');
+        //     let totalAmount = 0;
+        //     let netAmount = 0;
+        //     if (!deductFees) {
+        //         netAmount = amount;
+        //         totalAmount = amount + totalCommission;
+        //     }
+        //     else {
+        //         totalAmount = amount;
+        //         netAmount = amount - totalCommission;
+        //         if (netAmount < 0) {
+        //             netAmount = 0;
+        //         }
+        //     }
+        //     $('#Commission').val(commission);
+        //     $('#TotalCommission').val(totalCommission.toFixed(2));
+        //     $('#TotalAmount').val(totalAmount.toFixed(2));
+        //     //$('#Amount').val(netAmount.toFixed(2));
+        //     $('#NetAmount').val(netAmount.toFixed(2));
+        //     $('#NetAmountL').text(netAmount);
+        // }
+
+                function calculateCommission() {
+
             let amount = parseFloat($('#Amount').val()) || 0;
-            let commissionInput =$('#Commission');
-            //let commissionPercent =parseFloat($('#TransactionType').data('commission')) || 0;
+
+            let commissionInput = $('#Commission');
+
             let ranges = $('#TransactionType').data('ranges');
-            let range =getCommissionByAmount(amount,ranges);
-            if (!range) {
+
+            if (!ranges || ranges.length === 0) {
+
                 $('#Commission').val('');
+                $('#FixedCommission').val('');
                 $('#TotalCommission').val('');
                 $('#TotalAmount').val('');
+                $('#NetAmount').val('');
                 $('#CommissionL').text('0');
+
                 return;
             }
-            let commissionPercent =parseFloat(range.commissionPercent);
+
+            //-------------------------------------------------
+            // TIPO 0 -> Comisiones porcentuales
+            //-------------------------------------------------
+
+            let percentageRanges = ranges.filter(r =>
+                Number(r.commissionType) === 0 &&
+                amount >= parseFloat(r.minAmount) &&
+                amount <= parseFloat(r.maxAmount)
+            );
+
+            let commissionPercent = 0;
+
+            percentageRanges.forEach(r => {
+                commissionPercent += parseFloat(r.commissionPercent);
+            });
+
             $('#CommissionL').text(commissionPercent.toFixed(2));
+
             let commission = 0;
 
             if (commissionInput.data('auto') !== false) {
-                commission =amount * (commissionPercent / 100);
-                commissionInput.val(commission.toFixed(2)
+
+                commission = amount * (commissionPercent / 100);
+
+                commissionInput.val(
+                    commission.toFixed(2)
                 );
+
             }
             else {
-                commission =parseFloat(commissionInput.val()) || 0;
+
+                commission =
+                    parseFloat(commissionInput.val()) || 0;
+
             }
 
-            let fixedCommission =parseFloat($('#FixedCommission').val()) || 0;
-            let totalCommission =commission + fixedCommission;
+            //-------------------------------------------------
+            // TIPO 1 -> Fee fijo
+            //-------------------------------------------------
 
-            let deductFees =$('#DeductFees').is(':checked');
+            let feeRanges = ranges.filter(r =>
+                Number(r.commissionType) === 1 &&
+                amount >= parseFloat(r.minAmount) &&
+                amount <= parseFloat(r.maxAmount)
+            );
+
+            let fixedCommission = 0;
+
+            feeRanges.forEach(r => {
+                fixedCommission += parseFloat(r.commissionPercent);
+            });
+
+            $('#FixedCommission').val(
+                fixedCommission.toFixed(2)
+            );
+
+            //-------------------------------------------------
+            // Totales
+            //-------------------------------------------------
+
+            let totalCommission =
+                commission + fixedCommission;
+
+            let deductFees =
+                $('#DeductFees').is(':checked');
+
             let totalAmount = 0;
             let netAmount = 0;
+
             if (!deductFees) {
+
                 netAmount = amount;
-                totalAmount = amount + totalCommission;
+
+                totalAmount =
+                    amount + totalCommission;
+
             }
             else {
+
                 totalAmount = amount;
-                netAmount = amount - totalCommission;
-                if (netAmount < 0) {
+
+                netAmount =
+                    amount - totalCommission;
+
+                if (netAmount < 0)
                     netAmount = 0;
-                }
+
             }
-            $('#Commission').val(commission);
-            $('#TotalCommission').val(totalCommission.toFixed(2));
-            $('#TotalAmount').val(totalAmount.toFixed(2));
-            //$('#Amount').val(netAmount.toFixed(2));
-            $('#NetAmount').val(netAmount.toFixed(2));
-            $('#NetAmountL').text(netAmount);
+
+            //-------------------------------------------------
+            // Mostrar resultados
+            //-------------------------------------------------
+
+            $('#Commission').val(
+                commission.toFixed(2)
+            );
+
+            $('#TotalCommission').val(
+                totalCommission.toFixed(2)
+            );
+
+            $('#TotalAmount').val(
+                totalAmount.toFixed(2)
+            );
+
+            $('#NetAmount').val(
+                netAmount.toFixed(2)
+            );
+
+            $('#NetAmountL').text(
+                netAmount.toFixed(2)
+            );
+
         }
 
         $('#Commission').on('input', function () {$(this).data('auto', false);});
@@ -3018,6 +3100,16 @@
         //     );
         //     return range? parseFloat(range.commissionPercent): 0;
         // }
+        //PARA MONETY TRANSFER
+        function getCommissionByType(amount, ranges, commissionType) {
+            if (!ranges || ranges.length === 0)
+                return null;
+            return ranges.find(r =>
+                Number(r.commissionType) === commissionType &&
+                amount >= parseFloat(r.minAmount) &&
+                amount <= parseFloat(r.maxAmount)
+            ) || null;
+        }
         function getCommissionByAmount(amount, ranges) {
             if (!ranges || ranges.length === 0)
                 return null;
@@ -3701,7 +3793,7 @@
                         <input id="SimpleTx_Commission_${simpleTxIndex}" type="number" class="form-control simpletx-commission" data-auto="true" placeholder="0" />
                     </div>
                     <div class="col-1">
-                        <input id="SimpleTx_Commission_Fix_${simpleTxIndex}" type="number" class="form-control simpletx-fixed" value="2" />
+                        <input id="SimpleTx_Commission_Fix_${simpleTxIndex}" type="number" class="form-control simpletx-fixed" value="0" />
                     </div>
                     <div class="col-1">
                         <input
@@ -4259,53 +4351,101 @@
                 calculateChecksTotals();
             }
         );
-        function calculateCheckCommission(row) {
-            let commissionInput =row.find('.simpletx-commission');
-            let amount =parseFloat(row.find('.simpletx-amount').val()) || 0;
-            let fixedFee =parseFloat(row.find('.simpletx-fixed').val()) || 0;
-            let ranges = $('#SimpleTx_TransactionType').data('ranges');
-            let range =getCommissionByAmount(amount,ranges);
-            if (!range) {
+        
+                function calculateCheckCommission(row) {
+
+            let commissionInput = row.find('.simpletx-commission');
+
+            let amount =
+                parseFloat(row.find('.simpletx-amount').val()) || 0;
+
+            let ranges =
+                $('#SimpleTx_TransactionType').data('ranges');
+
+            if (!ranges || ranges.length === 0) {
+
                 commissionInput.val('');
                 row.find('.simpletx-totalfee').val('');
                 row.find('.simpletx-total').val('');
-                row.data('.simpletx-net-amount',0);
+                row.data('.simpletx-net-amount', 0);
+
                 return;
             }
-            let commissionPercent = parseFloat(range.commissionPercent);
-            commissionInput.attr('title','Range: $' +range.minAmount +' - $' +range.maxAmount +' | Commission: ' +commissionPercent.toFixed(2) +'%');
-            let percentFee = 0;
-            if (commissionInput.data('auto')!== false) {
-                percentFee =amount *(commissionPercent / 100);
-                commissionInput.val(percentFee.toFixed(2));
-            }
-            else {
-                percentFee =parseFloat(commissionInput.val()) || 0;
-            }
-            let totalFee =percentFee +fixedFee;
-            // let deductFees = $('#SimpleTx_DeductFees').is(':checked');
-            // let totalAmount = 0;
-            // let netAmount = amount;
-            // if (!deductFees) {
-            //     totalAmount =amount +totalFee;
-            // }
-            // else {
-            //     totalAmount =amount;
-            //     netAmount =amount -totalFee;
-            //     if (netAmount < 0) {netAmount = 0;}
-            // }
-            let totalAmount = amount;
-            let netAmount = amount - totalFee;
-            if (netAmount < 0)
-            netAmount = 0;
 
-            row.data('.simpletx-net-amount',netAmount);
+            // Buscar Federal (%)
+            let federalRange = ranges.find(r =>
+                Number(r.commissionType) === 0 &&
+                amount >= parseFloat(r.minAmount) &&
+                amount <= parseFloat(r.maxAmount)
+            );
+
+            // Buscar Fee (Monto fijo)
+            let feeRange = ranges.find(r =>
+                Number(r.commissionType) === 1 &&
+                amount >= parseFloat(r.minAmount) &&
+                amount <= parseFloat(r.maxAmount)
+            );
+
+            //-----------------------------------
+            // Federal
+            //-----------------------------------
+
+            let federalPercent = 0;
+            let federalAmount = 0;
+
+            if (federalRange) {
+
+                federalPercent =
+                    parseFloat(federalRange.commissionPercent);
+
+                federalAmount =
+                    amount * (federalPercent / 100);
+            }
+
+            //-----------------------------------
+            // Fee
+            //-----------------------------------
+
+            let feeAmount = 0;
+
+            if (feeRange) {
+
+                feeAmount =
+                    parseFloat(feeRange.commissionPercent);
+
+            }
+
+            //-----------------------------------
+            // Totales
+            //-----------------------------------
+
+            let totalFee =
+                federalAmount +
+                feeAmount;
+
+            let netAmount =
+                amount - totalFee;
+
+            if (netAmount < 0)
+                netAmount = 0;
+
+            //-----------------------------------
+            // Mostrar información
+            //-----------------------------------
+
+            commissionInput.val(federalAmount.toFixed(2));
+
+            commissionInput.attr(
+                'title',
+                `Federal: ${federalPercent.toFixed(2)}% = $${federalAmount.toFixed(2)}
+        Fee: $${feeAmount.toFixed(2)}
+        Total Fee: $${totalFee.toFixed(2)}`
+            );
+            row.data('.simpletx-net-amount', netAmount);
             row.find('.simpletx-totalfee').val(totalFee.toFixed(2));
-            //SE DESACTIVA EL PRIMERO PARA DEJAR EL NET AMOUNT PARA QUE SALGA EL RESTADO
-            //row.find('.simpletx-total').val(totalAmount.toFixed(2));
+            row.find('.simpletx-fixed').val(feeAmount.toFixed(2));
             row.find('.simpletx-total').val(netAmount.toFixed(2));
-            //SE DESACTIVA EL PRIMERO PARA DEJAR EL NET AMOUNT PARA QUE SALGA EL RESTADO
-            row.find('.simpletx-amount').attr('title','Net Amount: ' +netAmount.toFixed(2));
+            row.find('.simpletx-amount').attr('title',`Net Amount: ${netAmount.toFixed(2)}`);
         }
 
         function calculateChecksTotals() {
@@ -4328,21 +4468,32 @@
             //SE DESACTIVA EL PRIMERO PARA DEJAR EL NET AMOUNT PARA QUE SALGA EL RESTADO
             $('#SimpleTx_NetAmountL').text(netAmount.toFixed(2));
         }
-        // $('#SimpleTx_DeductFees').change(function () {
-        //         $('.simpletx-row').each(
-        //             function () {
-        //                 calculateCheckCommission($(this));
-        //             }
-        //         );
-        //         calculateChecksTotals();
-        // });
-        function getCommissionByAmount( amount,ranges) {
-            if (!ranges ||ranges.length === 0)
+            // function getCommissionByAmount( amount,ranges) {
+            //     if (!ranges ||ranges.length === 0)
+            //         return null;
+            //     let range =ranges.find(r =>amount >=parseFloat(r.minAmount) && amount <=parseFloat(r.maxAmount));
+            //     return range || null;
+            // }
+
+         function getFederalCommission(amount, ranges) {
+            if (!ranges)
                 return null;
-            let range =ranges.find(r =>amount >=parseFloat(r.minAmount) && amount <=parseFloat(r.maxAmount));
-            return range || null;
+            return ranges.find(r =>
+                Number(r.commissionType) === 0 &&
+                amount >= parseFloat(r.minAmount) &&
+                amount <= parseFloat(r.maxAmount)
+            ) || null;
         }
- 
+        function getFeeCommission(amount, ranges) {
+            if (!ranges)
+                return null;
+            return ranges.find(r =>
+                Number(r.commissionType) === 1 &&
+                amount >= parseFloat(r.minAmount) &&
+                amount <= parseFloat(r.maxAmount)
+            ) || null;
+
+        }
         function ObtenerTipoTransaccion(NumeroT,Prefijo) {
 
             $.get('/TransactionsTypes/GetByNumber?id='+NumeroT, function (data) {
