@@ -105,9 +105,13 @@
                                 <select name="IdDocumentType" id="IdDocumentType" class="form-control mb-2">
                                 </select>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <label>Document Number</label>
                                 <input name="DocumentNumber" id="DocumentNumber" class="form-control mb-2" required placeholder="Document Number" />
+                            </div>
+                            <div class="col-md-6">
+                                <label>Date of birth</label>
+                                <input type="date" name="Dob" class="form-control mb-2" />
                             </div>
                             <div class="col-md-6">
                                 <label>Issue Date</label>
@@ -255,6 +259,7 @@
              var _DocumentNumber= $('input[name="DocumentNumber"]').val().trim();
              var _ExpirationDate= $('input[name="ExpirationDate"]').val().trim();
              var _IssueDateDate= $('input[name="IssueDate"]').val().trim();
+             var _Dob= $('input[name="Dob"]').val().trim();
              var _Phone= $('input[name="Phone"]').val().trim();
              var _Country= $('#Country').val();
              var _Address= $('textarea[name="Address"]').val().trim();
@@ -272,6 +277,10 @@
                 }
                 if (!_DocumentNumber) {
                     Swal.fire('Error', 'DocumentNumber is required', 'error');
+                    return;
+                }
+                if (!_Dob) {
+                        Swal.fire('Error', 'Date of birth is required', 'error');
                     return;
                 }
                 if (!_ExpirationDate) {
