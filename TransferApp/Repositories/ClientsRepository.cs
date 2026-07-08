@@ -135,6 +135,7 @@ public class ClientsRepository
             DateU = reader["DateU"] != DBNull.Value ? Convert.ToDateTime(reader["DateU"]) : DateTime.MinValue,
             UserU = reader["UserU"] != DBNull.Value ? reader["UserU"].ToString() : string.Empty,
             CountryName = reader["CountryName"] != DBNull.Value ? reader["CountryName"].ToString() : string.Empty,
+            Dob = reader["Dob"] != DBNull.Value ? Convert.ToDateTime(reader["Dob"]) : DateTime.MinValue
         };
     }
 
@@ -151,6 +152,7 @@ public class ClientsRepository
         cmd.Parameters.AddWithValue("@Country", m.Country);
         cmd.Parameters.AddWithValue("@IssueDate", m.IssueDate == null ? (object)DBNull.Value : m.IssueDate);
         cmd.Parameters.AddWithValue("@Picture", m.Picture ?? "");
+        cmd.Parameters.AddWithValue("@DOB", m.Dob);
 
         if (isCreate)
             cmd.Parameters.AddWithValue("@UserC", m.UserC);

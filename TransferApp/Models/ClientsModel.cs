@@ -11,6 +11,7 @@
         public string Address { get; set; }
         public DateTime ExpirationDate { get; set; }
         public DateTime IssueDate { get; set; }
+        public DateTime Dob { get; set; }
         public string Phone { get; set; }
         public string Country { get; set; }
         public string Picture { get; set; }

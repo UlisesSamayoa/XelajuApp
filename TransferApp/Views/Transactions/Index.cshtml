@@ -375,14 +375,18 @@
                             <input id="C_LastName" class="form-control mb-2" placeholder="Last Name" />
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <label>Document Type</label>
                             <select id="C_DocumentType" data-target="#C_DocumentNumber" class="form-control mb-2 document-type"></select>
                         </div>
-
+                        
                         <div class="col-md-6">
                             <label>Document Number</label>
                             <input id="C_DocumentNumber" class="form-control mb-2" placeholder="Document Number" />
+                        </div>
+                        <div class="col-md-3">
+                            <label>Date of birth</label>
+                            <input type="date" id="C_DOB" class="form-control mb-2" />
                         </div>
 
                         <div class="col-md-6">
@@ -1393,14 +1397,18 @@
                             <input id="SimpleTx_C_LastName" class="form-control mb-2" placeholder="Last Name" />
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label>Document Type</label>
                             <select id="SimpleTx_C_DocumentType" data-target="#SimpleTx_C_DocumentNumber" class="form-control mb-2 document-type"></select>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label>Document Number</label>
                             <input id="SimpleTx_C_DocumentNumber" class="form-control mb-2" placeholder="Document Number" />
+                        </div>
+                        <div class="col-md-4">
+                            <label>Date of birth</label>
+                            <input type="date" id="SimpleTx_C_Dob" class="form-control mb-2" />
                         </div>
                         <div class="col-md-6">
                             <label>Issue Date</label>
@@ -2407,6 +2415,7 @@
                  var _Phone= $('#C_Phone').val().trim();
                  var _Country= $('#C_Country').val();
                  var _Address= $('#C_Address').val().trim();
+                 var _DOB= $('#C_DOB').val().trim();
 
                  if (!_FirstName) {
                     Swal.fire('Error', 'FirstName is required', 'error');
@@ -2422,6 +2431,10 @@
                 }
                 if (!_DocumentNumber) {
                     Swal.fire('Error', 'DocumentNumber is required', 'error');
+                    return;
+                }
+                if (!_DOB) {
+                        Swal.fire('Error', 'Date of birth is required', 'error');
                     return;
                 }
                 if (!_ExpirationDate) {
@@ -2451,6 +2464,7 @@
                 formData.append("Phone", _Phone);
                 formData.append("Country", _Country);
                 formData.append("Address", _Address);
+                formData.append("Dob", _DOB);
                 formData.append("UserC", "admin");
                 // formData.append("FirstName", $('#C_FirstName').val());
                 // formData.append("LastName", $('#C_LastName').val());
@@ -4144,6 +4158,7 @@
             let _Phone = $('#SimpleTx_C_Phone').val().trim();
             let _Country = $('#SimpleTx_C_Country').val();
             let _Address = $('#SimpleTx_C_Address').val().trim();
+            let _Dob = $('#SimpleTx_C_Dob').val().trim();
 
             // 🔵 VALIDACIONES
             if (!_FirstName) return Swal.fire('Error', 'First Name is required', 'error');
@@ -4154,6 +4169,7 @@
             if (!_Phone) return Swal.fire('Error', 'Phone is required', 'error');
             if (!_Country) return Swal.fire('Error', 'Country is required', 'error');
             if (!_Address) return Swal.fire('Error', 'Address is required', 'error');
+            if (!_Dob) return Swal.fire('Error', 'Date of birth is required', 'error');
 
             let formData = new FormData();
 
@@ -4166,6 +4182,7 @@
             formData.append("Phone", _Phone);
             formData.append("Country", _Country);
             formData.append("Address", _Address);
+            formData.append("Dob", _Dob);
             formData.append("UserC", "admin");
 
             Swal.fire({

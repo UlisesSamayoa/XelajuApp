@@ -88,9 +88,13 @@
                             <select name="IdDocumentType" id="IdDocumentType" class="form-control mb-2">
                             </select>
                         </div>
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <label>Document Number</label>
                             <input name="DocumentNumber" id="DocumentNumber" class="form-control mb-2" required placeholder="Document Number" />
+                        </div>
+                        <div class="col-md-6">
+                            <label>Date of birth</label>
+                            <input type="date" name="Dob" id="Dob" class="form-control mb-2" />
                         </div>
                         <div class="col-md-6">
                             <label>Issue Date</label>
@@ -232,6 +236,13 @@
                     $('#IssueDate').val(formatted);
                 }
             }
+            if (d.dob) {
+                let date = new Date(d.dob);
+                if (!isNaN(date)) {
+                    let formatted = date.toISOString().split('T')[0];
+                    $('#Dob').val(formatted);
+                }
+            }
             $('#Phone').val(d.phone);
             // $('#Country').val(d.country);
             $('#Address').val(d.address);
@@ -303,6 +314,7 @@
              var _Phone= $('input[name="Phone"]').val().trim();
              var _Country= $('#Country').val();
              var _Address= $('textarea[name="Address"]').val().trim();
+             var _Dob= $('input[name="Dob"]').val().trim();
                 if (!_FirstName) {
                     Swal.fire('Error', 'FirstName is required', 'error');
                     return;
@@ -319,6 +331,11 @@
                     Swal.fire('Error', 'DocumentNumber is required', 'error');
                     return;
                 }
+                if (!_Dob) {
+                        Swal.fire('Error', 'Date of birth is required', 'error');
+                    return;
+                }
+
                 if (!_ExpirationDate) {
                         Swal.fire('Error', 'ExpirationDate is required', 'error');
                     return;
@@ -348,6 +365,7 @@
         formData.append("Phone", _Phone);
         formData.append("Country", _Country);
         formData.append("Address", _Address);
+        formData.append("Dob", _Dob);
         formData.append("UserU", "admin");
 
         let file = $('#fileClient')[0].files[0];
