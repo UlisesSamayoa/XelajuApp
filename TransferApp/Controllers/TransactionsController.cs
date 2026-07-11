@@ -134,7 +134,42 @@ public class TransactionsController : Controller
             });
         }
     }
+    [HttpPost]
+    public async Task<IActionResult> CreateDomestic([FromForm] TransactionsModel m, List<IFormFile> Domestic_ImgJustify)
+    {
+        try
+        {
+            m.UserC = "admin";
 
+            // CLIENTE
+            var client = await _clientes.GetById(m.IdClient_fk);
+
+            if (client == null)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    type = "CLIENT_NOT_FOUND",
+                    message = "Client does not exist"
+                });
+            }
+            await _service.CreateDomestic(m, Domestic_ImgJustify);
+
+            return Ok(new
+            {
+                success = true
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                success = false,
+                type = "SERVER_ERROR",
+                message = ex.Message
+            });
+        }
+    }
     [HttpPost]
     public async Task<IActionResult> Delete(int id)
     {

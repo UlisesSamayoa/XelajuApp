@@ -91,6 +91,9 @@
             <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalPaidTx" onclick="ObtenerTipoTransaccion(4,'PService')">
                 <i class="bi bi-lightbulb-fill"></i> Paid Service
             </button>
+            <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#Domestic_modalTx" onclick="ObtenerTipoTransaccion(5,'Domestic')">
+                <i class="bi bi-currency-exchange"></i> Domestic Transfer
+            </button>
         </div>
         <div class="row mb-3">
             <div class="col-md-4">
@@ -149,7 +152,7 @@
                             </div>
                             <div class="col-2">
                                 <label class="form-label">Fee</label>
-                                <input id="FixedCommission" type="number" value="0" class="form-control mb-2" placeholder="0" />
+                                <input id="FixedCommission" type="number" value="0" data-auto="true" class="form-control mb-2" placeholder="0" />
                             </div>
                             <div class="col-2">
                                 <label class="form-label">% / Fee</label>
@@ -924,7 +927,7 @@
                                 <label class="form-label">
                                     Fee
                                 </label>
-                                    <input id="SimpleTx_Commission_Fix" type="number" class="form-control simpletx-fixed" value="0" />
+                                    <input id="SimpleTx_Commission_Fix" type="number" data-auto="true" class="form-control simpletx-fixed" value="0" />
                             </div>
                            <div class="col-1">
                                 <label class="form-label">
@@ -1631,6 +1634,289 @@
     </div>
 </div>
 
+@* FUNCINAMIENTO DE TRANSACCION DOMESTICA *@
+<div class="modal fade" id="Domestic_modalTx">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content card-custom p-3">
+            <h5>New Domestic Transaction</h5>
+            <form id="Domestic_formTx">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-10">
+                                <label class="form-label">Reference Number *</label>
+                                <input id="Domestic_ReferenceNumber" class="form-control mb-2" placeholder="Reference Number" readonly />
+                                <input type="hidden" id="Domestic_TransactionType" />
+                            </div>
+                            <div class="col-2">
+                                <br />
+                                <label class="form-check-label">
+                                    Calculation Mode
+                                </label>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="Domestic_DeductFees" />
+                                </div>
+                                <input id="Domestic_NetAmount" readonly type="hidden" />
+                            </div>
+                            <div class="col-2">
+                                <label class="form-label">Amount * ($<label id="Domestic_NetAmountL"></label>)</label>
+                                <input id="Domestic_Amount" type="number" class="form-control mb-2" placeholder="Amount" />
+                            </div>
+                            <div class="col-2">
+                                <label class="form-label"> <label id="Domestic_CommissionL"></label> %</label>
+                                <input id="Domestic_Commission" type="number" class="form-control mb-2" data-auto="true" placeholder="0" />
+                            </div>
+                            <div class="col-2">
+                                <label class="form-label">Fee</label>
+                                <input id="Domestic_FixedCommission" type="number" value="0" class="form-control mb-2" data-auto="true" placeholder="0" />
+                            </div>
+                            <div class="col-2">
+                                <label class="form-label">% / Fee</label>
+                                <input id="Domestic_TotalCommission" type="text" class="form-control mb-2" placeholder="0.00" readonly />
+                            </div>
+                            <div class="col-2">
+                                <label class="form-label">Net Amount</label>
+                                <input id="Domestic_TotalAmountView" type="number" class="form-control mb-2" placeholder="Net Amount" readonly />
+                            </div>
+                            <div class="col-2">
+                                <label class="form-label">Total Amount</label>
+                                <input id="Domestic_TotalAmount" type="number" class="form-control mb-2" placeholder="Total Amount" readonly />
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-12">
+                        <label class="form-label">Sender Name *</label>
+                        <input id="Domestic_ReceiverName" class="form-control mb-2" placeholder="Receiver Name" />
+                    </div>
+                    <div class="col-3">
+                        <label class="form-label">Sender Country *</label>
+                        <input id="Domestic_ReceiverCountry" class="form-control mb-2" placeholder="Country" />
+                    </div>
+                    <div class="col-3">
+                        <label class="form-label">Sender Company *</label>
+                        <input id="Domestic_ReceiverCompany" class="form-control mb-2" placeholder="Company" />
+                    </div>
+                    <div class="col-3">
+                        <label class="form-label">Sender Document Number</label>
+                        <input id="Domestic_ReceiverDocumentNumber" class="form-control mb-2" placeholder="Document" />
+                    </div>
+                    <div class="col-3">
+                        <label class="form-label">Sender Date *</label>
+                        <input id="Domestic_ReceiverTransactionDate" type="date" class="form-control mb-2" placeholder="Document" />
+                    </div>
+                    <br />
+                    <hr />
+                    <div class="col-12">
+                        <div class="input-group" style="margin-bottom:5px;">
+                            <h6>Receiver Info </h6> &nbsp;&nbsp;&nbsp;
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#Domestic_modalSearchClient">
+                                Search Client <i class="bi bi-search"></i>
+                            </button>&nbsp;&nbsp;&nbsp;
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#Domestic_modalNewClient">
+                                New Client <i class="bi bi-plus-lg"></i>
+                            </button>
+                        </div>
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-4">
+                                    <label class="form-label">Country *</label>
+                                    <select id="Domestic_SenderCountry" class="form-control mb-2"></select>
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label">Company *</label>
+                                    <select id="Domestic_SenderCompany" class="form-control mb-2"></select>
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label">Currency *</label>
+                                    <select id="Domestic_SenderCurrency" class="form-control mb-2"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <label class="form-label">Receiver Name *</label>
+                                <input id="Domestic_SenderName" class="form-control mb-2" placeholder="Sender Name" />
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label">Receiver DocumentType *</label>
+                                <select id="Domestic_SenderDocumentType" data-target="#Domestic_SenderDocumentNumber" class="form-control mb-2 document-type"></select>
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label">Receiver Document Number *</label>
+                                <input id="Domestic_SenderDocumentNumber" class="form-control mb-2" placeholder="Document" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <label class="form-label">Issue Date</label>
+                                <input type="date" id="Domestic_IssueDate" class="form-control mb-2 issue-date" />
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label">Expiration Date *</label>
+                                <input type="date" id="Domestic_ExpirationDate" class="form-control mb-2" />
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label">Receiver Phone *</label>
+                                <input id="Domestic_SenderPhone" class="form-control mb-2" placeholder="Phone" />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Receiver Address *</label>
+                                <input id="Domestic_SenderAddress" class="form-control mb-2" placeholder="Address" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="col-12">
+                    <label class="form-label">Justify Details</label>
+                    <input id="Domestic_JustifyDetails" class="form-control mb-2" placeholder="Justify Details" />
+                </div>
+                <hr />
+                <label id="Domestic_justifyCounter">0 / 5 files</label>
+                <div id="Domestic_justifyContainer">
+                    <div class="Domestic_justify-item row mb-2">
+                        <div class="col-11">
+                            <input type="file" name="Domestic_ImgJustify" class="form-control Domestic_justify-file" />
+                        </div>
+                        <div class="col-1">
+                            <button type="button" class="btn btn-success" onclick="Domestic_addJustifyFile()">
+                                <i class="bi bi-plus-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <label class="form-label">Justify Agent Name</label>
+                        <input id="Domestic_Justify_AgentName" type="text" class="form-control mb-2" placeholder="Agent name" />
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Justify Date</label>
+                        <input id="Domestic_Justify_DateError" type="date" class="form-control mb-2" />
+                    </div>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button class="btn btn-success" id="Domestic_btnSaveTx"><i class="bi bi-floppy-fill"></i> Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="Domestic_modalSearchClient">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content modal-search">
+            <div class="modal-header modal-search-header">
+                <h5><i class="bi bi-search"></i> Search Client Domestic</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+
+                <input id="Domestic_searchClientInput"
+                       class="form-control mb-3 search-input"
+                       placeholder="Search by name or document..." />
+
+                <table id="Domestic_tblSearchClient" class="table table-hover w-100">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Document</th>
+                            <th>Phone</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="Domestic_modalNewClient">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content card-custom modal-new">
+
+            <div class="modal-header bg-success text-white">
+                <h5><i class="bi bi-person-plus-fill"></i> New Client Domestic</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <form id="Domestic_formNewClient">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>First Name</label>
+                            <input id="Domestic_C_FirstName" class="form-control mb-2" placeholder="First Name" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Last Name</label>
+                            <input id="Domestic_C_LastName" class="form-control mb-2" placeholder="Last Name" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>Document Type</label>
+                            <select id="Domestic_C_DocumentType" data-target="#Domestic_C_DocumentNumber" class="form-control mb-2 document-type"></select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Document Number</label>
+                            <input id="Domestic_C_DocumentNumber" class="form-control mb-2" placeholder="Document Number" />
+                        </div>
+                        <div class="col-md-3">
+                            <label>Date of birth</label>
+                            <input type="date" id="Domestic_C_DOB" class="form-control mb-2" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Issue Date</label>
+                            <input type="date" id="Domestic_C_IssueDate" class="form-control mb-2 issue-date" />
+                        </div>
+                        <div class="col-md-6">
+                            <label>Expiration Date</label>
+                            <input type="date" id="Domestic_C_ExpirationDate" class="form-control mb-2" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Phone</label>
+                            <input id="Domestic_C_Phone" class="form-control mb-2" placeholder="Phone" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Country</label>
+                            <select id="Domestic_C_Country" class="form-control mb-2"></select>
+                        </div>
+
+                        <div class="col-12">
+                            <label>Address</label>
+                            <input id="Domestic_C_Address" class="form-control mb-2" placeholder="Address" />
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-success" id="Domestic_btnSaveNewClient">
+                    <i class="bi bi-floppy-fill"></i> Save Client
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@* FUNCINAMIENTO DE TRANSACCION DOMESTICA *@
+
 @section Scripts {
     
     <script>
@@ -1653,6 +1939,7 @@
             applyPhoneMask('#PService_SenderPhone');
 
             applyPhoneMask('#SimpleTx_C_Phone');
+             applyPhoneMask('#Domestic_C_Phone');
             $('#filterTransactioType').on('keyup', function () {
                 tableTx.column(4).search(this.value).draw();
             });
@@ -1988,11 +2275,11 @@
 
             $.get('/Countries/GetAll', function (data) {
 
-                $('#SenderCountry, #ReceiverCountry, #C_Country,#B_Country,#SimpleTx_C_Country').empty();
+                  $('#SenderCountry, #ReceiverCountry, #C_Country,#B_Country,#SimpleTx_C_Country,#Domestic_SenderCountry,#Domestic_C_Country').empty();
 
                 data.forEach(c => {
 
-                    $('#SenderCountry, #ReceiverCountry, #C_Country,#B_Country,#SimpleTx_C_Country').append(
+                      $('#SenderCountry, #ReceiverCountry, #C_Country,#B_Country,#SimpleTx_C_Country,#Domestic_SenderCountry,#Domestic_C_Country').append(
                         `<option value="${c.idCountry}">${c.name}</option>`
                     );
 
@@ -2901,6 +3188,7 @@
 
         //comision money transfer
                 $('#Commission').data('auto', true);
+                 $('#FixedCommission').data('auto', true);
 
         $('#Amount, #Commission, #FixedCommission, #DeductFees')
             .on('keyup change input', function () {
@@ -2908,59 +3196,13 @@
                 if ($(this).is('#Commission')) {
                     $('#Commission').data('auto', false);
                 }
+                if ($(this).is('#FixedCommission')) {
+                     $('#FixedCommission').data('auto', false);
+                }
 
                 calculateCommission();
             });
-        // function calculateCommission() {
-        //     let amount = parseFloat($('#Amount').val()) || 0;
-        //     let commissionInput =$('#Commission');
-        //     //let commissionPercent =parseFloat($('#TransactionType').data('commission')) || 0;
-        //     let ranges = $('#TransactionType').data('ranges');
-        //     let range =getCommissionByAmount(amount,ranges);
-        //     if (!range) {
-        //         $('#Commission').val('');
-        //         $('#TotalCommission').val('');
-        //         $('#TotalAmount').val('');
-        //         $('#CommissionL').text('0');
-        //         return;
-        //     }
-        //     let commissionPercent =parseFloat(range.commissionPercent);
-        //     $('#CommissionL').text(commissionPercent.toFixed(2));
-        //     let commission = 0;
-
-        //     if (commissionInput.data('auto') !== false) {
-        //         commission =amount * (commissionPercent / 100);
-        //         commissionInput.val(commission.toFixed(2)
-        //         );
-        //     }
-        //     else {
-        //         commission =parseFloat(commissionInput.val()) || 0;
-        //     }
-
-        //     let fixedCommission =parseFloat($('#FixedCommission').val()) || 0;
-        //     let totalCommission =commission + fixedCommission;
-
-        //     let deductFees =$('#DeductFees').is(':checked');
-        //     let totalAmount = 0;
-        //     let netAmount = 0;
-        //     if (!deductFees) {
-        //         netAmount = amount;
-        //         totalAmount = amount + totalCommission;
-        //     }
-        //     else {
-        //         totalAmount = amount;
-        //         netAmount = amount - totalCommission;
-        //         if (netAmount < 0) {
-        //             netAmount = 0;
-        //         }
-        //     }
-        //     $('#Commission').val(commission);
-        //     $('#TotalCommission').val(totalCommission.toFixed(2));
-        //     $('#TotalAmount').val(totalAmount.toFixed(2));
-        //     //$('#Amount').val(netAmount.toFixed(2));
-        //     $('#NetAmount').val(netAmount.toFixed(2));
-        //     $('#NetAmountL').text(netAmount);
-        // }
+        
 
                 function calculateCommission() {
 
@@ -3028,15 +3270,30 @@
                 amount <= parseFloat(r.maxAmount)
             );
 
-            let fixedCommission = 0;
+            // let fixedCommission = 0;
 
-            feeRanges.forEach(r => {
-                fixedCommission += parseFloat(r.commissionPercent);
-            });
+            // feeRanges.forEach(r => {
+            //     fixedCommission += parseFloat(r.commissionPercent);
+            // });
 
-            $('#FixedCommission').val(
-                fixedCommission.toFixed(2)
-            );
+            // $('#FixedCommission').val(
+            //     fixedCommission.toFixed(2)
+            // );
+             let fixedCommissionInput = $('#FixedCommission');
+                let fixedCommission = 0;
+
+                if (fixedCommissionInput.data('auto') !== false) {
+
+                    feeRanges.forEach(r => {
+                        fixedCommission += parseFloat(r.commissionPercent);
+                    });
+
+                    fixedCommissionInput.val(fixedCommission.toFixed(2));
+                }
+                else {
+
+                    fixedCommission = parseFloat(fixedCommissionInput.val()) || 0;
+                }
 
             //-------------------------------------------------
             // Totales
@@ -3103,6 +3360,7 @@
         }
 
         $('#Commission').on('input', function () {$(this).data('auto', false);});
+        $('#FixedCommission').on('input', function () {$(this).data('auto', false);});
         // function getCommissionByAmount(amount, ranges) {
         //     if (!ranges || ranges.length === 0)
         //         return 0;
@@ -3805,7 +4063,7 @@
                         <input id="SimpleTx_Commission_${simpleTxIndex}" type="number" class="form-control simpletx-commission" data-auto="true" placeholder="0" />
                     </div>
                     <div class="col-1">
-                        <input id="SimpleTx_Commission_Fix_${simpleTxIndex}" type="number" class="form-control simpletx-fixed" value="0" />
+                         <input id="SimpleTx_Commission_Fix_${simpleTxIndex}" type="number" data-auto="true" class="form-control simpletx-fixed" value="0" />
                     </div>
                     <div class="col-1">
                         <input
@@ -4355,7 +4613,7 @@
             $('#PService_NetAmount').val(netAmount.toFixed(2));
             $('#PService_NetAmountL').text(netAmount.toFixed(2));
         }
-        btnSaveTx
+        //btnSaveTx
         //comision de paid service
         //comisiones de cheque
         $(document).on('keyup change input','.simpletx-amount, .simpletx-commission, .simpletx-fixed',
@@ -4364,14 +4622,17 @@
                 if ($(this).hasClass('simpletx-commission')) {
                     row.find('.simpletx-commission').data('auto', false);
                 }
+                  if ($(this).hasClass('simpletx-fixed')) {
+                      row.find('.simpletx-fixed').data('auto', false);
+                 }
                 calculateCheckCommission(row);
                 calculateChecksTotals();
             }
         );
-        
                 function calculateCheckCommission(row) {
 
             let commissionInput = row.find('.simpletx-commission');
+            let feeInput = row.find('.simpletx-fixed');
 
             let amount =
                 parseFloat(row.find('.simpletx-amount').val()) || 0;
@@ -4382,88 +4643,149 @@
             if (!ranges || ranges.length === 0) {
 
                 commissionInput.val('');
+                feeInput.val('');
                 row.find('.simpletx-totalfee').val('');
                 row.find('.simpletx-total').val('');
                 row.data('.simpletx-net-amount', 0);
 
                 return;
             }
-
-            // Buscar Federal (%)
             let federalRange = ranges.find(r =>
                 Number(r.commissionType) === 0 &&
                 amount >= parseFloat(r.minAmount) &&
                 amount <= parseFloat(r.maxAmount)
             );
-
-            // Buscar Fee (Monto fijo)
+            let federalPercent = federalRange? parseFloat(federalRange.commissionPercent): 0;
+            let federalAmount = 0;
+            if (commissionInput.data('auto') !== false) {
+                federalAmount =amount * (federalPercent / 100);
+                commissionInput.val(federalAmount.toFixed(2));
+            }
+            else {
+                federalAmount =parseFloat(commissionInput.val()) || 0;
+            }
             let feeRange = ranges.find(r =>
                 Number(r.commissionType) === 1 &&
                 amount >= parseFloat(r.minAmount) &&
                 amount <= parseFloat(r.maxAmount)
             );
-
-            //-----------------------------------
-            // Federal
-            //-----------------------------------
-
-            let federalPercent = 0;
-            let federalAmount = 0;
-
-            if (federalRange) {
-
-                federalPercent =
-                    parseFloat(federalRange.commissionPercent);
-
-                federalAmount =
-                    amount * (federalPercent / 100);
-            }
-
-            //-----------------------------------
-            // Fee
-            //-----------------------------------
-
             let feeAmount = 0;
-
-            if (feeRange) {
-
-                feeAmount =
-                    parseFloat(feeRange.commissionPercent);
-
+            if (feeInput.data('auto') !== false) {
+                feeAmount = feeRange? parseFloat(feeRange.commissionPercent): 0;
+                feeInput.val(feeAmount.toFixed(2));
             }
-
-            //-----------------------------------
-            // Totales
-            //-----------------------------------
-
-            let totalFee =
-                federalAmount +
-                feeAmount;
-
-            let netAmount =
-                amount - totalFee;
-
+            else {
+                feeAmount =parseFloat(feeInput.val()) || 0;
+            }
+            let totalFee =federalAmount + feeAmount;
+            let netAmount =amount - totalFee;
             if (netAmount < 0)
                 netAmount = 0;
-
             //-----------------------------------
             // Mostrar información
             //-----------------------------------
-
-            commissionInput.val(federalAmount.toFixed(2));
-
-            commissionInput.attr(
-                'title',
-                `Federal: ${federalPercent.toFixed(2)}% = $${federalAmount.toFixed(2)}
-        Fee: $${feeAmount.toFixed(2)}
-        Total Fee: $${totalFee.toFixed(2)}`
-            );
+            commissionInput.attr('title',`Federal: ${federalPercent.toFixed(2)}% = $${federalAmount.toFixed(2)} Fee: $${feeAmount.toFixed(2)} Total Fee: $${totalFee.toFixed(2)}`);
             row.data('.simpletx-net-amount', netAmount);
             row.find('.simpletx-totalfee').val(totalFee.toFixed(2));
-            row.find('.simpletx-fixed').val(feeAmount.toFixed(2));
             row.find('.simpletx-total').val(netAmount.toFixed(2));
-            row.find('.simpletx-amount').attr('title',`Net Amount: ${netAmount.toFixed(2)}`);
+            row.find('.simpletx-amount').attr('title', `Net Amount: ${netAmount.toFixed(2)}`);
         }
+        
+        //         function calculateCheckCommission(row) {
+
+        //     let commissionInput = row.find('.simpletx-commission');
+
+        //     let amount =
+        //         parseFloat(row.find('.simpletx-amount').val()) || 0;
+
+        //     let ranges =
+        //         $('#SimpleTx_TransactionType').data('ranges');
+
+        //     if (!ranges || ranges.length === 0) {
+
+        //         commissionInput.val('');
+        //         row.find('.simpletx-totalfee').val('');
+        //         row.find('.simpletx-total').val('');
+        //         row.data('.simpletx-net-amount', 0);
+
+        //         return;
+        //     }
+
+        //     // Buscar Federal (%)
+        //     let federalRange = ranges.find(r =>
+        //         Number(r.commissionType) === 0 &&
+        //         amount >= parseFloat(r.minAmount) &&
+        //         amount <= parseFloat(r.maxAmount)
+        //     );
+
+        //     // Buscar Fee (Monto fijo)
+        //     let feeRange = ranges.find(r =>
+        //         Number(r.commissionType) === 1 &&
+        //         amount >= parseFloat(r.minAmount) &&
+        //         amount <= parseFloat(r.maxAmount)
+        //     );
+
+        //     //-----------------------------------
+        //     // Federal
+        //     //-----------------------------------
+
+        //     let federalPercent = 0;
+        //     let federalAmount = 0;
+
+        //     if (federalRange) {
+
+        //         federalPercent =
+        //             parseFloat(federalRange.commissionPercent);
+
+        //         federalAmount =
+        //             amount * (federalPercent / 100);
+        //     }
+
+        //     //-----------------------------------
+        //     // Fee
+        //     //-----------------------------------
+
+        //     let feeAmount = 0;
+
+        //     if (feeRange) {
+
+        //         feeAmount =
+        //             parseFloat(feeRange.commissionPercent);
+
+        //     }
+
+        //     //-----------------------------------
+        //     // Totales
+        //     //-----------------------------------
+
+        //     let totalFee =
+        //         federalAmount +
+        //         feeAmount;
+
+        //     let netAmount =
+        //         amount - totalFee;
+
+        //     if (netAmount < 0)
+        //         netAmount = 0;
+
+        //     //-----------------------------------
+        //     // Mostrar información
+        //     //-----------------------------------
+
+        //     commissionInput.val(federalAmount.toFixed(2));
+
+        //     commissionInput.attr(
+        //         'title',
+        //         `Federal: ${federalPercent.toFixed(2)}% = $${federalAmount.toFixed(2)}
+        // Fee: $${feeAmount.toFixed(2)}
+        // Total Fee: $${totalFee.toFixed(2)}`
+        //     );
+        //     row.data('.simpletx-net-amount', netAmount);
+        //     row.find('.simpletx-totalfee').val(totalFee.toFixed(2));
+        //     row.find('.simpletx-fixed').val(feeAmount.toFixed(2));
+        //     row.find('.simpletx-total').val(netAmount.toFixed(2));
+        //     row.find('.simpletx-amount').attr('title',`Net Amount: ${netAmount.toFixed(2)}`);
+        // }
 
         function calculateChecksTotals() {
             let totalAmount = 0;
@@ -4520,14 +4842,12 @@
                       $('#TransactionType').empty();
                       $('#TransactionType').val(t.numberT);
                       $('#TransactionTypeName').val(t.name);
-                      //$('#TransactionType').attr('data-commission', t.commission);
                       $('#TransactionType').data('ranges', t.commissionRanges);
                       $('#CommissionL').text(t.commission);
                     }else{
                       $('#'+Prefijo+'_TransactionType').empty();
                       $('#'+Prefijo+'_TransactionType').val(t.numberT);
                       $('#'+Prefijo+'_TransactionTypeName').val(t.name);
-                      //$('#' + Prefijo + '_TransactionType').attr('data-commission', t.commission);
                       $('#' + Prefijo + '_TransactionType').data('ranges', t.commissionRanges);
                       $('#' + Prefijo + '_CommissionL').text(t.commission);
                       if(Prefijo == "MOrder"){
@@ -5828,5 +6148,528 @@
                 }
             );
         }
+
+
+        //LOGICA DE DOMESTIC
+        let Domestic_tableSearchClient;
+        let Domestic_selectedClientId = null;
+        let Domestic_selectedBeneficiaryId = 0;
+         $('#Domestic_modalSearchClient').on('shown.bs.modal', function () {
+              if (!Domestic_tableSearchClient) {
+                 Domestic_loadSearchClient();
+            } else {
+                Domestic_tableSearchClient.ajax.reload();
+            }
+        });
+        function Domestic_loadSearchClient() {
+
+            Domestic_tableSearchClient = $('#Domestic_tblSearchClient').DataTable({
+                ajax: {
+                    url: '/Clients/Search',
+                    data: function (d) {
+                        d.term = $('#Domestic_searchClientInput').val();
+                    },
+                    dataSrc: ''
+                },
+                columns: [
+                    {
+                        data: null,
+                        render: d => `<b>${d.firstName} ${d.lastName}</b>`
+                    },
+                    { data: 'documentNumber' },
+                    { data: 'phone' },
+                    {
+                        data: 'idClient',
+                        render: id => `
+                            <button class="btn btn-success btn-sm"
+                                onclick="Domestic_selectClient(${id})">
+                                Select
+                            </button>
+                        `
+                    }
+                ]
+            });
+
+        }
+
+                let Domestic_timer;
+
+        $('#Domestic_searchClientInput').on('keyup', function () {
+            clearTimeout(Domestic_timer);
+            Domestic_timer = setTimeout(() => {
+                Domestic_tableSearchClient.ajax.reload();
+            }, 400);
+
+        });
+
+       function Domestic_selectClient(id) {
+            $.get('/Clients/GetById?id=' + id, function (c) {
+                 Domestic_selectedClientId = c.idClient;
+                $('#Domestic_SenderName').val(c.firstName + ' ' + c.lastName);
+                $('#Domestic_SenderDocumentNumber').val(c.documentNumber);
+                $('#Domestic_SenderPhone').val(c.phone);
+                $('#Domestic_SenderAddress').val(c.address);
+                $('#Domestic_SenderDocumentType').val(c.idDocumentType);
+                 $('#Domestic_SenderCountry').val(c.country).trigger('change');
+                if (c.expirationDate) {
+                        let date = new Date(c.expirationDate);
+                        if (!isNaN(date)) {
+                            let formatted = date.toISOString().split('T')[0];
+                             $('#Domestic_ExpirationDate').val(formatted);
+                        }
+                    }
+                    if (c.issueDate) {
+                        let date = new Date(c.issueDate);
+                        if (!isNaN(date)) {
+                            let formatted = date.toISOString().split('T')[0];
+                             $('#Domestic_IssueDate').val(formatted);
+                        }
+                    }
+                setTimeout(() => {
+                     loadCompaniesByTransactionType(5,"Domestic_SenderCompany");
+
+                }, 200);
+                $('#Domestic_modalSearchClient').modal('hide');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Client loaded',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+
+            });
+
+        }
+           $('#Domestic_SenderCountry').change(function () {
+             let id = $(this).val();
+             Domestic_loadCurrencyByCountry(id);
+         });
+          function Domestic_loadCurrencyByCountry(countryId) {
+            $.get('/Countries/GetById?id=' + countryId, function (c) {
+                let select =$('#Domestic_SenderCurrency');
+                select.empty();
+                select.append(
+                    `<option value="${c.idCountry}">${c.currency}</option>`
+                );
+            });
+        }
+          const Domestic_MAX_JUSTIFY_FILES = 5;
+         function Domestic_addJustifyFile() {
+              let total = $('.Domestic_justify-item').length;
+              if (total >= Domestic_MAX_JUSTIFY_FILES) {
+                  $('#Domestic_btnAddJustify').prop('disabled', true);
+                 return;
+             }
+             let html = `
+                  <div class="Domestic_justify-item row mb-2">
+                     <div class="col-11">
+                         <input type="file" name="Domestic_ImgJustify" class="form-control Domestic_justify-file" />
+                     </div>
+                     <div class="col-1">
+                         <button type="button" class="btn btn-danger" onclick="Domestic_removeJustifyFile(this)">
+                             <i class="bi bi-trash"></i>
+                         </button>
+                     </div>
+                 </div>
+             `;
+             $('#Domestic_justifyContainer').append(html);
+              Domestic_validateJustifyLimit();
+         }
+
+          function Domestic_removeJustifyFile(btn) {
+             $(btn).closest('.Domestic_justify-item').remove();
+             Domestic_validateJustifyLimit();
+         }
+
+         function Domestic_validateJustifyLimit() {
+             let total =$('.Domestic_justify-item').length;
+             $('#Domestic_btnAddJustify').prop('disabled',total >= Domestic_MAX_JUSTIFY_FILES);
+              $('#Domestic_justifyCounter').text(`${total} / ${Domestic_MAX_JUSTIFY_FILES} files`);
+         }
+
+          $('#Domestic_btnSaveNewClient').click(function () {
+                 var _FirstName= $('#Domestic_C_FirstName').val().trim();
+                 var _LastName= $('#Domestic_C_LastName').val().trim();
+                 var _IdDocumentType = $('#Domestic_C_DocumentType').val();
+                 var _DocumentNumber= $('#Domestic_C_DocumentNumber').val().trim();
+                 var _ExpirationDate= $('#Domestic_C_ExpirationDate').val().trim();
+                 var _IssueDate= $('#Domestic_C_IssueDate').val().trim();
+                 var _Phone= $('#Domestic_C_Phone').val().trim();
+                 var _Country= $('#Domestic_C_Country').val();
+                 var _Address= $('#Domestic_C_Address').val().trim();
+                  var _DOB= $('#Domestic_C_DOB').val().trim();
+
+                 if (!_FirstName) {
+                    Swal.fire('Error', 'FirstName is required', 'error');
+                    return;
+                }
+                if (!_LastName) {
+                        Swal.fire('Error', 'LastName is required', 'error');
+                    return;
+                }
+                if (!_IdDocumentType) {
+                    Swal.fire('Error', 'DocumentType is required'+ _IdDocumentType, 'error');
+                    return;
+                }
+                if (!_DocumentNumber) {
+                    Swal.fire('Error', 'DocumentNumber is required', 'error');
+                    return;
+                }
+                if (!_DOB) {
+                        Swal.fire('Error', 'Date of birth is required', 'error');
+                    return;
+                }
+                if (!_ExpirationDate) {
+                        Swal.fire('Error', 'ExpirationDate is required', 'error');
+                    return;
+                }
+                if (!_Phone) {
+                        Swal.fire('Error', 'Phone is required', 'error');
+                    return;
+                }
+                if (!_Country) {
+                        Swal.fire('Error', 'Country is required', 'error');
+                    return;
+                }
+                if (!_Address) {
+                        Swal.fire('Error', 'Address is required', 'error');
+                    return;
+                }
+
+                let formData = new FormData();
+                formData.append("FirstName", _FirstName);
+                formData.append("LastName", _LastName);
+                formData.append("IdDocumentType", _IdDocumentType);
+                formData.append("DocumentNumber", _DocumentNumber);
+                formData.append("ExpirationDate", _ExpirationDate);
+                formData.append("IssueDate", _IssueDate);
+                formData.append("Phone", _Phone);
+                formData.append("Country", _Country);
+                formData.append("Address", _Address);
+                formData.append("Dob", _DOB);
+                formData.append("UserC", "admin");
+                Swal.fire({
+                    title: 'Saving...',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+
+                $.ajax({
+                    url: '/Clients/Create',
+                    method: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (res) {
+                        selectedClientId = res.idClient;
+                            $('#Domestic_SenderName').val($('#Domestic_C_FirstName').val() + ' ' + $('#Domestic_C_LastName').val());
+                         $('#Domestic_SenderDocumentNumber').val($('#Domestic_C_DocumentNumber').val());
+                          $('#Domestic_SenderPhone').val($('#Domestic_C_Phone').val());
+                        $('#Domestic_SenderAddress').val($('#Domestic_C_Address').val());
+                        $('#Domestic_SenderDocumentType').val($('#Domestic_C_DocumentType').val());
+                         $('#Domestic_SenderCountry').val($('#Domestic_C_Country').val()).trigger('change');
+                        if (_ExpirationDate) {
+                            let date = new Date(_ExpirationDate);
+                            if (!isNaN(date)) {
+                                let formatted = date.toISOString().split('T')[0];
+                                 $('#Domestic_ExpirationDate').val(formatted);
+                            }
+                        }
+                        if (_IssueDate) {
+                            let date = new Date(_IssueDate);
+                            if (!isNaN(date)) {
+                                let formatted = date.toISOString().split('T')[0];
+                                 $('#Domestic_IssueDate').val(formatted);
+                            }
+                        }
+
+                        setTimeout(() => {
+                            loadCompaniesByTransactionType(5,"Domestic_SenderCompany")
+                              Domestic_loadCurrencyByCountry($('#Domestic_C_Country').val());
+                        }, 200);
+                        $('#Domestic_modalSearchClient').modal('hide');
+                        Domestic_limpiarControlesNewCliente()
+                        Swal.fire({
+                        icon: 'success',
+                        title: 'Client created',
+                        timer: 1000,
+                        showConfirmButton: false
+                        });
+                    },
+                    error: function (err) {
+
+                        Swal.fire('Error', err.responseText, 'error');
+
+                    }
+                });
+
+            });
+
+        function Domestic_limpiarControlesNewCliente() {
+            $('#Domestic_C_FirstName').val('');
+            $('#Domestic_C_LastName').val('');
+            $('#Domestic_C_DocumentNumber').val('');
+            $('#Domestic_C_ExpirationDate').val('');
+            $('#Domestic_C_IssueDate').val('');
+            $('#Domestic_C_Phone').val('');
+             $('#Domestic_C_Address').val('');
+        }
+
+
+           $('#Domestic_btnSaveTx').click(async function(){
+              let TransactionTypeField = $('#Domestic_TransactionType').val();
+             let exists = await $.get('/Clients/ExistsClient?documentNumber='+ $('#Domestic_SenderDocumentNumber').val());
+             if(!exists){
+                 Swal.fire(
+                     'Error',
+                     'Client no longer exists',
+                     'error'
+                 );
+                 return;
+             }
+              Domestic_saveTransaction();
+         });
+
+          function Domestic_saveTransaction(){
+             let formData = new FormData();
+             formData.append('TransactionType',$('#Domestic_TransactionType').val());
+              formData.append('ReferenceNumber',$('#Domestic_ReferenceNumber').val());
+
+             //RECEIVER DOMESTIC
+             formData.append('SenderName',$('#Domestic_ReceiverName').val());
+             formData.append('SenderCountry',$('#Domestic_ReceiverCountry').val());
+             formData.append('SenderCompany',$('#Domestic_ReceiverCompany').val());
+              formData.append('SenderDocumentNumber',$('#Domestic_ReceiverDocumentNumber').val());
+             formData.append('TransactionDate',$('#Domestic_ReceiverTransactionDate').val());
+             
+             // formData.append('SenderDocumentType',$('#SenderDocumentType').val());
+             // formData.append('SenderDocumentNumber',$('#SenderDocumentNumber').val());
+             // formData.append('SenderPhone',$('#SenderPhone').val());
+             // formData.append('SenderAddress',$('#SenderAddress').val());
+
+             //SENDER DOMESTIC
+              formData.append('ReceiverCountry',$('#Domestic_SenderCountry').val());
+              formData.append('ReceiverCompany',$('#Domestic_SenderCompany').val());
+              formData.append('ReceiverCurrency',$('#Domestic_SenderCurrency').val());
+              formData.append('ReceiverName',$('#Domestic_SenderName').val());
+              formData.append('ReceiverDocumentType',$('#Domestic_SenderDocumentType').val());
+              formData.append('ReceiverDocumentNumber',$('#Domestic_SenderDocumentNumber').val());
+              formData.append('ReceiverPhone',$('#Domestic_SenderPhone').val());
+              formData.append('ReceiverAddress',$('#Domestic_SenderAddress').val());
+
+              formData.append('JustifyDetails',$('#Domestic_JustifyDetails').val());
+              formData.append('Justify_AgentName',$('#Domestic_Justify_AgentName').val());
+              formData.append('Justify_DateError',$('#Domestic_Justify_DateError').val() || '');
+              formData.append('IdClient_fk',Domestic_selectedClientId);
+             //Nuevos campos
+              formData.append('Amount',$('#Domestic_NetAmount').val());
+              formData.append('CalculationMode',$('#Domestic_DeductFees').is(':checked') ? 2 : 1);
+             formData.append('Commission',$('#Domestic_Commission').val());
+             formData.append('FixedCommission',$('#Domestic_FixedCommission').val());
+              formData.append('TotalAmount',$('#Domestic_TotalAmount').val());
+             //neuvos campos
+             formData.append('UserC','admin');
+              $('.Domestic_justify-file').each(function () {
+                 if (this.files.length > 0) {
+                     formData.append('Domestic_ImgJustify',this.files[0]);
+                 }
+             });
+             Swal.fire({
+                 title:'Saving...',
+                 allowOutsideClick:false,
+                 didOpen:()=>Swal.showLoading()
+             });
+              if(Domestic_selectedClientId <= 0){
+             Swal.fire(
+                 'Error',
+                 'Select a valid client',
+                 'error');
+             return;
+             }
+            for (let pair of formData.entries()) {}
+             $.ajax({
+                  url:'/Transactions/CreateDomestic',
+                 method:'POST',
+                 data:formData,
+                 contentType:false,
+                 processData:false,
+                 success:function(){
+                     $('#Domestic_modalTx').modal('hide');
+                      $('#Domestic_tblTx')
+                         .DataTable()
+                         .ajax.reload();
+                     Swal.fire({
+                         icon:'success',
+                         title:'Transaction saved',
+                         timer:1200,
+                         showConfirmButton:false
+                     });
+                         if(Domestic_tableSearchClient){
+                              Domestic_tableSearchClient.clear().draw();
+                         }
+                     Domestic_clearTransactionForm();
+                      $('#Domestic_Commission').data('auto', true);
+                 },error:function(err){
+                     let res = err.responseJSON;
+                     if(!res){
+                         Swal.fire('Error','Unexpected error','error');
+                         return;
+                     }
+                     switch(res.type){
+                         case 'CLIENT_NOT_FOUND':
+                             Swal.fire('Client removed',res.message,'error');
+                             break;
+                         case 'BENEFICIARY_INVALID':
+                             Swal.fire('Invalid beneficiary',res.message,'error');
+                             break;
+                         case 'AML_JUSTIFY_REQUIRED':
+                             Swal.fire('AML Validation',res.message,'warning');
+                             break;
+                         case 'REFERENCE_EXISTS':
+                             Swal.fire('Duplicate reference',res.message,'error');
+                             break;
+                         default:
+                             Swal.fire('Error',res.message,'error');
+                             break;
+                     }
+                 }
+             });
+         }
+
+         //LIMPIADORES
+
+         function Domestic_clearTransactionForm(){
+             $('#Domestic_formTx')[0].reset();
+             $('#Domestic_SenderName').val("")
+             $('#Domestic_SenderDocumentNumber').val("")
+             $('#Domestic_SenderPhone').val("")
+             $('#Domestic_SenderAddress').val("")
+             $('#Domestic_ReceiverAddress').val("")
+             $('#Domestic_JustifyDetails').val("")
+             $('#Domestic_Justify_AgentName').val("")
+             $('#Domestic_imgPreview').hide();
+              Domestic_selectedClientId = 0;
+             $('#Domestic_SenderCompany').html('');
+             $('#Domestic_SenderCurrency').html('');
+             $('#Domestic_ReceiverCompany').html('');
+             $('#Domestic_ReceiverCurrency').html('');
+             $('#Domestic_ReferenceNumber').val("")
+             $('#Domestic_Amount').val("")
+             $('#Domestic_Commission').val("")
+             $('#Domestic_FixedCommission').val("")
+             $('#Domestic_TotalCommission').val("")
+             $('#Domestic_TotalAmount').val("")
+             $('#Domestic_TransactionType').val("")
+         }
+
+          $('#Domestic_SenderCompany').change(function () {
+             let senderCompany =$(this).val();
+             let transactionType =5;
+             $.get(
+                 '/ReferenceNumber/GetReferencePreview',
+                 {
+                     senderCompany,
+                     transactionType
+                 },
+                 function (referenceNumber) {
+                      $('#Domestic_ReferenceNumber').val(referenceNumber);
+                 });
+             });
+
+        //comisiones domestic
+         $('#Domestic_Commission').data('auto', true);
+          $('#Domestic_FixedCommission').data('auto', true);
+          $('#Domestic_Amount, #Domestic_Commission, #Domestic_FixedCommission, #Domestic_DeductFees')
+             .on('keyup change input', function () {
+                 if ($(this).is('#Domestic_Commission')) {
+                     $('#Domestic_Commission').data('auto', false);
+                 }
+                     if ($(this).is('#Domestic_FixedCommission')) {
+                        $('#Domestic_FixedCommission').data('auto', false);
+                    }
+                  Domestic_calculateCommission();
+             });
+
+           function Domestic_calculateCommission() {
+             let amount = parseFloat($('#Domestic_Amount').val()) || 0;
+             let commissionInput = $('#Domestic_Commission');
+              let ranges = $('#Domestic_TransactionType').data('ranges');
+             if (!ranges || ranges.length === 0) {
+
+                 $('#Domestic_Commission').val('');
+                 $('#Domestic_FixedCommission').val('');
+                 $('#Domestic_TotalCommission').val('');
+                 $('#Domestic_TotalAmount').val('');
+                 $('#Domestic_NetAmount').val('');
+                  $('#Domestic_CommissionL').text('0');
+                 return;
+             }
+             let percentageRanges = ranges.filter(r =>
+                 Number(r.commissionType) === 0 &&
+                 amount >= parseFloat(r.minAmount) &&
+                 amount <= parseFloat(r.maxAmount)
+             );
+             let commissionPercent = 0;
+             percentageRanges.forEach(r => {
+                 commissionPercent += parseFloat(r.commissionPercent);
+             });
+             $('#Domestic_CommissionL').text(commissionPercent.toFixed(2));
+             let commission = 0;
+             if (commissionInput.data('auto') !== false) {
+                 commission = amount * (commissionPercent / 100);
+                 commissionInput.val(
+                     commission.toFixed(2)
+                 );
+             }
+             else {
+                 commission =parseFloat(commissionInput.val()) || 0;
+             }
+             let feeRanges = ranges.filter(r =>
+                 Number(r.commissionType) === 1 &&
+                 amount >= parseFloat(r.minAmount) &&
+                 amount <= parseFloat(r.maxAmount)
+             );
+             // let fixedCommission = 0;
+             // feeRanges.forEach(r => {
+             //     fixedCommission += parseFloat(r.commissionPercent);
+             // });
+             //   $('#Domestic_FixedCommission').val(fixedCommission.toFixed(2)
+             // );
+            let fixedCommissionInput = $('#Domestic_FixedCommission');
+            let fixedCommission = 0;
+            if (fixedCommissionInput.data('auto') !== false) {
+                feeRanges.forEach(r => {
+                    fixedCommission += parseFloat(r.commissionPercent);
+                });
+                fixedCommissionInput.val(fixedCommission.toFixed(2));
+            }
+            else {
+                fixedCommission = parseFloat(fixedCommissionInput.val()) || 0;
+            }
+             let totalCommission =commission + fixedCommission;
+             let deductFees =$('#Domestic_DeductFees').is(':checked');
+             let totalAmount = 0;
+             let netAmount = 0;
+             if (!deductFees) {
+                 netAmount = amount;
+                 totalAmount =amount + totalCommission;
+             }
+             else {
+                 totalAmount = amount;
+                 netAmount =amount - totalCommission;
+                 if (netAmount < 0)
+                     netAmount = 0;
+             }
+             $('#Domestic_Commission').val(commission.toFixed(2));
+
+             $('#Domestic_TotalCommission').val(totalCommission.toFixed(2));
+             $('#Domestic_TotalAmountView').val(netAmount.toFixed(2));
+             $('#Domestic_TotalAmount').val(totalAmount.toFixed(2));
+             $('#Domestic_NetAmount').val(netAmount.toFixed(2));
+             $('#Domestic_NetAmountL').text(netAmount.toFixed(2));
+         }
+          $('#Domestic_Commission').on('input', function () {$(this).data('auto', false);});
+           $('#Domestic_FixedCommission').on('input', function () {$(this).data('auto', false);});
+
     </script>
 }

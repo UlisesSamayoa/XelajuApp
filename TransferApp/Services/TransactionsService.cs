@@ -17,43 +17,7 @@ public class TransactionsService
     }
 
     public async Task<List<TransactionsModel>> GetAll() => await _repo.GetAll();
-    //public async Task Create(TransactionsModel m, List<IFormFile> ImgJustify)
-    //{
-    //    int idTransaction = await _repo.Create(m);
-    //    if (ImgJustify != null && ImgJustify.Any())
-    //    {
-    //        foreach (var file in ImgJustify)
-    //        {
-    //            string filePath = SaveTransactionFile(
-    //                file,
-    //                m.TransactionType,
-    //                m.SenderName,
-    //                m.SenderDocumentNumber,
-    //                m.ReferenceNumber
-    //            );
-    //            try
-    //            {
-    //                await _repoAttach.CreateAttachment(
-    //                    new TransactionAttachmentModel
-    //                    {
-    //                        IdTransaction = idTransaction,
-    //                        FileName = Path.GetFileName(filePath),
-    //                        OriginalFileName = file.FileName,
-    //                        FileExtension = Path.GetExtension(file.FileName),
-    //                        ContentType = file.ContentType,
-    //                        FilePath = filePath,
-    //                        AttachmentType = "TRANSACTION_DOCUMENT",
-    //                        FileSize = file.Length,
-    //                        CreatedBy = m.UserC
-    //                    });
-    //            }
-    //            catch (Exception ex)
-    //            {
-    //                Console.WriteLine(ex.Message + ex.StackTrace);
-    //            }
-    //        }
-    //    }
-    //}
+
     public async Task Create(TransactionsModel m, List<IFormFile> ImgJustify)
     {
         // Validar compañía
@@ -108,7 +72,53 @@ public class TransactionsService
             }
         }
     }
+    public async Task CreateDomestic(TransactionsModel m, List<IFormFile> ImgJustify)
+    {
+        var company = await _repoCompany.GetById(m.ReceiverCompany);
+        if (company == null) throw new Exception("Company not found");
+        if (company.TransactionType != m.TransactionType) throw new Exception("Invalid company for selected transaction type");
+        m.ReferenceNumber = await _repoRefe.GetNextReferenceNumber(m.ReceiverCompany, m.TransactionType);
+        int idTransaction = await _repo.CreateDomestic(m);
+        long sequence =
+            ExtractSequence(
+                m.ReferenceNumber);
 
+        await _repoRefe.SaveReferenceSequence(m.ReceiverCompany, m.TransactionType, sequence);
+
+        if (ImgJustify != null && ImgJustify.Any())
+        {
+            foreach (var file in ImgJustify)
+            {
+                string filePath = SaveTransactionFile(
+                    file,
+                    m.TransactionType,
+                    m.ReceiverName,
+                    m.ReceiverDocumentNumber,
+                    m.ReferenceNumber
+                );
+                try
+                {
+                    await _repoAttach.CreateAttachment(
+                        new TransactionAttachmentModel
+                        {
+                            IdTransaction = idTransaction,
+                            FileName = Path.GetFileName(filePath),
+                            OriginalFileName = file.FileName,
+                            FileExtension = Path.GetExtension(file.FileName),
+                            ContentType = file.ContentType,
+                            FilePath = filePath,
+                            AttachmentType = "TRANSACTION_DOCUMENT",
+                            FileSize = file.Length,
+                            CreatedBy = m.UserC
+                        });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
+    }
     public async Task Delete(int id, string user) => await _repo.Delete(id, user);
     public async Task<TransactionsModel> GetById(int id)
     {
@@ -329,6 +339,7 @@ public class TransactionsService
             2 => "MO",
             3 => "MT",
             4 => "PS",
+            5 => "DT",
             _ => "OT"
         };
 
