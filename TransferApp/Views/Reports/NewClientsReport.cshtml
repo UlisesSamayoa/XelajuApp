@@ -1,0 +1,232 @@
+﻿@model TransferApp.Models.Reports.NewClientReportViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>New Clients Report</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial,Helvetica,sans-serif;
+        }
+        body {
+            margin: 30px;
+            color: #222;
+            font-size: 13px;
+        }
+        h1, h2, h3, h4, h5 {
+            margin: 0;
+        }
+        .header {
+            width: 100%;
+            border-bottom: 3px solid #0d6efd;
+            padding-bottom: 18px;
+            margin-bottom: 25px;
+        }
+        .company {
+            font-size: 26px;
+            font-weight: bold;
+            color: #0d6efd;
+        }
+        .subtitle {
+            color: #666;
+            margin-top: 3px;
+        }
+        .report-title {
+            text-align: right;
+        }
+            .report-title h2 {
+                font-size: 24px;
+            }
+            .report-title small {
+                color: #777;
+            }
+        table.info {
+            width: 100%;
+            margin-bottom: 25px;
+            border-collapse: collapse;
+        }
+            table.info td {
+                padding: 6px;
+            }
+        .info-label {
+            color: #777;
+            font-weight: bold;
+            width: 130px;
+        }
+        .summary {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+        .card {
+            width: 24%;
+            border: 1px solid #DDD;
+            border-radius: 8px;
+            padding: 15px;
+            background: #fafafa;
+        }
+        .card-title {
+            color: #777;
+            font-size: 12px;
+        }
+        .card-value {
+            margin-top: 8px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        table.report {
+            width: 100%;
+            border-collapse: collapse;
+        }
+            table.report thead {
+                background: #0d6efd;
+                color: white;
+            }
+            table.report th {
+                padding: 10px;
+                text-align: left;
+                font-size: 12px;
+            }
+            table.report td {
+                padding: 9px;
+                border-bottom: 1px solid #EEE;
+            }
+            table.report tbody tr:nth-child(even) {
+                background: #fafafa;
+            }
+        .right {
+            text-align: right;
+        }
+        tfoot td {
+            font-weight: bold;
+            background: #efefef;
+        }
+        .footer {
+            margin-top: 35px;
+            border-top: 1px solid #DDD;
+            padding-top: 10px;
+            color: #777;
+            font-size: 11px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <table width="100%">
+            <tr>
+                <td>
+                    <div class="company">
+                        XELAJU WATER SYSTEM
+                    </div>
+                    <div class="subtitle">
+                        New Clients Report
+                    </div>
+                </td>
+                <td class="report-title">
+                    <h2>
+                        CLIENTS
+                    </h2>
+                    <small>
+                        Generated @Model.GeneratedDate.ToString("dd/MM/yyyy HH:mm")
+                    </small>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <table class="info">
+        <tr>
+            <td colspan="2" class="info-label">
+                New Clients
+            </td>
+            <td class="info-label">
+                From
+            </td>
+            <td>
+                @Model.StartDate.ToString("dd/MM/yyyy")
+            </td>
+            <td class="info-label">
+                To
+            </td>
+            <td>
+                @Model.EndDate.ToString("dd/MM/yyyy")
+            </td>
+        </tr>
+    </table>
+    <div class="summary">
+        <div class="card">
+            <div class="card-title">New Clients</div>
+            <div class="card-value">@Model.Clients.Count</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Countries</div>
+            <div class="card-value">
+                @Model.Clients.Select(x => x.Country).Distinct().Count()
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title">Active Clients</div>
+            <div class="card-value">
+                @Model.Clients.Count(x => x.Status == 1)
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title">Inactive Clients</div>
+            <div class="card-value">
+                @Model.Clients.Count(x => x.Status == 0)
+            </div>
+        </div>
+    </div>
+    <table class="report">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Document</th>
+                <th>Full Name</th>
+                <th>Country</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Issue Date</th>
+                <th>Expiration</th>
+                <th>Created</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @for (int i = 0; i < Model.Clients.Count; i++)
+            {
+                <tr>
+                    <td>@(i + 1)</td>
+                    <td>@Model.Clients[i].DocumentNumber</td>
+                    <td>@Model.Clients[i].FullName</td>
+                    <td>@Model.Clients[i].Country</td>
+                    <td>@Model.Clients[i].Phone</td>
+                    <td>@Model.Clients[i].Address</td>
+                    <td>@(Model.Clients[i].IssueDate?.ToString("dd/MM/yyyy") ?? "-")</td>
+                    <td>@(Model.Clients[i].ExpirationDate?.ToString("dd/MM/yyyy") ?? "-")</td>
+                    <td>@(Model.Clients[i].DateC)</td>
+                </tr>
+            }
+        </tbody>
+
+        <tfoot>
+            <tr>
+                <td colspan="9">
+                    Total Clients
+                </td>
+                <td>
+                    @Model.Clients.Count
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+    <div class="footer">
+        This report was automatically generated by the Xelaju water Management System.<br />
+        Generated on @Model.GeneratedDate.ToString("dd/MM/yyyy HH:mm:ss")
+    </div>
+</body>
+</html>

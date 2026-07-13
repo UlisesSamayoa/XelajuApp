@@ -36,6 +36,8 @@ builder.Services.AddScoped<ReferenceNumberRepository>();
 builder.Services.AddScoped<ReferenceNumberService>();
 builder.Services.AddScoped<ClientCompaniesRepository>();
 builder.Services.AddScoped<ClientCompaniesService>();
+builder.Services.AddScoped<ReportsRepository>();
+builder.Services.AddScoped<ReportsService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

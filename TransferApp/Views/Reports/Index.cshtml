@@ -1,0 +1,503 @@
+﻿@{
+    ViewData["Title"] = "Companies";
+    Layout = "_Layout";
+}
+<style>
+    .report-card {
+        background: #fff;
+        border-radius: 18px;
+        padding: 28px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #ECECEC;
+        transition: .25s;
+        box-shadow: 0 6px 20px rgba(0,0,0,.05);
+    }
+
+        .report-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 18px 35px rgba(0,0,0,.15);
+        }
+
+    .report-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 30px;
+    }
+
+    .report-card h4 {
+        font-weight: 700;
+    }
+
+    .report-card p {
+        min-height: 60px;
+    }
+
+    .report-filters {
+        margin-top: 12px;
+        padding-left: 18px;
+        flex-grow: 1;
+    }
+
+    .report-filters li {
+        margin-bottom: 6px;
+    }
+
+    .btnOpenReport {
+        border-radius: 10px;
+        font-weight: 600;
+    }
+</style>
+
+<div class="container-fluid mt-4">
+    <div class="row g-4">
+        <!-- REPORT 1 -->
+        <div class="col-xl-4 col-lg-4 col-md-6 d-flex">
+            <div class="report-card h-100 w-100 d-flex flex-column">
+                <div class="row">
+                    <div class="col-3">
+                        <div class="report-icon bg-primary">
+                            <i class="bi bi-receipt-cutoff"></i>
+                        </div>
+                    </div>
+                    <div class="col-9 mt-3">
+                        <h5>Daily transactions</h5>
+                    </div>
+                </div>
+                <p class="text-muted">
+                    Generate daily transactions.
+                </p>
+                <hr>
+                <small class="text-secondary fw-bold">
+                    Filters
+                </small>
+                <div class="flex-grow-1">
+                    <div class="row">
+                        <div class="col-6 mb-2">
+                            <label>Start Date</label>
+                            <input type="date" id="1_StartDate" class="form-control">
+                        </div>
+                        <div class="col-6 mb-2">
+                            <label>End Date</label>
+                            <input type="date" id="1_EndDate" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary w-100 btnOpenReport" data-report="transactions_day">Generate Report</button>
+            </div>
+        </div>
+        <!-- REPORT 2 -->
+        <div class="col-xl-4 col-lg-4 col-md-6 d-flex">
+            <div class="report-card h-100 w-100 d-flex flex-column">
+                <div class="row">
+                    <div class="col-3">
+                        <div class="report-icon bg-primary">
+                            <i class="bi bi-receipt-cutoff"></i>
+                        </div>
+                    </div>
+                    <div class="col-9 mt-3">
+                        <h5>Transactions by Company</h5>
+                    </div>
+                </div>
+                <p class="text-muted">
+                    Generate transaction reports by dates,
+                    companies and transaction type.
+                </p>
+                <hr>
+                <small class="text-secondary fw-bold">
+                    Filters
+                </small>
+                <div class="flex-grow-1">
+                    <div class="row">
+                        <div class="col-6 mb-2">
+                            <label>Start Date</label>
+                            <input type="date" id="2_StartDate" class="form-control">
+                        </div>
+                        <div class="col-6 mb-2">
+                            <label>End Date</label>
+                            <input type="date" id="2_EndDate" class="form-control">
+                        </div>
+                        <div class="col-12">
+                            <label>Transaction Type</label>
+                            <select id="TransactionType" class="form-control"></select>
+                            <br />
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary w-100 btnOpenReport" data-report="transactions_type">Generate Report</button>
+            </div>
+        </div>
+        <!-- REPORT 2 -->
+        <div class="col-xl-4 col-lg-4 col-md-6 d-flex">
+            <div class="report-card h-100 w-100 d-flex flex-column">
+                <div class="row">
+                    <div class="col-3">
+                        <div class="report-icon bg-success">
+                            <i class="bi bi-people"></i>
+                        </div>
+                    </div>
+                    <div class="col-9 mt-3">
+                        <h5>Clients Report</h5>
+                    </div>
+                </div>
+                <p class="text-muted">
+                    View news customers,
+                    registration date and country.
+                </p>
+                <hr>
+                <small class="text-secondary fw-bold">
+                    Filters
+                </small>
+                <div class="flex-grow-1">
+                    <div class="row">
+                        <div class="col-6 mb-2">
+                            <label>Start Date</label>
+                            <input type="date" id="3_StartDate" class="form-control">
+                        </div>
+                        <div class="col-6 mb-2">
+                            <label>End Date</label>
+                            <input type="date" id="3_EndDate" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                @* <button class="btn btn-success w-100 mt-3"> <i class="bi bi-bar-chart-line"></i> Open Report </button> *@
+                <button class="btn btn-primary w-100 btnOpenReport" data-report="new_clients">Generate Report</button>
+
+            </div>
+        </div>
+
+        <!-- REPORT 3 -->
+        <div class="col-xl-4 col-lg-4 col-md-6 d-flex">
+            <div class="report-card h-100 w-100 d-flex flex-column">
+
+                <div class="row">
+                    <div class="col-3">
+                        <div class="report-icon bg-warning">
+                            <i class="bi bi-cash-stack"></i>
+                        </div>
+                    </div>
+
+                    <div class="col-9 mt-3">
+                        <h5>Commissions Report</h5>
+                    </div>
+                </div>
+
+                <p class="text-muted">
+                    Analyze commissions,
+                    fixed fees and transaction totals.
+                </p>
+
+                <hr>
+
+                <small class="text-secondary fw-bold">
+                    Filters
+                </small>
+
+                <div class="flex-grow-1">
+
+                    <div class="row">
+
+                        <div class="col-6 mb-2">
+                            <label>Start</label>
+                            <input type="date"
+                                   class="form-control">
+                        </div>
+
+                        <div class="col-6 mb-2">
+                            <label>End</label>
+                            <input type="date"
+                                   class="form-control">
+                        </div>
+
+                        <div class="col-12">
+                            <label>Company</label>
+                            <select class="form-control"></select>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <button class="btn btn-warning w-100 mt-3">
+                    <i class="bi bi-bar-chart-line"></i>
+                    Open Report
+                </button>
+
+            </div>
+        </div>
+
+        <!-- REPORT 4 -->
+        <div class="col-xl-4 col-lg-4 col-md-6 d-flex">
+            <div class="report-card h-100 w-100 d-flex flex-column">
+
+                <div class="row">
+                    <div class="col-3">
+                        <div class="report-icon bg-danger">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                    </div>
+
+                    <div class="col-9 mt-3">
+                        <h5>AML Report</h5>
+                    </div>
+                </div>
+
+                <p class="text-muted">
+                    Monitor AML limits,
+                    exceptions and customer activity.
+                </p>
+
+                <hr>
+
+                <small class="text-secondary fw-bold">
+                    Filters
+                </small>
+
+                <div class="flex-grow-1">
+
+                    <div class="row">
+
+                        <div class="col-12 mb-2">
+                            <label>Client</label>
+                            <input class="form-control">
+                        </div>
+
+                        <div class="col-6">
+                            <label>Start</label>
+                            <input type="date"
+                                   class="form-control">
+                        </div>
+
+                        <div class="col-6">
+                            <label>End</label>
+                            <input type="date"
+                                   class="form-control">
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <button class="btn btn-danger w-100 mt-3">
+                    <i class="bi bi-bar-chart-line"></i>
+                    Open Report
+                </button>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+<script>
+
+        //fechas para los Justify date
+        const today = new Date();
+        const todayString =today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+        const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        const firstDayString =firstDayOfMonth.getFullYear() + '-' +String(firstDayOfMonth.getMonth() + 1).padStart(2, '0') + '-' +String(firstDayOfMonth.getDate()).padStart(2, '0');
+        //FECHA ACTUAL
+        $('#1_StartDate').val(todayString);
+        $('#1_EndDate').val(todayString);
+        $('#2_EndDate').val(todayString);
+        $('#3_EndDate').val(todayString);
+
+        //FECHA PRIMER DIA DEL MES
+        $('#2_StartDate').val(firstDayString);
+        $('#3_StartDate').val(firstDayString);
+
+    $.get('/TransactionsTypes/GetAllTypes', function (data) {
+        $('#TransactionType').empty();
+        data.forEach(t => {
+            $('#TransactionType').append(
+            `
+            <option value="${t.numberT}"
+                    data-commission="${t.commission}">
+                ${t.name}
+            </option>`
+            );
+        });
+    });
+
+        $(document).on('click', '.btnOpenReport', function () {
+            let report = $(this).data('report');
+            switch (report) {
+                case "transactions_day":
+                    generateDayliTransactionsReport();
+                    break;
+                case "transactions_type":
+                    generateTransactionsReport();
+                    break;
+                case "new_clients":
+                        generateNewClientsReport();
+                    break;
+                case "companies":
+                    generateCompaniesReport();
+                    break;
+            }
+        });
+
+        //REPORTES
+        //REPORTE DE TRANSACCIONES DEL DIA
+                function generateDayliTransactionsReport() {
+                let startDate = $('#1_StartDate').val();
+                let endDate = $('#1_EndDate').val();
+                    let urlBase = "https://localhost:28183";
+                if (!startDate || !endDate) {
+                    Swal.fire(
+                        'Required',
+                        'Select Start Date and End Date',
+                        'warning'
+                    );
+                    return;
+                }
+                Swal.fire({
+                    title: 'Generating report...',
+                    text: 'Please wait',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+                $.ajax({
+                            url: '/Reports/GenerateDayliTransactionsReport',
+                    type: 'GET',
+                    data: {
+                        startDate: startDate,
+                        endDate: endDate
+                    },
+                    xhrFields: {
+                        responseType: 'blob'
+                    },
+                    success: function (blob) {
+                        Swal.close();
+                        let url = window.URL.createObjectURL(blob);
+                        window.open(url, '_blank');
+                    },
+                    error: function (xhr) {
+                        Swal.close();
+                        let message = "Unexpected error";
+                        if (xhr.responseText)
+                            message = xhr.responseText;
+                        Swal.fire(
+                            'Error',
+                            message,
+                            'error'
+                        );
+                    }
+                });
+            }
+
+
+        //REPORTE DE TRANSACCIONES POR TIPO DE TRANSACCIÓN
+        function generateTransactionsReport() {
+                let startDate = $('#2_StartDate').val();
+            let endDate = $('#2_EndDate').val();
+            let transactionType = $('#TransactionType').val();
+                let urlBase = "https://localhost:28183";
+            if (!startDate || !endDate) {
+                Swal.fire(
+                    'Required',
+                    'Select Start Date and End Date',
+                    'warning'
+                );
+                return;
+            }
+            if (!transactionType) {
+                Swal.fire(
+                    'Required',
+                    'Select a Transaction Type',
+                    'warning'
+                );
+                return;
+            }
+            Swal.fire({
+                title: 'Generating report...',
+                text: 'Please wait',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+            $.ajax({
+                    url: '/Reports/GenerateTransactionsReport',
+                type: 'GET',
+                data: {
+                    startDate: startDate,
+                    endDate: endDate,
+                    transactionType: transactionType
+                },
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function (blob) {
+                    Swal.close();
+                    let url = window.URL.createObjectURL(blob);
+                    window.open(url, '_blank');
+                },
+                error: function (xhr) {
+                    Swal.close();
+                    let message = "Unexpected error";
+                    if (xhr.responseText)
+                        message = xhr.responseText;
+                    Swal.fire(
+                        'Error',
+                        message,
+                        'error'
+                    );
+                }
+            });
+        }
+
+            //REPORTE DE clientes nuevos en periodo x
+                    function generateNewClientsReport() {
+                    let startDate = $('#3_StartDate').val();
+                    let endDate = $('#3_EndDate').val();
+                    if (!startDate || !endDate) {
+                        Swal.fire(
+                            'Required',
+                            'Select Start Date and End Date',
+                            'warning'
+                        );
+                        return;
+                    }
+                    Swal.fire({
+                        title: 'Generating report...',
+                        text: 'Please wait',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+                    $.ajax({
+                                    url: '/Reports/GenerateNewClientsReport',
+                        type: 'GET',
+                        data: {
+                            startDate: startDate,
+                            endDate: endDate
+                        },
+                        xhrFields: {
+                            responseType: 'blob'
+                        },
+                        success: function (blob) {
+                            Swal.close();
+                            let url = window.URL.createObjectURL(blob);
+                            window.open(url, '_blank');
+                        },
+                        error: function (xhr) {
+                            Swal.close();
+                            let message = "Unexpected error";
+                            if (xhr.responseText)
+                                message = xhr.responseText;
+                            Swal.fire(
+                                'Error',
+                                message,
+                                'error'
+                            );
+                        }
+                    });
+                }
+
+</script>
+}
