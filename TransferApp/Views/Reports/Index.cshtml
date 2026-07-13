@@ -133,7 +133,7 @@
                 <button class="btn btn-primary w-100 btnOpenReport" data-report="transactions_type">Generate Report</button>
             </div>
         </div>
-        <!-- REPORT 2 -->
+        <!-- REPORT 3 -->
         <div class="col-xl-4 col-lg-4 col-md-6 d-flex">
             <div class="report-card h-100 w-100 d-flex flex-column">
                 <div class="row">
@@ -172,63 +172,45 @@
             </div>
         </div>
 
-        <!-- REPORT 3 -->
+        <!-- REPORT 4 -->
         <div class="col-xl-4 col-lg-4 col-md-6 d-flex">
             <div class="report-card h-100 w-100 d-flex flex-column">
-
                 <div class="row">
                     <div class="col-3">
                         <div class="report-icon bg-warning">
                             <i class="bi bi-cash-stack"></i>
                         </div>
                     </div>
-
                     <div class="col-9 mt-3">
                         <h5>Commissions Report</h5>
                     </div>
                 </div>
-
-                <p class="text-muted">
-                    Analyze commissions,
-                    fixed fees and transaction totals.
-                </p>
-
+                <p class="text-muted">Analyze commissions, fixed fees and transaction totals.</p>
                 <hr>
-
                 <small class="text-secondary fw-bold">
                     Filters
                 </small>
-
                 <div class="flex-grow-1">
-
                     <div class="row">
-
                         <div class="col-6 mb-2">
-                            <label>Start</label>
-                            <input type="date"
-                                   class="form-control">
+                            <label>Start Date</label>
+                            <input type="date" id="4_StartDate" class="form-control">
                         </div>
-
                         <div class="col-6 mb-2">
-                            <label>End</label>
-                            <input type="date"
-                                   class="form-control">
+                            <label>End Date</label>
+                            <input type="date" id="4_EndDate" class="form-control">
                         </div>
-
                         <div class="col-12">
-                            <label>Company</label>
-                            <select class="form-control"></select>
+                            <label>Transaction Type</label>
+                            <select id="4_TransactionType" class="form-control"></select>
+                            <br />
                         </div>
-
                     </div>
-
                 </div>
-
                 <button class="btn btn-warning w-100 mt-3">
                     <i class="bi bi-bar-chart-line"></i>
                     Open Report
                 </button>
-
             </div>
         </div>
 
@@ -317,12 +299,15 @@
         $('#TransactionType').empty();
         data.forEach(t => {
             $('#TransactionType').append(
-            `
-            <option value="${t.numberT}"
+            `<option value="${t.numberT}"
                     data-commission="${t.commission}">
                 ${t.name}
-            </option>`
-            );
+            </option>`);
+            $('#4_TransactionType').append(
+            `<option value="${t.numberT}"
+                     data-commission="${t.commission}">
+                 ${t.name}
+             </option>`);
         });
     });
 
