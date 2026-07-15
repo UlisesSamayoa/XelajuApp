@@ -111,7 +111,7 @@ namespace TransferApp.Services
                 padding:0 20px;
                 display:flex;
                 justify-content:space-between'>
-                <span>Money Transfer System</span>
+                <span>Xalaju Water</span>
                 <span>
                 Page <span class='pageNumber'></span>
                 of <span class='totalPages'></span>

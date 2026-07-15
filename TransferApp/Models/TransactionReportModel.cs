@@ -10,4 +10,5 @@
     public decimal TotalCommission { get; set; }
     public decimal TotalAmount { get; set; }
     public byte CalculationMode { get; set; }
+    public int TransactionType { get; set; }
 }

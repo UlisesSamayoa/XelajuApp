@@ -37,7 +37,8 @@ namespace TransferApp.Repositories
                     FixedCommission = Convert.ToDecimal(rd["FixedCommission"]),
                     TotalCommission = Convert.ToDecimal(rd["TotalCommission"]),
                     TotalAmount = Convert.ToDecimal(rd["TotalAmount"]),
-                    CalculationMode = Convert.ToByte(rd["CalculationMode"])
+                    CalculationMode = Convert.ToByte(rd["CalculationMode"]),
+                    TransactionType = Convert.ToInt32(rd["TransactionType"].ToString())
                 });
             }
             return list;
@@ -68,7 +69,8 @@ namespace TransferApp.Repositories
                     FixedCommission = Convert.ToDecimal(rd["FixedCommission"]),
                     TotalCommission = Convert.ToDecimal(rd["TotalCommission"]),
                     TotalAmount = Convert.ToDecimal(rd["TotalAmount"]),
-                    CalculationMode = Convert.ToByte(rd["CalculationMode"])
+                    CalculationMode = Convert.ToByte(rd["CalculationMode"]),
+                    TransactionType = Convert.ToInt32(rd["TransactionType"].ToString())
                 });
             }
             return list;
