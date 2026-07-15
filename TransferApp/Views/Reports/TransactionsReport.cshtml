@@ -2,12 +2,29 @@
 @model TransactionReportViewModel
 @{
     Layout = null;
+    bool isCheck = Model.Transactions[0].TransactionType == 1;
+    var totalAmount = Model.Transactions.Sum(x => x.Amount);
+    var totalFederal = Model.Transactions.Sum(x => x.Commission);
+    var totalFee = Model.Transactions.Sum(x => x.FixedCommission);
+    var totalFees = totalFederal + totalFee;
+    var totalCustomer = Model.Transactions.Sum(x => x.TotalAmount);
+    string type = Model.Transactions[0].TransactionType switch
+    {
+        1 => "Check cashing",
+        2 => "Money order",
+        3 => "Money transfer",
+        4 => "Paid Service",
+        5 => "Domestic Transfer",
+        _ => "-"
+    };
 }
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Transactions Report</title>
+    <div class="section-title">
+        Financial Transactions
+    </div>
     <style>
         * {
             box-sizing: border-box;
@@ -81,7 +98,8 @@
             border: 1px solid #DDD;
             border-radius: 8px;
             padding: 15px;
-            background: #fafafa;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,.08);
         }
 
         .card-title {
@@ -137,81 +155,171 @@
             font-size: 11px;
             text-align: center;
         }
+
+        .section-title {
+            margin-top: 40px;
+            margin-bottom: 12px;
+            padding: 10px 14px;
+            background: #0d6efd;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        tfoot {
+            display: table-footer-group;
+        }
+
+        tr {
+            page-break-inside: avoid;
+        }
+
+        .report {
+            margin-bottom: 35px;
+        }
+
+        .footer {
+            margin-top: 40px;
+            border-top: 1px solid #DDD;
+            padding-top: 12px;
+            color: #777;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .summary-table {
+            width: 55%;
+            margin-left: auto;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+            .summary-table td {
+                padding: 10px;
+                border: 1px solid #DDD;
+            }
+
+                .summary-table td:first-child {
+                    font-weight: bold;
+                    background: #f8f9fa;
+                }
+
+                .summary-table td:last-child {
+                    text-align: right;
+                    font-weight: bold;
+                }
+
+        .summary-total {
+            background: #0d6efd;
+            color: white;
+            font-size: 15px;
+        }
+
+        .summary-container {
+            page-break-inside: avoid;
+            break-inside: avoid;
+            margin-top: 30px;
+        }
+
+        .summary-table {
+            width: 55%;
+            margin-left: auto;
+            border-collapse: collapse;
+        }
+
+            .summary-table tr {
+                page-break-inside: avoid;
+            }
+
+            .summary-table td {
+                padding: 10px;
+                border: 1px solid #DDD;
+            }
     </style>
 </head>
 <body>
     <div class="header">
         <table width="100%">
             <tr>
-                <td>
+                <td width="75%">
                     <div class="company">
-                        XELAJU WATER SYSTEM
+                        XELAJU WATER
                     </div>
                     <div class="subtitle">
-                        Financial Transaction Report
+                        Financial Transactions Report
+                    </div>
+                    <div class="subtitle">Transactions Type: @type</div>
+                    <div style="margin-top:15px;font-size:12px;color:#555;">
+                        <strong>Period:</strong>
+                        @Model.StartDate.ToString("dd/MM/yyyy")
+                        -
+                        @Model.EndDate.ToString("dd/MM/yyyy")
                     </div>
                 </td>
-                <td class="report-title">
-                    <h2>
-                        TRANSACTIONS
+                <td width="25%" style="text-align:right;">
+                    @* Aquí luego podemos colocar el logo *@
+                    <!--<img src="/images/logo.png" style="height:70px;" />-->
+                    <h2 style="margin-top:10px;">
+                        REPORT
                     </h2>
-                    <small>
-                        Generated @Model.GeneratedDate.ToString("dd/MM/yyyy HH:mm")
-                    </small>
+                    <div style="font-size:12px;color:#777;">
+                        Generated
+                    </div>
+                    <div style="font-weight:bold;">
+                        @Model.GeneratedDate.ToString("dd/MM/yyyy HH:mm")
+                    </div>
                 </td>
             </tr>
         </table>
     </div>
-    <table class="info">
-        <tr>
-            <td class="info-label">
-                Transaction Type
-            </td>
-            <td>
-                @Model.TransactionTypeName
-            </td>
-            <td class="info-label">
-                From
-            </td>
-            <td>
-                @Model.StartDate.ToString("dd/MM/yyyy")
-            </td>
-            <td class="info-label">
-                To
-            </td>
-            <td>
-                @Model.EndDate.ToString("dd/MM/yyyy")
-            </td>
-        </tr>
-    </table>
     <div class="summary">
+
         <div class="card">
-            <div class="card-title">Transactions</div>
+            <div class="card-title">Operations</div>
             <div class="card-value">@Model.Transactions.Count</div>
         </div>
+
         <div class="card">
-            <div class="card-title">Net Amount</div>
-            <div class="card-value">@Model.Transactions.Sum(x => x.TotalAmount).ToString("C2")</div>
+            <div class="card-title">
+                @(isCheck ? "Check Value" : "Transaction Volume")
+            </div>
+            <div class="card-value">
+                @totalAmount.ToString("C2")
+            </div>
         </div>
+
         <div class="card">
-            <div class="card-title">Total Fees</div>
-            <div class="card-value">@Model.Transactions.Sum(x => x.Commission + x.FixedCommission).ToString("C2")</div>
+            <div class="card-title">Total Fees Collected</div>
+            <div class="card-value">
+                @totalFees.ToString("C2")
+            </div>
         </div>
+
         <div class="card">
-            <div class="card-title">Gross Amount</div>
-            <div class="card-value">@Model.Transactions.Sum(x => x.Amount).ToString("C2")</div>
+            <div class="card-title">
+                @(isCheck ? "Cash Delivered" : "Amount Received")
+            </div>
+            <div class="card-value">
+                @totalCustomer.ToString("C2")
+            </div>
         </div>
+
     </div>
     <table class="report">
         <thead>
             <tr>
                 <th>#</th>
+                <th>Date</th>
                 <th>Reference</th>
                 <th>Client</th>
                 <th>Company</th>
-                <th>Date</th>
                 <th class="right">
-                    Amount
+                    @(isCheck ? "Check Value" : "Amount")
                 </th>
                 <th class="right">
                     Federal
@@ -220,7 +328,10 @@
                     Fee
                 </th>
                 <th class="right">
-                    Net
+                    %/Fee
+                </th>
+                <th class="right">
+                    @(isCheck ? "Cash Delivered" : "Customer Paid")
                 </th>
             </tr>
         </thead>
@@ -229,86 +340,55 @@
             {
                 <tr>
                     <td>@(i + 1)</td>
-                    <td>@Model.Transactions[i].ReferenceNumber</td>
-
                     <td>
-
-                        @Model.Transactions[i].ClientName
-
-                    </td>
-
-                    <td>
-
-                        @Model.Transactions[i].CompanyName
-
-                    </td>
-
-                    <td>
-
                         @Model.Transactions[i].DateC.ToString("dd/MM/yyyy")
-
                     </td>
-
+                    <td>@Model.Transactions[i].ReferenceNumber</td>
+                    <td>
+                        @Model.Transactions[i].ClientName
+                    </td>
+                    <td>
+                        @Model.Transactions[i].CompanyName
+                    </td>
                     <td class="right">
-
-                        @Model.Transactions[i].Amount.ToString("N2")
-
+                        $@Model.Transactions[i].Amount.ToString("N2")
                     </td>
-
                     <td class="right">
-
-                        @Model.Transactions[i].Commission.ToString("N2")
-
+                        $@Model.Transactions[i].Commission.ToString("N2")
                     </td>
-
                     <td class="right">
-
-                        @Model.Transactions[i].FixedCommission.ToString("N2")
-
+                        $@Model.Transactions[i].FixedCommission.ToString("N2")
                     </td>
-
                     <td class="right">
-
-                        @Model.Transactions[i].TotalAmount.ToString("N2")
+                        @* $@(Model.Transactions[i].FixedCommission + Model.Transactions[i].Commission).ToString("N2") *@
+                        @String.Format("{0:N2}", Model.Transactions[i].FixedCommission + Model.Transactions[i].Commission)
 
                     </td>
-
+                    <td class="right">
+                        $@Model.Transactions[i].TotalAmount.ToString("N2")
+                    </td>
                 </tr>
-
             }
-
         </tbody>
-
         <tfoot>
-
             <tr>
-
                 <td colspan="5">
-
-                    Totals
-
+                    @(isCheck ? "Check Totals" : "Transaction Totals")
                 </td>
-
                 <td class="right">
-
-                    @Model.Transactions.Sum(x => x.Amount).ToString("N2")
-
+                    @totalAmount.ToString("N2")
                 </td>
-
                 <td class="right">
-
-                    @Model.Transactions.Sum(x => x.Commission).ToString("N2")
-
+                    @totalFederal.ToString("N2")
                 </td>
-
                 <td class="right">
-
-                    @Model.Transactions.Sum(x => x.FixedCommission).ToString("N2")
-
+                    @totalFee.ToString("N2")
                 </td>
-
                 <td class="right">
-                    @Model.Transactions.Sum(x => x.TotalAmount).ToString("N2")
+                    @String.Format("{0:N2}", @totalFee + @totalFederal)
+                </td>
+                <td class="right">
+                    @totalCustomer.ToString("N2")
                 </td>
             </tr>
         </tfoot>
