@@ -67,6 +67,38 @@ namespace TransferApp.Controllers
 
             return View("TransactionsReport", model);
         }
+        //REPORTE DE TRANSACCIONES POR CLIENTE
+        [HttpGet]
+        public async Task<IActionResult> GenerateClientTransactionsReport(DateTime startDate, DateTime endDate, int client_Id)
+        {
+            byte[] pdf = await _service.GenerateClientTransactionsReport(startDate, endDate, client_Id);
+            return File(pdf, "application/pdf", $"Transactions_{DateTime.Now:yyyyMMddHHmmss}.pdf");
+        }
+        //[HttpGet]
+        //public async Task<IActionResult> ClientTransactionsPdf(DateTime startDate, DateTime endDate, int client_Id)
+        //{
+        //    var transactions = await _service.GetClientTransactionsReport(startDate, endDate, client_Id);
+        //    var model = new ClientTransactionsReportViewModel
+        //    {
+        //        StartDate = startDate,
+        //        EndDate = endDate,
+        //        GeneratedDate = DateTime.Now,
+        //        TransactionTypeName = "TIPO TRANSACCION",
+        //        Transactions = transactions
+        //    };
+
+        //    return View("ClientsTransactionsReport", model);
+        //}
+        [HttpGet]
+        public async Task<IActionResult> ClientTransactionsPdf(DateTime startDate, DateTime endDate, int client_Id)
+        {
+            var model = await _service.GetClientTransactionsReport(
+                startDate,
+                endDate,
+                client_Id);
+
+            return View("ClientsTransactionsReport", model);
+        }
 
         //REPORTE DE CLIENTES NUEVOS 
         public async Task<IActionResult> GenerateNewClientsReport(DateTime startDate, DateTime endDate)

@@ -1,0 +1,750 @@
+﻿@using TransferApp.Models.Reports
+@model ClientTransactionsReportViewModel
+@{
+    Layout = null;
+}
+@{
+
+    var financialTransactions = Model.Transactions
+        .Where(x => x.TransactionType != 1)
+        .OrderBy(x => x.DateC)
+        .ToList();
+
+    var checkTransactions = Model.Transactions
+        .Where(x => x.TransactionType == 1)
+        .OrderBy(x => x.DateC)
+        .ToList();
+
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <div class="section-title">
+        Financial Transactions
+    </div>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial,Helvetica,sans-serif;
+        }
+
+        body {
+            margin: 30px;
+            color: #222;
+            font-size: 13px;
+        }
+
+        h1, h2, h3, h4, h5 {
+            margin: 0;
+        }
+
+        .header {
+            width: 100%;
+            border-bottom: 3px solid #0d6efd;
+            padding-bottom: 18px;
+            margin-bottom: 25px;
+        }
+
+        .company {
+            font-size: 26px;
+            font-weight: bold;
+            color: #0d6efd;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-top: 3px;
+        }
+
+        .report-title {
+            text-align: right;
+        }
+
+            .report-title h2 {
+                font-size: 24px;
+            }
+
+            .report-title small {
+                color: #777;
+            }
+
+        table.info {
+            width: 100%;
+            margin-bottom: 25px;
+            border-collapse: collapse;
+        }
+
+            table.info td {
+                padding: 6px;
+            }
+
+        .info-label {
+            color: #777;
+            font-weight: bold;
+            width: 130px;
+        }
+
+        .summary {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            width: 24%;
+            border: 1px solid #DDD;
+            border-radius: 8px;
+            padding: 15px;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,.08);
+        }
+
+        .card-title {
+            color: #777;
+            font-size: 12px;
+        }
+
+        .card-value {
+            margin-top: 8px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        table.report {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            table.report thead {
+                background: #0d6efd;
+                color: white;
+            }
+
+            table.report th {
+                padding: 10px;
+                text-align: left;
+                font-size: 12px;
+            }
+
+            table.report td {
+                padding: 9px;
+                border-bottom: 1px solid #EEE;
+            }
+
+            table.report tbody tr:nth-child(even) {
+                background: #fafafa;
+            }
+
+        .right {
+            text-align: right;
+        }
+
+        tfoot td {
+            font-weight: bold;
+            background: #efefef;
+        }
+
+        .footer {
+            margin-top: 35px;
+            border-top: 1px solid #DDD;
+            padding-top: 10px;
+            color: #777;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .section-title {
+            margin-top: 40px;
+            margin-bottom: 12px;
+            padding: 10px 14px;
+            background: #0d6efd;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        tfoot {
+            display: table-footer-group;
+        }
+
+        tr {
+            page-break-inside: avoid;
+        }
+
+        .report {
+            margin-bottom: 35px;
+        }
+
+        .footer {
+            margin-top: 40px;
+            border-top: 1px solid #DDD;
+            padding-top: 12px;
+            color: #777;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .summary-table {
+            width: 55%;
+            margin-left: auto;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+            .summary-table td {
+                padding: 10px;
+                border: 1px solid #DDD;
+            }
+
+                .summary-table td:first-child {
+                    font-weight: bold;
+                    background: #f8f9fa;
+                }
+
+                .summary-table td:last-child {
+                    text-align: right;
+                    font-weight: bold;
+                }
+
+        .summary-total {
+            background: #0d6efd;
+            color: white;
+            font-size: 15px;
+        }
+
+        .summary-container {
+            page-break-inside: avoid;
+            break-inside: avoid;
+            margin-top: 30px;
+        }
+
+        .summary-table {
+            width: 55%;
+            margin-left: auto;
+            border-collapse: collapse;
+        }
+
+            .summary-table tr {
+                page-break-inside: avoid;
+            }
+
+            .summary-table td {
+                padding: 10px;
+                border: 1px solid #DDD;
+            }
+
+        .client-info-section {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .client-info-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+            .client-info-table td {
+                border: 1px solid #d9d9d9;
+                padding: 8px 10px;
+                vertical-align: top;
+            }
+
+            .client-info-table .label {
+                width: 18%;
+                font-weight: 600;
+                background: #f5f5f5;
+                white-space: nowrap;
+            }
+
+        .photo-cell {
+            width: 150px;
+            text-align: center;
+            vertical-align: middle;
+            background: #fafafa;
+        }
+
+        .client-photo {
+            width: 110px;
+            height: 130px;
+            object-fit: cover;
+            border: 1px solid #cfcfcf;
+        }
+
+        .photo-placeholder {
+            width: 110px;
+            height: 130px;
+            border: 1px dashed #bdbdbd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 11px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <table width="100%">
+            <tr>
+                <td width="75%">
+                    <div class="company">
+                        XELAJU WATER
+                    </div>
+                    <div class="subtitle">
+                        Transactions by Client Report
+                    </div>
+                    <div style="margin-top:15px;font-size:12px;color:#555;">
+                        <strong>Period:</strong>
+                        @Model.StartDate.ToString("dd/MM/yyyy")
+                        -
+                        @Model.EndDate.ToString("dd/MM/yyyy")
+                    </div>
+                </td>
+                <td width="25%" style="text-align:right;">
+                    @* Aquí luego podemos colocar el logo *@
+                    <!--<img src="/images/logo.png" style="height:70px;" />-->
+                    <h2 style="margin-top:10px;">
+                        REPORT
+                    </h2>
+                    <div style="font-size:12px;color:#777;">
+                        Generated
+                    </div>
+                    <div style="font-weight:bold;">
+                        @Model.GeneratedDate.ToString("dd/MM/yyyy HH:mm")
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="section client-info-section">
+
+        <div class="section-title">
+            Client Information
+        </div>
+
+        <table class="client-info-table">
+            <tr>
+                <td class="label">Full Name</td>
+                <td>@Model.Client.FirstName @Model.Client.LastName</td>
+                <td rowspan="5" class="photo-cell">
+                    @if (!string.IsNullOrEmpty(Model.Client.Picture))
+                    {
+                        <img src="@Model.Client.Picture" class="client-photo" />
+                    }
+                    else
+                    {
+                        <div class="photo-placeholder">
+                            No Photo
+                        </div>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td class="label">Document</td>
+                <td>
+                    @* @Model.Client.IdDocumentType<br /> *@
+                    <strong>@Model.Client.DocumentNumber</strong>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">Date of Birth</td>
+                <td>@Model.Client.Dob.ToString("dd/MM/yyyy")</td>
+            </tr>
+            <tr>
+                <td class="label">Issue Date</td>
+                <td>@Model.Client.IssueDate.ToString("dd/MM/yyyy")</td>
+            </tr>
+            <tr>
+                <td class="label">Expiration</td>
+                <td>@Model.Client.ExpirationDate.ToString("dd/MM/yyyy")</td>
+            </tr>
+            <tr>
+                <td class="label">Phone</td>
+                <td>
+                    @{
+                        var phone = Model.Client.Phone ?? "";
+
+                        if (phone.Length == 10)
+                        {
+                            @($"({phone.Substring(0, 3)}) {phone.Substring(3, 3)}-{phone.Substring(6, 4)}")
+                        }
+                        else
+                        {
+                            @phone
+                        }
+                    }
+                </td>
+                <td rowspan="3"></td>
+            </tr>
+            <tr>
+                <td class="label">Country</td>
+                <td>@Model.Client.CountryName</td>
+            </tr>
+            <tr>
+                <td class="label">Address</td>
+                <td>@Model.Client.Address</td>
+            </tr>
+        </table>
+    </div>
+    <div class="summary">
+        <div class="card">
+            <div class="card-title">
+                Operations
+            </div>
+            <div class="card-value">
+                @Model.Transactions.Count
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title">
+                Amount Sent
+            </div>
+            <div class="card-value">
+                @Model.Transactions.Sum(x => x.Amount).ToString("C2")
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title">
+                Fees Collected
+            </div>
+            <div class="card-value">
+                @Model.Transactions.Sum(x => x.Commission + x.FixedCommission).ToString("C2")
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title">
+                Customer Paid
+            </div>
+            <div class="card-value">
+                @Model.Transactions.Sum(x => x.TotalAmount).ToString("C2")
+            </div>
+        </div>
+    </div>
+    <table class="report">
+        <thead>
+            <tr>
+
+                <th>#</th>
+                <th>Date</th>
+
+                <th>Reference</th>
+                <th>Client</th>
+                <th>Company</th>
+                <th>Type</th>
+                <th>Settlement</th>
+                <th class="right">
+                    Amount
+                </th>
+                <th class="right">
+                    Fees
+                </th>
+                <th class="right">
+                    Customer Paid
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < financialTransactions.Count; i++)
+            {
+                var item = financialTransactions[i];
+
+                string type = item.TransactionType switch
+                {
+                    2 => "MO",
+                    3 => "MT",
+                    4 => "PS",
+                    5 => "DT",
+                    _ => "-"
+                };
+
+                string settlement = item.CalculationMode == 1
+                ? "Customer Pays Fees"
+                : "Fees Deducted";
+
+                <tr>
+                    <td>@(i + 1)</td>
+                    <td>@item.DateC.ToString("dd/MM/yyyy")</td>
+                    <td>@item.ReferenceNumber</td>
+                    <td>@item.ClientName</td>
+                    <td>@item.CompanyName</td>
+                    <td>@type</td>
+                    <td>@settlement</td>
+                    <td class="right">
+                       $@item.Amount.ToString("N2")
+                    </td>
+                    <td class="right">
+                       $@((item.Commission + item.FixedCommission).ToString("N2"))
+                    </td>
+                    <td class="right">
+                        $@item.TotalAmount.ToString("N2")
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+        <tfoot>
+            <tr class="total-row">
+                <td colspan="7">
+                    Financial Totals
+                </td>
+                <td class="right">
+                    @financialTransactions.Sum(x => x.Amount).ToString("N2")
+                </td>
+                <td class="right">
+                    @financialTransactions.Sum(x => x.Commission + x.FixedCommission).ToString("N2")
+                </td>
+                <td class="right">
+                    @financialTransactions.Sum(x => x.TotalAmount).ToString("N2")
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+    @* CHEQUES *@
+    <div class="section-title">
+        Check Cashing Transactions
+    </div>
+    <table class="report">
+        <thead>
+            <tr>_
+                <th>#</th>
+                <th>Date</th>
+                <th>Reference</th>
+                <th>Client</th>
+                <th>Company</th>
+                <th class="right">Check Value</th>
+                <th class="right">Federal</th>
+                <th class="right">Fee</th>
+                <th class="right">Total Fees</th>
+                <th class="right">Cash Delivered</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < checkTransactions.Count; i++)
+            {
+                var item = checkTransactions[i];
+                <tr>
+                    <td>@(i + 1)</td>
+                    <td>@item.DateC.ToString("dd/MM/yyyy")</td>
+                    <td>@item.ReferenceNumber</td>
+                    <td>@item.ClientName</td>
+                    <td>@item.CompanyName</td>
+                    <td class="right">
+                        @item.Amount.ToString("N2")
+                    </td>
+                    <td class="right">
+                        @item.Commission.ToString("N2")
+                    </td>
+                    <td class="right">
+                        @item.FixedCommission.ToString("N2")
+                    </td>
+                    <td class="right">
+                        @((item.Commission + item.FixedCommission).ToString("N2"))
+                    </td>
+                    <td class="right">
+                        @item.TotalAmount.ToString("N2")
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr class="total-row">
+                <td colspan="5">
+                    Check Totals
+                </td>
+                <td class="right">
+                    @checkTransactions.Sum(x => x.Amount).ToString("N2")
+                </td>
+                <td class="right">
+                    @checkTransactions.Sum(x => x.Commission).ToString("N2")
+                </td>
+                <td class="right">
+                    @checkTransactions.Sum(x => x.FixedCommission).ToString("N2")
+                </td>
+                <td class="right">
+                    @checkTransactions.Sum(x => x.Commission + x.FixedCommission).ToString("N2")
+                </td>
+                <td class="right">
+                    @checkTransactions.Sum(x => x.TotalAmount).ToString("N2")
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+    @* RESUMEN *@
+    @* <div class="summary-container">
+    <div class="section-title">
+        Daily Operations Summary
+    </div>
+    @{
+        var totalTransactions = Model.Transactions.Count;
+        var financialCount = financialTransactions.Count;
+        var checkCount = checkTransactions.Count;
+        var grossAmount = Model.Transactions.Sum(x => x.Amount);
+        var totalFederal = Model.Transactions.Sum(x => x.Commission);
+        var totalFees = Model.Transactions.Sum(x => x.FixedCommission);
+        var totalCommission = Model.Transactions.Sum(x => x.Commission + x.FixedCommission);
+        var customerAmount = Model.Transactions.Sum(x => x.TotalAmount);
+    }
+    <table class="summary-table">
+        <tr>
+            <td>Financial Transactions</td>
+            <td>@financialCount</td>
+        </tr>
+        <tr>
+            <td>Check Transactions</td>
+            <td>@checkCount</td>
+        </tr>
+        <tr>
+            <td>Total Transactions</td>
+            <td>@totalTransactions</td>
+        </tr>
+        <tr>
+                <td>Transaction Volume</td>
+            <td>@grossAmount.ToString("C2")</td>
+        </tr>
+        <tr>
+                <td>Federal Commissions</td>
+            <td>@totalFederal.ToString("C2")</td>
+        </tr>
+        <tr>
+            <td>Service Fees</td>
+            <td>@totalFees.ToString("C2")</td>
+        </tr>
+        <tr>
+            <td>Total Fees Collected</td>
+            <td>@totalCommission.ToString("C2")</td>
+        </tr>
+        <tr>
+                <td>Net Amount Delivered to Customers</td>
+            <td>@customerAmount.ToString("C2")</td>
+        </tr>
+    </table>
+    </div> *@
+    <div class="summary-container">
+
+        <div class="section-title">
+            Daily Operations Summary
+        </div>
+
+        @{
+            var financialCount = financialTransactions.Count;
+            var checkCount = checkTransactions.Count;
+            var totalTransactions = Model.Transactions.Count;
+
+            // Financial
+            var financialVolume = financialTransactions.Sum(x => x.Amount);
+            var financialFees = financialTransactions.Sum(x => x.Commission + x.FixedCommission);
+            var financialCustomerAmount = financialTransactions.Sum(x => x.TotalAmount);
+
+            // Checks
+            var checkVolume = checkTransactions.Sum(x => x.Amount);
+            var checkFees = checkTransactions.Sum(x => x.Commission + x.FixedCommission);
+            var checkDelivered = checkTransactions.Sum(x => x.TotalAmount);
+
+            // Overall
+            var totalVolume = financialVolume + checkVolume;
+            var totalFees = financialFees + checkFees;
+            var totalDelivered = financialCustomerAmount + checkDelivered;
+        }
+
+        <!-- Financial -->
+        <table class="summary-table">
+            <tr class="summary-header">
+                <td colspan="2">Financial Transactions</td>
+            </tr>
+
+            <tr>
+                <td>Operations</td>
+                <td>@financialCount</td>
+            </tr>
+
+            <tr>
+                <td>Transaction Volume</td>
+                <td>@financialVolume.ToString("C2")</td>
+            </tr>
+
+            <tr>
+                <td>Fees Collected</td>
+                <td>@financialFees.ToString("C2")</td>
+            </tr>
+
+            <tr class="summary-total">
+                <td style="color:#000 !important;">Amount Received from Customers</td>
+                <td>@financialCustomerAmount.ToString("C2")</td>
+            </tr>
+        </table>
+
+        <br />
+
+        <!-- Checks -->
+        <table class="summary-table">
+            <tr class="summary-header">
+                <td colspan="2">Check Cashing</td>
+            </tr>
+
+            <tr>
+                <td>Operations</td>
+                <td>@checkCount</td>
+            </tr>
+
+            <tr>
+                <td>Check Value Processed</td>
+                <td>@checkVolume.ToString("C2")</td>
+            </tr>
+
+            <tr>
+                <td>Fees Collected</td>
+                <td>@checkFees.ToString("C2")</td>
+            </tr>
+
+            <tr class="summary-total">
+                <td style="color:#000 !important;">Cash Delivered</td>
+                <td>@checkDelivered.ToString("C2")</td>
+            </tr>
+        </table>
+
+        <br />
+
+        <!-- Overall -->
+        <table class="summary-table">
+            <tr class="summary-header">
+                <td colspan="2">Overall Daily Summary</td>
+            </tr>
+
+            <tr>
+                <td>Total Operations</td>
+                <td>@totalTransactions</td>
+            </tr>
+
+            <tr>
+                <td>Total Business Volume</td>
+                <td>@totalVolume.ToString("C2")</td>
+            </tr>
+
+            <tr>
+                <td>Total Fees Collected</td>
+                <td>@totalFees.ToString("C2")</td>
+            </tr>
+
+            <tr class="summary-total">
+                <td style="color:#000 !important;">Total Amount Delivered to Customers</td>
+                <td>@totalDelivered.ToString("C2")</td>
+            </tr>
+        </table>
+
+    </div>
+    <div class="footer">
+        This report was automatically generated by the Xelaju water Management System.<br />
+        Generated on @Model.GeneratedDate.ToString("dd/MM/yyyy HH:mm:ss")
+    </div>
+</body>
+</html>

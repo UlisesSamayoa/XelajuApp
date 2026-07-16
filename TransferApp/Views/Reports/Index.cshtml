@@ -81,11 +81,11 @@
                     <div class="row">
                         <div class="col-6 mb-2">
                             <label>Start Date</label>
-                            <input type="date" id="1_StartDate" class="form-control">
+                            <input type="date" id="Dayli_StartDate" class="form-control">
                         </div>
                         <div class="col-6 mb-2">
                             <label>End Date</label>
-                            <input type="date" id="1_EndDate" class="form-control">
+                            <input type="date" id="Dayli_EndDate" class="form-control">
                         </div>
                     </div>
                 </div>
@@ -117,11 +117,11 @@
                     <div class="row">
                         <div class="col-6 mb-2">
                             <label>Start Date</label>
-                            <input type="date" id="2_StartDate" class="form-control">
+                            <input type="date" id="TCompany_StartDate" class="form-control">
                         </div>
                         <div class="col-6 mb-2">
                             <label>End Date</label>
-                            <input type="date" id="2_EndDate" class="form-control">
+                            <input type="date" id="TCompany_EndDate" class="form-control">
                         </div>
                         <div class="col-12">
                             <label>Transaction Type</label>
@@ -134,6 +134,63 @@
             </div>
         </div>
         <!-- REPORT 3 -->
+        <div class="col-xl-4 col-lg-4 col-md-6 d-flex">
+            <div class="report-card h-100 w-100 d-flex flex-column">
+                <div class="row">
+                    <div class="col-3">
+                        <div class="report-icon bg-success">
+                            <i class="bi bi-person-rolodex"></i>
+                        </div>
+                    </div>
+                    <div class="col-9 mt-3">
+                        <h5>Transaction by Client</h5>
+                    </div>
+                </div>
+                <p class="text-muted">
+                    Generate transaction reports by dates and
+                    companies
+                </p>
+                <hr>
+                <small class="text-secondary fw-bold">
+                    Filters
+                </small>
+                <div class="flex-grow-1">
+                    <div class="row">
+                        <div class="col-6 mb-2">
+                            <label>Start Date</label>
+                            <input type="date" id="TClient_StartDate" class="form-control">
+                        </div>
+                        <div class="col-6 mb-2">
+                            <label>End Date</label>
+                            <input type="date" id="TClient_EndDate" class="form-control">
+                        </div>
+                        <div class="col-12 mb-2">
+                            <label>Client</label>
+                            <div class="position-relative">
+                                <input type="text"
+                                       id="TClient_Search" class="form-control" placeholder="Search client by name or document..." autocomplete="off" />
+                                <input type="hidden" id="TClient_Id" />
+                                <div id="TClient_SearchResults"
+                                     class="list-group position-absolute w-100 shadow"
+                                     style="z-index:1050; display:none; max-height:250px; overflow-y:auto;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <small id="TClient_Selected"
+                                   class="text-success fw-semibold"
+                                   style="display:none;">
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                @* <button class="btn btn-success w-100 mt-3"> <i class="bi bi-bar-chart-line"></i> Open Report </button> *@
+                <button class="btn btn-primary w-100 btnOpenReport" data-report="trans_clients">Generate Report</button>
+
+            </div>
+        </div>
+
+        @* REPORTE 4 *@
         <div class="col-xl-4 col-lg-4 col-md-6 d-flex">
             <div class="report-card h-100 w-100 d-flex flex-column">
                 <div class="row">
@@ -158,11 +215,11 @@
                     <div class="row">
                         <div class="col-6 mb-2">
                             <label>Start Date</label>
-                            <input type="date" id="3_StartDate" class="form-control">
+                            <input type="date" id="Clients_StartDate" class="form-control">
                         </div>
                         <div class="col-6 mb-2">
                             <label>End Date</label>
-                            <input type="date" id="3_EndDate" class="form-control">
+                            <input type="date" id="Clients_EndDate" class="form-control">
                         </div>
                     </div>
                 </div>
@@ -194,11 +251,11 @@
                     <div class="row">
                         <div class="col-6 mb-2">
                             <label>Start Date</label>
-                            <input type="date" id="4_StartDate" class="form-control">
+                            <input type="date" id="5_StartDate" class="form-control">
                         </div>
                         <div class="col-6 mb-2">
                             <label>End Date</label>
-                            <input type="date" id="4_EndDate" class="form-control">
+                            <input type="date" id="5_EndDate" class="form-control">
                         </div>
                         <div class="col-12">
                             <label>Transaction Type</label>
@@ -286,14 +343,16 @@
         const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
         const firstDayString =firstDayOfMonth.getFullYear() + '-' +String(firstDayOfMonth.getMonth() + 1).padStart(2, '0') + '-' +String(firstDayOfMonth.getDate()).padStart(2, '0');
         //FECHA ACTUAL
-        $('#1_StartDate').val(todayString);
-        $('#1_EndDate').val(todayString);
-        $('#2_EndDate').val(todayString);
-        $('#3_EndDate').val(todayString);
+        $('#Dayli_StartDate').val(todayString);
+        $('#Dayli_EndDate').val(todayString);
+        $('#TCompany_EndDate').val(todayString);
+        $('#Clients_EndDate').val(todayString);
+            $('#TClient_EndDate').val(todayString);
 
         //FECHA PRIMER DIA DEL MES
-        $('#2_StartDate').val(firstDayString);
-        $('#3_StartDate').val(firstDayString);
+        $('#TCompany_StartDate').val(firstDayString);
+        $('#Clients_StartDate').val(firstDayString);
+            $('#TClient_StartDate').val(firstDayString);
 
     $.get('/TransactionsTypes/GetAllTypes', function (data) {
         $('#TransactionType').empty();
@@ -323,8 +382,8 @@
                 case "new_clients":
                         generateNewClientsReport();
                     break;
-                case "companies":
-                    generateCompaniesReport();
+                    case "trans_clients":
+                        generateClientTransactionsReport();
                     break;
             }
         });
@@ -332,8 +391,8 @@
         //REPORTES
         //REPORTE DE TRANSACCIONES DEL DIA
                 function generateDayliTransactionsReport() {
-                let startDate = $('#1_StartDate').val();
-                let endDate = $('#1_EndDate').val();
+                let startDate = $('#Dayli_StartDate').val();
+                let endDate = $('#Dayli_EndDate').val();
                     let urlBase = "https://localhost:28183";
                 if (!startDate || !endDate) {
                     Swal.fire(
@@ -381,8 +440,8 @@
 
         //REPORTE DE TRANSACCIONES POR TIPO DE TRANSACCIÓN
         function generateTransactionsReport() {
-                let startDate = $('#2_StartDate').val();
-            let endDate = $('#2_EndDate').val();
+                let startDate = $('#TCompany_StartDate').val();
+            let endDate = $('#TCompany_EndDate').val();
             let transactionType = $('#TransactionType').val();
                 let urlBase = "https://localhost:28183";
             if (!startDate || !endDate) {
@@ -437,10 +496,112 @@
             });
         }
 
+        //REPORTE DE TRANSACCIONES POR CLIENTE
+
+            $("#TClient_Search").on("keyup", function () {
+                let term = $(this).val();
+                if (term.length < 3) {
+                    $("#TClient_SearchResults").hide();
+                    return;
+                }
+                $.get("/Clients/Search",
+                    { term: term },
+                    function (data) {
+                        let results = $("#TClient_SearchResults");
+                        results.empty();
+                        if (data.length === 0) {
+                            results.hide();
+                            return;
+                        }
+                        $.each(data, function (i, client) {
+                            results.append(`
+                                <a href="#"
+                                   class="list-group-item list-group-item-action client-item"
+                                   data-id="${client.idClient}"
+                                   data-name="${client.fullName}"
+                                   data-document="${client.documentNumber}">
+                                    <strong>${client.fullName}</strong><br>
+                                    <small>${client.documentNumber}</small>
+
+                                </a>
+                            `);
+                        });
+                        results.show();
+                    });
+            });
+            $(document).on("click", ".client-item", function (e) {
+                e.preventDefault();
+                $("#TClient_Id").val($(this).data("id"));
+                $("#TClient_Search").val($(this).data("name"));
+                $("#TClient_Selected")
+                    .html(`
+                        <i class="bi bi-check-circle-fill"></i>
+                        ${$(this).data("name")} (${$(this).data("document")})
+                    `).show();
+                $("#TClient_SearchResults").hide();
+            });
+
+            //REPORTE
+            function generateClientTransactionsReport() {
+                    let startDate = $('#TClient_StartDate').val();
+                    let endDate = $('#TClient_EndDate').val();
+                    let Client_Id = $('#TClient_Id').val();
+                if (!startDate || !endDate) {
+                    Swal.fire(
+                        'Required',
+                        'Select Start Date and End Date',
+                        'warning'
+                    );
+                    return;
+                }
+                    if (!Client_Id) {
+                    Swal.fire(
+                        'Required',
+                        'Select a Client',
+                        'warning'
+                    );
+                    return;
+                }
+                Swal.fire({
+                    title: 'Generating report...',
+                    text: 'Please wait',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+                $.ajax({
+                            url: '/Reports/GenerateClientTransactionsReport',
+                    type: 'GET',
+                    data: {
+                        startDate: startDate,
+                        endDate: endDate,
+                        client_Id: Client_Id
+                    },
+                    xhrFields: {
+                        responseType: 'blob'
+                    },
+                    success: function (blob) {
+                        Swal.close();
+                        let url = window.URL.createObjectURL(blob);
+                        window.open(url, '_blank');
+                    },
+                    error: function (xhr) {
+                        Swal.close();
+                        let message = "Unexpected error";
+                        if (xhr.responseText)
+                            message = xhr.responseText;
+                        Swal.fire(
+                            'Error',
+                            message,
+                            'error'
+                        );
+                    }
+                });
+            }
+
             //REPORTE DE clientes nuevos en periodo x
                     function generateNewClientsReport() {
-                    let startDate = $('#3_StartDate').val();
-                    let endDate = $('#3_EndDate').val();
+                    let startDate = $('#Clients_StartDate').val();
+                    let endDate = $('#Clients_EndDate').val();
                     if (!startDate || !endDate) {
                         Swal.fire(
                             'Required',

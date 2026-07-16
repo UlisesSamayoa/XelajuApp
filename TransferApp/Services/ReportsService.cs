@@ -7,15 +7,17 @@ namespace TransferApp.Services
     public class ReportsService
     {
         private readonly ReportsRepository _repo;
+        private readonly ClientsRepository _clientRepo;
         private readonly IConfiguration _configuration;
 
         //public ReportsService(IConfiguration configuration)
         //{
         //    _configuration = configuration;
         //}
-        public ReportsService(ReportsRepository repo, IConfiguration configuration)
+        public ReportsService(ReportsRepository repo, ClientsRepository clientRepo, IConfiguration configuration)
         {
             _repo = repo;
+            _clientRepo = clientRepo;
             _configuration = configuration;
         }
 
@@ -50,6 +52,47 @@ namespace TransferApp.Services
                 $"?startDate={startDate:yyyy-MM-dd}" +
                 $"&endDate={endDate:yyyy-MM-dd}" +
                 $"&transactionType={transactionType}";
+            return await GeneratePdfFromUrl(url);
+        }
+
+        //REPORTE DE TRANSACCIONES POR CLIENTE
+        //public async Task<List<TransactionReportModel>> GetClientTransactionsReport(DateTime startDate, DateTime endDate, int client_Id)
+        //{
+        //    return await _repo.GetClientTransactionsReport(startDate, endDate, client_Id);
+        //}
+        public async Task<ClientTransactionsReportViewModel> GetClientTransactionsReport(DateTime startDate, DateTime endDate, int clientId)
+        {
+            // Obtener cliente
+            var client = await _clientRepo.GetById(clientId);
+
+            // Obtener transacciones
+            var transactions = await _repo.GetClientTransactionsReport(
+                startDate,
+                endDate,
+                clientId);
+
+            // Construir ViewModel
+            return new ClientTransactionsReportViewModel
+            {
+                Client = client,
+                Transactions = transactions,
+                StartDate = startDate,
+                EndDate = endDate,
+                TotalTransactions = transactions.Count,
+                TotalAmount = transactions.Sum(x => x.Amount),
+                TotalCommission = transactions.Sum(x => x.TotalCommission),
+                GeneratedDate = DateTime.Now,
+            };
+        }
+        public async Task<byte[]> GenerateClientTransactionsReport(DateTime startDate, DateTime endDate, int client_Id)
+        {
+            var baseUrl = _configuration["ApplicationUrl"];
+            string url =
+                //$"{urlBase}/Reports/TransactionsPdf" +
+                $"{baseUrl}/Reports/ClientTransactionsPdf" +
+                $"?startDate={startDate:yyyy-MM-dd}" +
+                $"&endDate={endDate:yyyy-MM-dd}" +
+                $"&client_Id={client_Id}";
             return await GeneratePdfFromUrl(url);
         }
 

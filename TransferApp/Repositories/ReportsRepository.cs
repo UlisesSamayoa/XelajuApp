@@ -75,6 +75,39 @@ namespace TransferApp.Repositories
             }
             return list;
         }
+
+        //REPORTE DE TRANSACCIONES POR CLIENTE
+        public async Task<List<TransactionReportModel>> GetClientTransactionsReport(DateTime startDate, DateTime endDate, int client_id)
+        {
+            var list = new List<TransactionReportModel>();
+            using var conn = _db.CreateConnection();
+            using var cmd = new SqlCommand("sp_ReportClientTransactions", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@StartDate", startDate);
+            cmd.Parameters.AddWithValue("@EndDate", endDate);
+            cmd.Parameters.AddWithValue("@ClientID", client_id);
+            await conn.OpenAsync();
+            using var rd = await cmd.ExecuteReaderAsync();
+            while (await rd.ReadAsync())
+            {
+                list.Add(new TransactionReportModel
+                {
+                    ReferenceNumber = rd["ReferenceNumber"].ToString(),
+                    DateC = Convert.ToDateTime(rd["DateC"]),
+                    ClientName = rd["ClientName"].ToString(),
+                    CompanyName = rd["CompanyName"].ToString(),
+                    Amount = Convert.ToDecimal(rd["Amount"]),
+                    Commission = Convert.ToDecimal(rd["Comission"]),
+                    FixedCommission = Convert.ToDecimal(rd["FixedCommission"]),
+                    TotalCommission = Convert.ToDecimal(rd["TotalCommission"]),
+                    TotalAmount = Convert.ToDecimal(rd["TotalAmount"]),
+                    CalculationMode = Convert.ToByte(rd["CalculationMode"]),
+                    TransactionType = Convert.ToInt32(rd["TransactionType"].ToString())
+                });
+            }
+            return list;
+        }
+
         //REPORTE DE CLIENTES NUEVOS
         public async Task<List<NewClientReportViewModel.ClientItem>> GetNewClientsReport(DateTime startDate, DateTime endDate)
         {
