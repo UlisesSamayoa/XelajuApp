@@ -1,0 +1,84 @@
+﻿using Microsoft.Data.SqlClient;
+using System.Data;
+using TransferApp.Data;
+using TransferApp.Models;
+using TransferApp.Repositories.Interfaces;
+
+namespace TransferApp.Repositories
+{
+    public class UserRepository : IUserRepository
+    {
+        private readonly ApplicationDbContext _db;
+
+        public UserRepository(ApplicationDbContext db)
+        {
+            _db = db;
+        }
+        public async Task<List<UserModel>> GetUsers()
+        {
+            var list = new List<UserModel>();
+            using var conn = _db.CreateConnection();
+            using var cmd = new SqlCommand("sp_GetUsers", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            await conn.OpenAsync();
+            using var rd = await cmd.ExecuteReaderAsync();
+            while (await rd.ReadAsync())
+            {
+                list.Add(new UserModel
+                {
+                    IdUser = Convert.ToInt32(rd["IdUser"]),
+                    Username = rd["Username"].ToString(),
+                    FirstName = rd["FirstName"].ToString(),
+                    LastName = rd["LastName"].ToString(),
+                    Email = rd["Email"] == DBNull.Value ? null : rd["Email"].ToString(),
+                    IsActive = Convert.ToBoolean(rd["IsActive"]),
+                    LastLogin = rd["LastLogin"] == DBNull.Value ? null : Convert.ToDateTime(rd["LastLogin"]),
+                    MustChangePassword = Convert.ToBoolean(rd["MustChangePassword"])
+                });
+            }
+            return list;
+        }
+        public async Task<UserModel?> GetUserById(int idUser)
+        {
+            using var conn = _db.CreateConnection();
+            using var cmd = new SqlCommand("sp_GetUserById", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@IdUser", idUser);
+            await conn.OpenAsync();
+            using var rd = await cmd.ExecuteReaderAsync();
+            if (await rd.ReadAsync())
+            {
+                return new UserModel
+                {
+                    IdUser = Convert.ToInt32(rd["IdUser"]),
+                    Username = rd["Username"].ToString()!,
+                    PasswordHash = rd["PasswordHash"].ToString()!,
+                    FirstName = rd["FirstName"].ToString()!,
+                    LastName = rd["LastName"].ToString()!,
+                    Email = rd["Email"] == DBNull.Value ? null : rd["Email"].ToString(),
+                    IsActive = Convert.ToBoolean(rd["IsActive"]),
+                    FailedAttempts = Convert.ToInt32(rd["FailedAttempts"]),
+                    LockedUntil = rd["LockedUntil"] == DBNull.Value ? null : Convert.ToDateTime(rd["LockedUntil"]),
+                    LastLogin = rd["LastLogin"] == DBNull.Value ? null : Convert.ToDateTime(rd["LastLogin"]),
+                    PasswordChangedDate = Convert.ToDateTime(rd["PasswordChangedDate"]),
+                    CreatedDate = Convert.ToDateTime(rd["CreatedDate"]),
+                    CreatedBy = rd["CreatedBy"] == DBNull.Value ? null : Convert.ToInt32(rd["CreatedBy"]),
+                    MustChangePassword = Convert.ToBoolean(rd["MustChangePassword"])
+                };
+            }
+            return null;
+        }
+
+        public async Task<SaveResultModel?> SaveUser(UserModel model)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<bool> DeleteUser(int idUser)
+        {
+            throw new NotImplementedException();
+        }
+
+
+
+    }
+}

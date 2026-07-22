@@ -1,12 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TransferApp.Services;
 
 namespace TransferApp.Controllers
 {
     public class UsersController : Controller
     {
-        public IActionResult Index()
+        private readonly UserService _service;
+
+        public UsersController(UserService service)
         {
-            return View();
+            _service = service;
+        }
+        public async Task<IActionResult> Index()
+        {
+            var users = await _service.GetUsers();
+
+            return View(users);
         }
         public IActionResult Update()
         {
