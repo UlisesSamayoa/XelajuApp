@@ -17,9 +17,10 @@ namespace TransferApp.Controllers
 
             return View(users);
         }
-        public IActionResult Update()
+        public async Task<IActionResult> Update(int id)
         {
-            return View();
+            var user = await _service.GetUserById(id);
+            return Json(user);
         }
     }
 }

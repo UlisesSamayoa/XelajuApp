@@ -13,8 +13,10 @@ namespace TransferApp.Services
         public Task<List<UserModel>> GetUsers()
             => _repo.GetUsers();
 
-        public Task<UserModel?> GetUserById(int id)
-            => _repo.GetUserById(id);
+        public async Task<UserModel?> GetUserById(int idUser)
+        {
+            return await _repo.GetUserById(idUser);
+        }
 
         public Task<SaveResultModel> SaveUser(UserModel model)
             => _repo.SaveUser(model);
