@@ -148,25 +148,29 @@ CREATE OR ALTER PROC sp_SaveUser
 )
 AS
 BEGIN
-
     SET NOCOUNT ON;
 
+    DECLARE @NewId INT = @IdUser;
+
     -------------------------------------------------------
-    -- Validar Username duplicado
+    -- Validate duplicate Username
     -------------------------------------------------------
     IF EXISTS
     (
         SELECT 1
         FROM Users
         WHERE Username = @Username
-        AND (@IdUser IS NULL OR IdUser <> @IdUser)
+          AND (@IdUser IS NULL OR IdUser <> @IdUser)
     )
     BEGIN
         SELECT
             -1 AS Result,
+            NULL AS IdUser,
             'Username already exists.' AS Message;
+
         RETURN;
     END
+
     -------------------------------------------------------
     -- INSERT
     -------------------------------------------------------
@@ -204,7 +208,13 @@ BEGIN
             @CreatedBy,
             @MustChangePassword
         );
+
+        SET @NewId = SCOPE_IDENTITY();
     END
+
+    -------------------------------------------------------
+    -- UPDATE
+    -------------------------------------------------------
     ELSE
     BEGIN
         UPDATE Users
@@ -217,14 +227,16 @@ BEGIN
             MustChangePassword = @MustChangePassword
         WHERE IdUser = @IdUser;
     END
+
     -------------------------------------------------------
-    -- OK
+    -- SUCCESS
     -------------------------------------------------------
     SELECT
         1 AS Result,
+        @NewId AS IdUser,
         'User saved successfully.' AS Message;
-
 END
+
 
 GO
 

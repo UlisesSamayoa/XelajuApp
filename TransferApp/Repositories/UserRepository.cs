@@ -69,9 +69,39 @@ namespace TransferApp.Repositories
             return null;
         }
 
-        public async Task<SaveResultModel?> SaveUser(UserModel model)
+        public async Task<SaveResultModel> SaveUser(UserModel model)
         {
-            throw new NotImplementedException();
+            using var conn = _db.CreateConnection();
+
+            using var cmd = new SqlCommand("sp_SaveUser", conn);
+
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            //cmd.Parameters.AddWithValue("@IdUser", model.IdUser);
+            cmd.Parameters.AddWithValue("@IdUser", model.IdUser == 0 ? DBNull.Value : model.IdUser);
+            cmd.Parameters.AddWithValue("@Username", model.Username);
+            cmd.Parameters.AddWithValue("@PasswordHash", model.PasswordHash);
+            cmd.Parameters.AddWithValue("@FirstName", model.FirstName);
+            cmd.Parameters.AddWithValue("@LastName", model.LastName);
+            cmd.Parameters.AddWithValue("@Email", string.IsNullOrWhiteSpace(model.Email) ? DBNull.Value : model.Email);
+            cmd.Parameters.AddWithValue("@IsActive", model.IsActive);
+            cmd.Parameters.AddWithValue("@MustChangePassword", model.MustChangePassword);
+            await conn.OpenAsync();
+            using var rd = await cmd.ExecuteReaderAsync();
+            if (await rd.ReadAsync())
+            {
+                return new SaveResultModel
+                {
+                    Result = Convert.ToInt32(rd["Result"]),
+                    Id = rd["IdUser"] == DBNull.Value ? null : Convert.ToInt32(rd["IdUser"]),
+                    Message = rd["Message"].ToString() ?? ""
+                };
+            }
+            return new SaveResultModel
+            {
+                Result = 0,
+                Message = "No response from database."
+            };
         }
         public async Task<bool> DeleteUser(int idUser)
         {

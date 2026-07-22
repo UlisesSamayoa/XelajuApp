@@ -1,14 +1,19 @@
 ﻿using TransferApp.Models;
 using TransferApp.Repositories.Interfaces;
+using TransferApp.Security;
+using TransferApp.ViewModels;
 
 namespace TransferApp.Services
 {
     public class UserService
     {
         private readonly IUserRepository _repo;
-        public UserService(IUserRepository repo)
+        private readonly PasswordService _passwordService;
+
+        public UserService(IUserRepository repo, PasswordService passwordService)
         {
             _repo = repo;
+            _passwordService = passwordService;
         }
         public Task<List<UserModel>> GetUsers()
             => _repo.GetUsers();
@@ -18,8 +23,33 @@ namespace TransferApp.Services
             return await _repo.GetUserById(idUser);
         }
 
-        public Task<SaveResultModel> SaveUser(UserModel model)
-            => _repo.SaveUser(model);
+        public async Task<SaveResultModel> SaveUser(UserViewModel model)
+        {
+            if (model.Password != model.ConfirmPassword)
+            {
+                return new SaveResultModel
+                {
+                    Result = -2,
+                    Message = "Passwords do not match."
+                };
+            }
+            var user = new UserModel
+            {
+                IdUser = model.IdUser,
+                Username = model.Username,
+                PasswordHash = _passwordService.HashPassword(model.Password),
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.Email,
+                IsActive = model.IsActive,
+                MustChangePassword = model.MustChangePassword
+            };
+
+            return await _repo.SaveUser(user);
+        }
+
+        //public Task<SaveResultModel> SaveUser(UserViewModel model)
+        //    => _repo.SaveUser(model);
 
         public Task<bool> DeleteUser(int id)
             => _repo.DeleteUser(id);
