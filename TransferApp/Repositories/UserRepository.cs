@@ -3,6 +3,7 @@ using System.Data;
 using TransferApp.Data;
 using TransferApp.Models;
 using TransferApp.Repositories.Interfaces;
+using TransferApp.ViewModels;
 
 namespace TransferApp.Repositories
 {
@@ -108,7 +109,38 @@ namespace TransferApp.Repositories
             throw new NotImplementedException();
         }
 
+        public async Task<UserModel?> GetUserByUsername(string username)
+        {
+            using var conn = _db.CreateConnection();
+            using var cmd = new SqlCommand("sp_GetUserByUsername", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@Username", username);
+            await conn.OpenAsync();
+            using var rd = await cmd.ExecuteReaderAsync();
+            if (await rd.ReadAsync())
+            {
+                return new UserModel
+                {
+                    IdUser = Convert.ToInt32(rd["IdUser"]),
+                    Username = rd["Username"].ToString()!,
+                    PasswordHash = rd["PasswordHash"].ToString()!,
+                    FirstName = rd["FirstName"].ToString()!,
+                    LastName = rd["LastName"].ToString()!,
+                    Email = rd["Email"] as string,
+                    IsActive = Convert.ToBoolean(rd["IsActive"]),
+                    FailedAttempts = Convert.ToInt32(rd["FailedAttempts"]),
+                    LockedUntil = rd["LockedUntil"] == DBNull.Value ? null : Convert.ToDateTime(rd["LockedUntil"]),
+                    LastLogin = rd["LastLogin"] == DBNull.Value ? null : Convert.ToDateTime(rd["LastLogin"]),
+                    PasswordChangedDate = Convert.ToDateTime(rd["PasswordChangedDate"]),
+                    MustChangePassword = Convert.ToBoolean(rd["MustChangePassword"])
+                };
+            }
+            return null;
+        }
 
-
+        public async Task<LoginResultModel> Authenticate(LoginViewModel model)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -50,15 +50,6 @@ namespace TransferApp.Controllers
             var user = await _service.GetUserById(id);
             return Json(user);
         }
-
-        public IActionResult TestPassword()
-        {
-            string password = "Admin123!";
-            string hash = _password.HashPassword(password);
-            bool ok = _password.VerifyPassword(hash, password);
-            return Content($"""Hash:{hash}Valid: {ok}""");
-        }
-
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -91,6 +82,19 @@ namespace TransferApp.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
+        public async Task<IActionResult> TestLogin()
+        {
+            var result = await _service.Authenticate(new LoginViewModel
+            {
+                Username = "test1",
+                Password = "test1"
+            });
+            return Content(result.Success
+                ? "LOGIN OK"
+                : result.Message);
+        }
+
 
     }
 }

@@ -87,5 +87,36 @@ namespace TransferApp.Services
 
         public Task<bool> DeleteUser(int id)
             => _repo.DeleteUser(id);
+
+        public async Task<UserModel?> GetUserByUsername(string username)
+        {
+            return await _repo.GetUserByUsername(username);
+        }
+        public async Task<LoginResultModel> Authenticate(LoginViewModel model)
+        {
+            var user = await _repo.GetUserByUsername(model.Username);
+            if (user == null)
+            {
+                return new LoginResultModel
+                {
+                    Success = false,
+                    Message = "Invalid username or password."
+                };
+            }
+            bool valid = _passwordService.VerifyPassword(user.PasswordHash, model.Password);
+            if (!valid)
+            {
+                return new LoginResultModel
+                {
+                    Success = false,
+                    Message = "Invalid username or password."
+                };
+            }
+            return new LoginResultModel
+            {
+                Success = true,
+                User = user
+            };
+        }
     }
 }
