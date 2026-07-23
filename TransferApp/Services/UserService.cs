@@ -23,6 +23,30 @@ namespace TransferApp.Services
             return await _repo.GetUserById(idUser);
         }
 
+        //public async Task<SaveResultModel> SaveUser(UserViewModel model)
+        //{
+        //    if (model.Password != model.ConfirmPassword)
+        //    {
+        //        return new SaveResultModel
+        //        {
+        //            Result = -2,
+        //            Message = "Passwords do not match."
+        //        };
+        //    }
+        //    var user = new UserModel
+        //    {
+        //        IdUser = model.IdUser,
+        //        Username = model.Username,
+        //        PasswordHash = _passwordService.HashPassword(model.Password),
+        //        FirstName = model.FirstName,
+        //        LastName = model.LastName,
+        //        Email = model.Email,
+        //        IsActive = model.IsActive,
+        //        MustChangePassword = model.MustChangePassword
+        //    };
+
+        //    return await _repo.SaveUser(user);
+        //}
         public async Task<SaveResultModel> SaveUser(UserViewModel model)
         {
             if (model.Password != model.ConfirmPassword)
@@ -35,7 +59,6 @@ namespace TransferApp.Services
             }
             var user = new UserModel
             {
-                IdUser = model.IdUser,
                 Username = model.Username,
                 PasswordHash = _passwordService.HashPassword(model.Password),
                 FirstName = model.FirstName,
@@ -44,12 +67,23 @@ namespace TransferApp.Services
                 IsActive = model.IsActive,
                 MustChangePassword = model.MustChangePassword
             };
-
             return await _repo.SaveUser(user);
         }
 
-        //public Task<SaveResultModel> SaveUser(UserViewModel model)
-        //    => _repo.SaveUser(model);
+        public async Task<SaveResultModel> SaveUser(UserEditViewModel model)
+        {
+            var user = new UserModel
+            {
+                IdUser = model.IdUser,
+                Username = model.Username,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.Email,
+                IsActive = model.IsActive,
+                MustChangePassword = model.MustChangePassword
+            };
+            return await _repo.SaveUser(user);
+        }
 
         public Task<bool> DeleteUser(int id)
             => _repo.DeleteUser(id);

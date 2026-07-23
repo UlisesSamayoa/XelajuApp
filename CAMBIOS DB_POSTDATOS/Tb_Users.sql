@@ -270,3 +270,27 @@ END
 
 GO
 
+CREATE OR ALTER PROC sp_GetUserByUsername
+(
+    @Username NVARCHAR(50)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT
+        IdUser,
+        Username,
+        PasswordHash,
+        FirstName,
+        LastName,
+        Email,
+        IsActive,
+        FailedAttempts,
+        LockedUntil,
+        LastLogin,
+        PasswordChangedDate,
+        MustChangePassword
+    FROM Users
+    WHERE Username = @Username;
+END
+GO

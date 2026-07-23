@@ -59,5 +59,38 @@ namespace TransferApp.Controllers
             return Content($"""Hash:{hash}Valid: {ok}""");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var user = await _service.GetUserById(id);
+            if (user == null)
+                return NotFound();
+            var model = new UserViewModel
+            {
+                IdUser = user.IdUser,
+                Username = user.Username,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                IsActive = user.IsActive,
+                MustChangePassword = user.MustChangePassword
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(UserEditViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+            var result = await _service.SaveUser(model);
+            if (result.Result != 1)
+            {
+                ModelState.AddModelError("", result.Message);
+                return View(model);
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }
