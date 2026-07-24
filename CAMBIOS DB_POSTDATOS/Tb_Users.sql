@@ -297,15 +297,39 @@ END
 
 GO
 
+-- CREATE OR ALTER PROC sp_ProcessFailedLogin
+-- (
+--     @IdUser INT
+-- )
+-- AS
+-- BEGIN
+--     SET NOCOUNT ON;
+--     DECLARE @MaxAttempts INT = 5;
+--     DECLARE @LockMinutes INT = 30;
+--     UPDATE Users
+--     SET
+--         FailedAttempts = FailedAttempts + 1,
+--         LockedUntil =
+--             CASE
+--                 WHEN FailedAttempts + 1 >= @MaxAttempts
+--                 THEN DATEADD(MINUTE, @LockMinutes, GETDATE())
+--                 ELSE LockedUntil
+--             END
+--     WHERE IdUser = @IdUser;
+-- END
+-- GO
 CREATE OR ALTER PROC sp_ProcessFailedLogin
 (
     @IdUser INT
 )
 AS
 BEGIN
+
     SET NOCOUNT ON;
+
     DECLARE @MaxAttempts INT = 5;
     DECLARE @LockMinutes INT = 30;
+
     UPDATE Users
     SET
         FailedAttempts = FailedAttempts + 1,
@@ -316,6 +340,13 @@ BEGIN
                 ELSE LockedUntil
             END
     WHERE IdUser = @IdUser;
+
+    SELECT
+        FailedAttempts,
+        LockedUntil
+    FROM Users
+    WHERE IdUser = @IdUser;
+
 END
 GO
 

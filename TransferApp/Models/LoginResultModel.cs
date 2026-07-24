@@ -3,7 +3,11 @@
     public class LoginResultModel
     {
         public bool Success { get; set; }
-        public string Message { get; set; } = string.Empty;
+        public bool MustChangePassword { get; set; }
+        public bool IsLocked { get; set; }
+        public int FailedAttempts { get; set; }
+        public DateTime? LockedUntil { get; set; }
+        public string Message { get; set; } = "";
         public UserModel? User { get; set; }
     }
 }
