@@ -11,5 +11,7 @@ namespace TransferApp.Repositories.Interfaces
         Task<bool> DeleteUser(int idUser);
         Task<UserModel?> GetUserByUsername(string username);
         Task<LoginResultModel> Authenticate(LoginViewModel model);
+        Task ProcessFailedLogin(int idUser);
+        Task ResetLoginAttempts(int idUser);
     }
 }

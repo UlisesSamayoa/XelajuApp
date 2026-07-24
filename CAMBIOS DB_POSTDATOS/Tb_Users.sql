@@ -307,21 +307,17 @@ BEGIN
     DECLARE @MaxAttempts INT = 5;
     DECLARE @LockMinutes INT = 30;
     UPDATE Users
-    SET FailedAttempts = FailedAttempts + 1
+    SET
+        FailedAttempts = FailedAttempts + 1,
+        LockedUntil =
+            CASE
+                WHEN FailedAttempts + 1 >= @MaxAttempts
+                THEN DATEADD(MINUTE, @LockMinutes, GETDATE())
+                ELSE LockedUntil
+            END
     WHERE IdUser = @IdUser;
-    IF EXISTS
-    (
-        SELECT 1
-        FROM Users
-        WHERE IdUser = @IdUser
-        AND FailedAttempts >= @MaxAttempts
-    )
-    BEGIN
-        UPDATE Users
-        SET LockedUntil = DATEADD(MINUTE, @LockMinutes, GETDATE())
-        WHERE IdUser = @IdUser;
-    END
 END
+GO
 
 
 GO

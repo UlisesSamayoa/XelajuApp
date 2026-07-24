@@ -92,8 +92,35 @@ namespace TransferApp.Services
         {
             return await _repo.GetUserByUsername(username);
         }
+        //public async Task<LoginResultModel> Authenticate(LoginViewModel model)
+        //{
+        //    var user = await _repo.GetUserByUsername(model.Username);
+        //    if (user == null)
+        //    {
+        //        return new LoginResultModel
+        //        {
+        //            Success = false,
+        //            Message = "Invalid username or password."
+        //        };
+        //    }
+        //    bool valid = _passwordService.VerifyPassword(user.PasswordHash, model.Password);
+        //    if (!valid)
+        //    {
+        //        return new LoginResultModel
+        //        {
+        //            Success = false,
+        //            Message = "Invalid username or password."
+        //        };
+        //    }
+        //    return new LoginResultModel
+        //    {
+        //        Success = true,
+        //        User = user
+        //    };
+        //}
         public async Task<LoginResultModel> Authenticate(LoginViewModel model)
         {
+            // Buscar usuario
             var user = await _repo.GetUserByUsername(model.Username);
             if (user == null)
             {
@@ -103,20 +130,52 @@ namespace TransferApp.Services
                     Message = "Invalid username or password."
                 };
             }
+            // Cuenta inactiva
+            if (!user.IsActive)
+            {
+                return new LoginResultModel
+                {
+                    Success = false,
+                    Message = "This account is inactive. Contact the administrator."
+                };
+            }
+            // Cuenta bloqueada
+            if (user.LockedUntil.HasValue && user.LockedUntil.Value > DateTime.Now)
+            {
+                return new LoginResultModel
+                {
+                    Success = false,
+                    Message = $"Account locked until {user.LockedUntil:hh:mm tt}."
+                };
+            }
+            // Validar contraseña
             bool valid = _passwordService.VerifyPassword(user.PasswordHash, model.Password);
             if (!valid)
             {
+                await ProcessFailedLogin(user.IdUser);
                 return new LoginResultModel
                 {
                     Success = false,
                     Message = "Invalid username or password."
                 };
             }
+            // Login correcto
+            await ResetLoginAttempts(user.IdUser);
             return new LoginResultModel
             {
                 Success = true,
                 User = user
             };
         }
+
+        public async Task ProcessFailedLogin(int idUser)
+        {
+            await _repo.ProcessFailedLogin(idUser);
+        }
+        public async Task ResetLoginAttempts(int idUser)
+        {
+            await _repo.ResetLoginAttempts(idUser);
+        }
+
     }
 }

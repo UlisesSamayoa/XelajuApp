@@ -142,5 +142,25 @@ namespace TransferApp.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public async Task ProcessFailedLogin(int idUser)
+        {
+            using var conn = _db.CreateConnection();
+            using var cmd = new SqlCommand("sp_ProcessFailedLogin", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@IdUser", idUser);
+            await conn.OpenAsync();
+            await cmd.ExecuteNonQueryAsync();
+        }
+        public async Task ResetLoginAttempts(int idUser)
+        {
+            using var conn = _db.CreateConnection();
+            using var cmd = new SqlCommand("sp_ResetLoginAttempts", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@IdUser", idUser);
+            await conn.OpenAsync();
+            await cmd.ExecuteNonQueryAsync();
+        }
+
     }
 }
