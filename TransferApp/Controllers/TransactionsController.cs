@@ -19,6 +19,7 @@ public class TransactionsController : Controller
         _parameters = parameters;
         _AttachRepo = AttachRepo;
     }
+
     public IActionResult Index() => View();
     [HttpGet]
     public async Task<IActionResult> GetAttachments(int idTransaction)
