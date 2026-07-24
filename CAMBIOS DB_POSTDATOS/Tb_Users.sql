@@ -293,4 +293,51 @@ BEGIN
     FROM Users
     WHERE Username = @Username;
 END
+
+
+GO
+
+CREATE OR ALTER PROC sp_ProcessFailedLogin
+(
+    @IdUser INT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @MaxAttempts INT = 5;
+    DECLARE @LockMinutes INT = 30;
+    UPDATE Users
+    SET FailedAttempts = FailedAttempts + 1
+    WHERE IdUser = @IdUser;
+    IF EXISTS
+    (
+        SELECT 1
+        FROM Users
+        WHERE IdUser = @IdUser
+        AND FailedAttempts >= @MaxAttempts
+    )
+    BEGIN
+        UPDATE Users
+        SET LockedUntil = DATEADD(MINUTE, @LockMinutes, GETDATE())
+        WHERE IdUser = @IdUser;
+    END
+END
+
+
+GO
+
+CREATE OR ALTER PROC sp_ResetLoginAttempts
+(
+    @IdUser INT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE Users
+    SET
+        FailedAttempts = 0,
+        LockedUntil = NULL,
+        LastLogin = GETDATE()
+    WHERE IdUser = @IdUser;
+END
 GO
