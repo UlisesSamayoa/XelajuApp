@@ -22,15 +22,7 @@ go
 CREATE UNIQUE INDEX UX_Users_Username
 ON Users(Username);
 
-go 
 
-CREATE TABLE Roles
-(
-    IdRole INT IDENTITY PRIMARY KEY,
-    Name NVARCHAR(80) NOT NULL,
-    Description NVARCHAR(250),
-    IsActive BIT NOT NULL DEFAULT(1)
-)
 
 go
 
@@ -367,4 +359,29 @@ BEGIN
         LastLogin = GETDATE()
     WHERE IdUser = @IdUser;
 END
+
+
 GO
+
+CREATE OR ALTER PROC sp_ChangePassword
+(
+    @IdUser INT,
+    @PasswordHash NVARCHAR(500)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE Users
+    SET
+        PasswordHash = @PasswordHash,
+        MustChangePassword = 0,
+        PasswordChangedDate = GETDATE(),
+        FailedAttempts = 0,
+        LockedUntil = NULL
+    WHERE IdUser = @IdUser AND MustChangePassword = 1 AND IsActive = 1;
+    SELECT @@ROWCOUNT AS RowsAffected;
+END
+
+GO
+
+

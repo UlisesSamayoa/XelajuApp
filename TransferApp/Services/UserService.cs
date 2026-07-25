@@ -149,7 +149,11 @@ namespace TransferApp.Services
 
 
         //REFACTORIZACION
-
+        public async Task<SaveResultModel> ChangePassword(int idUser, string newPassword)
+        {
+            string hash = _passwordService.HashPassword(newPassword);
+            return await _repo.ChangePassword(idUser, hash);
+        }
 
 
 

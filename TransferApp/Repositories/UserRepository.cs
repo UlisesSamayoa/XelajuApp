@@ -180,5 +180,32 @@ namespace TransferApp.Repositories
             await cmd.ExecuteNonQueryAsync();
         }
 
+        //public async Task<bool> ChangePassword(int idUser, string passwordHash)
+        //{
+        //    using var conn = _db.CreateConnection();
+        //    using var cmd = new SqlCommand("sp_ChangePassword", conn);
+        //    cmd.CommandType = CommandType.StoredProcedure;
+        //    cmd.Parameters.AddWithValue("@IdUser", idUser);
+        //    cmd.Parameters.AddWithValue("@PasswordHash", passwordHash);
+        //    await conn.OpenAsync();
+        //    var rows = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+        //    return rows > 0;
+        //}
+        public async Task<SaveResultModel> ChangePassword(int idUser, string passwordHash)
+        {
+            using var conn = _db.CreateConnection();
+            using var cmd = new SqlCommand("sp_ChangePassword", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@IdUser", idUser);
+            cmd.Parameters.AddWithValue("@PasswordHash", passwordHash);
+            await conn.OpenAsync();
+            var rows = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+            return new SaveResultModel
+            {
+                Result = rows > 0 ? 1 : -1,
+                Message = rows > 0 ? "Password changed successfully." : "Invalid request."
+            };
+        }
+
     }
 }

@@ -13,5 +13,6 @@ namespace TransferApp.Repositories.Interfaces
         Task<LoginResultModel> Authenticate(LoginViewModel model);
         Task<FailedLoginResultModel> ProcessFailedLogin(int idUser);
         Task ResetLoginAttempts(int idUser);
+        Task<SaveResultModel> ChangePassword(int idUser, string passwordHash);
     }
 }
