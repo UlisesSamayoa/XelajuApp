@@ -9,11 +9,12 @@ namespace TransferApp.Services
     {
         private readonly IUserRepository _repo;
         private readonly PasswordService _passwordService;
-
-        public UserService(IUserRepository repo, PasswordService passwordService)
+        private readonly RoleService _roleService;
+        public UserService(IUserRepository repo, PasswordService passwordService, RoleService roleService)
         {
             _repo = repo;
             _passwordService = passwordService;
+            _roleService = roleService;
         }
         public Task<List<UserModel>> GetUsers()
             => _repo.GetUsers();
@@ -85,6 +86,7 @@ namespace TransferApp.Services
                     Message = "Invalid username or password."
                 };
             }
+            user.Roles = await _roleService.GetUserRoles(user.IdUser);
             var statusResult = ValidateAccountStatus(user);
             if (statusResult != null)
                 return statusResult;

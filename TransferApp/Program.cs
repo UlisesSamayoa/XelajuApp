@@ -70,6 +70,8 @@ builder.Services.AddScoped<ReportsRepository>();
 builder.Services.AddScoped<ReportsService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<RoleService>();
 builder.Services.AddSingleton<PasswordService>();
 var app = builder.Build();
 

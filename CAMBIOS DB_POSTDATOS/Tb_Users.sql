@@ -384,4 +384,246 @@ END
 
 GO
 
+CREATE OR ALTER PROC sp_GetRoles
+AS
+BEGIN
+    SET NOCOUNT ON;
 
+    SELECT
+        IdRole,
+        Name,
+        Description,
+        IsActive,
+        CreatedDate,
+        CreatedBy,
+        IsSystem
+    FROM Roles
+    ORDER BY Name;
+END
+GO
+
+CREATE OR ALTER PROC sp_GetRoleById
+(
+    @IdRole INT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT TOP(1)
+        IdRole,
+        Name,
+        Description,
+        IsActive,
+        CreatedDate,
+        CreatedBy
+    FROM Roles
+    WHERE IdRole = @IdRole;
+END
+GO
+
+
+CREATE OR ALTER PROC sp_SaveRole
+(
+    @IdRole INT = NULL,
+    @Name NVARCHAR(50),
+    @Description NVARCHAR(200) = NULL,
+    @IsActive BIT,
+    @CreatedBy INT = NULL
+)
+AS
+BEGIN
+
+    SET NOCOUNT ON;
+
+    IF EXISTS
+    (
+        SELECT 1
+        FROM Roles
+        WHERE Name = @Name
+          AND (@IdRole IS NULL OR IdRole <> @IdRole)
+    )
+    BEGIN
+        SELECT
+            -1 AS Result,
+            'Role already exists.' AS Message;
+        RETURN;
+    END
+    IF @IdRole IS NULL
+    BEGIN
+        INSERT INTO Roles
+        (
+            Name,
+            Description,
+            IsActive,
+            CreatedDate,
+            CreatedBy
+        )
+        VALUES
+        (
+            @Name,
+            @Description,
+            @IsActive,
+            GETDATE(),
+            @CreatedBy
+        );
+        SET @IdRole = SCOPE_IDENTITY();
+    END
+    ELSE
+    BEGIN
+        UPDATE Roles
+        SET Name = @Name, Description = @Description, IsActive = @IsActive WHERE IdRole = @IdRole;
+    END
+    SELECT
+        1 AS Result,
+        'Role saved successfully.' AS Message;
+END
+
+
+GO
+
+
+CREATE OR ALTER PROC sp_GetUserRoles
+(
+    @IdUser INT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT
+        R.IdRole,
+        R.Name,
+        R.Description
+    FROM UserRoles UR
+        INNER JOIN Roles R
+            ON UR.IdRole = R.IdRole
+    WHERE UR.IdUser = @IdUser
+    ORDER BY R.Name;
+END
+
+GO
+
+CREATE OR ALTER PROC sp_DeleteRole
+(
+    @IdRole INT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    --------------------------------------------------------
+    -- Validar que el rol exista
+    --------------------------------------------------------
+    IF NOT EXISTS
+    (
+        SELECT 1
+        FROM Roles
+        WHERE IdRole = @IdRole
+    )
+    BEGIN
+        SELECT
+            -1 AS Result,
+            'Role not found.' AS Message;
+        RETURN;
+    END
+
+    --------------------------------------------------------
+    -- Validar si es un rol del sistema
+    --------------------------------------------------------
+    IF EXISTS
+    (
+        SELECT 1
+        FROM Roles
+        WHERE IdRole = @IdRole
+          AND IsSystem = 1
+    )
+    BEGIN
+        SELECT
+            -2 AS Result,
+            'System roles cannot be deleted.' AS Message;
+        RETURN;
+    END
+
+    --------------------------------------------------------
+    -- Validar si el rol está asignado a usuarios
+    --------------------------------------------------------
+    IF EXISTS
+    (
+        SELECT 1
+        FROM UserRoles
+        WHERE IdRole = @IdRole
+    )
+    BEGIN
+        SELECT
+            -3 AS Result,
+            'The role is assigned to one or more users and cannot be deleted.' AS Message;
+        RETURN;
+    END
+
+    --------------------------------------------------------
+    -- Validar si el rol tiene permisos asignados
+    --------------------------------------------------------
+    IF EXISTS
+    (
+        SELECT 1
+        FROM RolePermissions
+        WHERE IdRole = @IdRole
+    )
+    BEGIN
+        SELECT
+            -4 AS Result,
+            'The role has permissions assigned. Remove them before deleting the role.' AS Message;
+        RETURN;
+    END
+
+    --------------------------------------------------------
+    -- Eliminar
+    --------------------------------------------------------
+    DELETE FROM Roles
+    WHERE IdRole = @IdRole;
+
+    SELECT
+        1 AS Result,
+        'Role deleted successfully.' AS Message;
+END
+
+
+GO
+
+ALTER TABLE Roles
+ADD IsSystem BIT NOT NULL
+CONSTRAINT DF_Roles_IsSystem DEFAULT(0);
+
+GO
+
+UPDATE Roles
+SET IsSystem = 1
+WHERE Name IN
+(
+    'Administrator',
+    'Operator',
+    'Supervisor',
+    'Auditor'
+);
+
+select * from roles
+insert into Roles (Name, Description, IsActive, CreatedDate, CreatedBy, IsSystem) values ('Administrator', 'System Administrator', 1, GETDATE(), NULL, 1);
+insert into Roles (Name, Description, IsActive, CreatedDate, CreatedBy, IsSystem) values ('Operator', 'System Operator', 1, GETDATE(), NULL, 1);
+insert into Roles (Name, Description, IsActive, CreatedDate, CreatedBy, IsSystem) values ('Supervisor', 'System Supervisor', 1, GETDATE(), NULL, 1);
+insert into Roles (Name, Description, IsActive, CreatedDate, CreatedBy, IsSystem) values ('Auditor', 'System Auditor', 1, GETDATE(), NULL, 1);
+
+
+go
+
+INSERT INTO UserRoles
+(
+    IdUser,
+    IdRole
+)
+VALUES
+(
+    5,
+    1
+);
+
+select * from Users
