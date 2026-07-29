@@ -611,6 +611,7 @@ insert into Roles (Name, Description, IsActive, CreatedDate, CreatedBy, IsSystem
 insert into Roles (Name, Description, IsActive, CreatedDate, CreatedBy, IsSystem) values ('Operator', 'System Operator', 1, GETDATE(), NULL, 1);
 insert into Roles (Name, Description, IsActive, CreatedDate, CreatedBy, IsSystem) values ('Supervisor', 'System Supervisor', 1, GETDATE(), NULL, 1);
 insert into Roles (Name, Description, IsActive, CreatedDate, CreatedBy, IsSystem) values ('Auditor', 'System Auditor', 1, GETDATE(), NULL, 1);
+insert into Roles (Name, Description, IsActive, CreatedDate, CreatedBy, IsSystem) values ('Auditor Out', 'System Auditor Out', 1, GETDATE(), NULL, 1);
 
 
 go
