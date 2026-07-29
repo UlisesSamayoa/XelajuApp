@@ -1,6 +1,7 @@
 ﻿namespace TransferApp.ViewModels
 {
     using System.ComponentModel.DataAnnotations;
+    using TransferApp.Models;
 
     public class UserViewModel
     {
@@ -20,5 +21,7 @@
         public string? Email { get; set; }
         public bool IsActive { get; set; } = true;
         public bool MustChangePassword { get; set; } = true;
+        public List<RoleModel> AvailableRoles { get; set; } = [];
+        public List<int> SelectedRoles { get; set; } = [];
     }
 }

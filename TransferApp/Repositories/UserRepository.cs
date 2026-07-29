@@ -207,5 +207,29 @@ namespace TransferApp.Repositories
             };
         }
 
+        public async Task<SaveResultModel> SaveUserRoles(int idUser, List<int> roles)
+        {
+            using var conn = _db.CreateConnection();
+            using var cmd = new SqlCommand("sp_SaveUserRoles", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@IdUser", idUser);
+            cmd.Parameters.AddWithValue("@IdRoles", roles.Any() ? string.Join(",", roles) : string.Empty);
+            await conn.OpenAsync();
+            using var reader = await cmd.ExecuteReaderAsync();
+            if (await reader.ReadAsync())
+            {
+                return new SaveResultModel
+                {
+                    Result = Convert.ToInt32(reader["Result"]),
+                    Message = reader["Message"].ToString()!
+                };
+            }
+            return new SaveResultModel
+            {
+                Result = -1,
+                Message = "Unexpected error."
+            };
+        }
+
     }
 }

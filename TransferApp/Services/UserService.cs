@@ -23,27 +23,51 @@ namespace TransferApp.Services
         {
             return await _repo.GetUserById(idUser);
         }
+        //public async Task<SaveResultModel> SaveUser(UserViewModel model)
+        //{
+        //    if (model.Password != model.ConfirmPassword)
+        //    {
+        //        return new SaveResultModel
+        //        {
+        //            Result = -2,
+        //            Message = "Passwords do not match."
+        //        };
+        //    }
+        //    var user = new UserModel
+        //    {
+        //        Username = model.Username,
+        //        PasswordHash = _passwordService.HashPassword(model.Password),
+        //        FirstName = model.FirstName,
+        //        LastName = model.LastName,
+        //        Email = model.Email,
+        //        IsActive = model.IsActive,
+        //        MustChangePassword = model.MustChangePassword
+        //    };
+        //    return await _repo.SaveUser(user);
+        //}
         public async Task<SaveResultModel> SaveUser(UserViewModel model)
         {
-            if (model.Password != model.ConfirmPassword)
-            {
-                return new SaveResultModel
-                {
-                    Result = -2,
-                    Message = "Passwords do not match."
-                };
-            }
             var user = new UserModel
             {
+                IdUser = model.IdUser,
                 Username = model.Username,
-                PasswordHash = _passwordService.HashPassword(model.Password),
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Email = model.Email,
                 IsActive = model.IsActive,
                 MustChangePassword = model.MustChangePassword
             };
-            return await _repo.SaveUser(user);
+            if (model.IdUser == null)
+            {
+                user.PasswordHash = _passwordService.HashPassword(model.Password!);
+            }
+            var result = await _repo.SaveUser(user);
+            if (result.Result != 1 || result.Id == null)
+                return result;
+            var roleResult = await _repo.SaveUserRoles(result.Id.Value, model.SelectedRoles);
+            if (roleResult.Result != 1)
+                return roleResult;
+            return result;
         }
 
         public async Task<SaveResultModel> SaveUser(UserEditViewModel model)

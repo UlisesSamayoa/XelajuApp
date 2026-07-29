@@ -615,15 +615,59 @@ insert into Roles (Name, Description, IsActive, CreatedDate, CreatedBy, IsSystem
 
 go
 
-INSERT INTO UserRoles
+CREATE OR ALTER PROC sp_SaveUserRoles
 (
-    IdUser,
-    IdRole
+    @IdUser INT,
+    @IdRoles NVARCHAR(MAX)
 )
-VALUES
-(
-    5,
-    1
-);
+AS
+BEGIN
+    SET NOCOUNT ON;
 
-select * from Users
+    --------------------------------------------------------
+    -- Validar que exista el usuario
+    --------------------------------------------------------
+    IF NOT EXISTS
+    (
+        SELECT 1
+        FROM Users
+        WHERE IdUser = @IdUser
+    )
+    BEGIN
+        SELECT
+            -1 AS Result,
+            'User not found.' AS Message;
+        RETURN;
+    END
+
+    --------------------------------------------------------
+    -- Eliminar roles actuales
+    --------------------------------------------------------
+    DELETE
+    FROM UserRoles
+    WHERE IdUser = @IdUser;
+
+    --------------------------------------------------------
+    -- Si vienen roles, insertarlos
+    --------------------------------------------------------
+    IF NULLIF(LTRIM(RTRIM(@IdRoles)), '') IS NOT NULL
+    BEGIN
+        INSERT INTO UserRoles
+        (
+            IdUser,
+            IdRole
+        )
+        SELECT
+            @IdUser,
+            CAST(value AS INT)
+        FROM STRING_SPLIT(@IdRoles, ',');
+    END
+
+    --------------------------------------------------------
+    -- Resultado
+    --------------------------------------------------------
+    SELECT
+        1 AS Result,
+        'User roles saved successfully.' AS Message;
+END
+GO
