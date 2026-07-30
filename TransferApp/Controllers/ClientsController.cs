@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TransferApp.Models;
+using TransferApp.Security;
 
 public class ClientsController : Controller
 {
@@ -10,6 +11,7 @@ public class ClientsController : Controller
         _service = service;
     }
 
+    [Permission("Clients.View")]
     public IActionResult Index() => View();
     public IActionResult Update(int id) => View();
 

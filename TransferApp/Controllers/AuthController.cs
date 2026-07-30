@@ -50,6 +50,24 @@ namespace TransferApp.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        //private async Task SignInUser(UserModel user)
+        //{
+        //    var claims = new List<Claim>
+        //    {
+        //        new Claim(ClaimTypes.NameIdentifier, user.IdUser.ToString()),
+        //        new Claim("IdUser", user.IdUser.ToString()),
+        //        new Claim(ClaimTypes.Name, user.Username),
+        //        new Claim("FirstName", user.FirstName),
+        //        new Claim("LastName", user.LastName)
+        //    };
+        //    foreach (var role in user.Roles)
+        //    {
+        //        claims.Add(new Claim(ClaimTypes.Role, role.Name));
+        //    }
+        //    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        //    var principal = new ClaimsPrincipal(identity);
+        //    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+        //}
         private async Task SignInUser(UserModel user)
         {
             var claims = new List<Claim>
@@ -64,10 +82,18 @@ namespace TransferApp.Controllers
             {
                 claims.Add(new Claim(ClaimTypes.Role, role.Name));
             }
+            foreach (var permission in user.Permissions)
+            {
+                claims.Add(new Claim(
+                    "Permission",
+                    $"{permission.Module}.{permission.Action}"
+                ));
+            }
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
         }
+
 
         [HttpGet]
         [AllowAnonymous]

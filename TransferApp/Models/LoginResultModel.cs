@@ -9,5 +9,7 @@
         public DateTime? LockedUntil { get; set; }
         public string Message { get; set; } = "";
         public UserModel? User { get; set; }
+        //public List<PermissionModel> Permissions { get; set; } = [];
+        public PermissionModel? Permissions { get; set; }
     }
 }

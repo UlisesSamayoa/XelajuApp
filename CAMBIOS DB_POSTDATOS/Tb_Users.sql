@@ -671,4 +671,39 @@ BEGIN
         1 AS Result,
         'User roles saved successfully.' AS Message;
 END
+
+
 GO
+
+CREATE OR ALTER PROC sp_GetUserPermissions
+(
+    @IdUser INT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT DISTINCT
+
+        P.IdPermission,
+        P.Module,
+        P.Action,
+        P.Description
+    FROM UserRoles UR
+        INNER JOIN RolePermissions RP ON UR.IdRole = RP.IdRole
+        INNER JOIN Permissions P ON RP.IdPermission = P.IdPermission
+    WHERE UR.IdUser = @IdUser
+    ORDER BY P.Module,P.Action;
+
+END
+GO
+
+
+select * from users
+select * from userroles
+select * from roles
+select * from permissions
+select * from rolepermissions
+
+insert into Permissions (Module, Action, Description) values ('Users', 'View', 'Permission to view users');
+insert into rolepermissions (IdRole, IdPermission) values (1, 1);
+insert into rolepermissions (IdRole, IdPermission) values (3, 1);

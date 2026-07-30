@@ -19,5 +19,6 @@
         public string FullName => $"{FirstName} {LastName}";
         // Navegación para mostrar los roles del usuario
         public List<RoleModel> Roles { get; set; } = new();
+        public List<PermissionModel> Permissions { get; set; } = new();
     }
 }

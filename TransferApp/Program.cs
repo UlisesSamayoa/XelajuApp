@@ -31,12 +31,16 @@ builder.Services
 
 // Add services to the container.
 //builder.Services.AddControllersWithViews();
+
 builder.Services.AddControllersWithViews(options =>
-{
-    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-    options.Filters.Add(new AuthorizeFilter(policy));
-});
-builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+    {
+        var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+        options.Filters.Add(new AuthorizeFilter(policy));
+    }).AddRazorRuntimeCompilation();
+//builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+builder.Services.AddAuthorization();
+builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
 builder.Services.AddSingleton<ApplicationDbContext>();
 builder.Services.AddScoped<CompanyRepository>();
@@ -72,6 +76,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<RoleService>();
+builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
+builder.Services.AddScoped<PermissionService>();
 builder.Services.AddSingleton<PasswordService>();
 var app = builder.Build();
 

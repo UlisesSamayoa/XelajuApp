@@ -10,11 +10,13 @@ namespace TransferApp.Services
         private readonly IUserRepository _repo;
         private readonly PasswordService _passwordService;
         private readonly RoleService _roleService;
-        public UserService(IUserRepository repo, PasswordService passwordService, RoleService roleService)
+        private readonly PermissionService _permissionService;
+        public UserService(IUserRepository repo, PasswordService passwordService, RoleService roleService, PermissionService permissionService)
         {
             _repo = repo;
             _passwordService = passwordService;
             _roleService = roleService;
+            _permissionService = permissionService;
         }
         public Task<List<UserModel>> GetUsers()
             => _repo.GetUsers();
@@ -23,27 +25,30 @@ namespace TransferApp.Services
         {
             return await _repo.GetUserById(idUser);
         }
+
         //public async Task<SaveResultModel> SaveUser(UserViewModel model)
         //{
-        //    if (model.Password != model.ConfirmPassword)
-        //    {
-        //        return new SaveResultModel
-        //        {
-        //            Result = -2,
-        //            Message = "Passwords do not match."
-        //        };
-        //    }
         //    var user = new UserModel
         //    {
+        //        IdUser = model.IdUser,
         //        Username = model.Username,
-        //        PasswordHash = _passwordService.HashPassword(model.Password),
         //        FirstName = model.FirstName,
         //        LastName = model.LastName,
         //        Email = model.Email,
         //        IsActive = model.IsActive,
         //        MustChangePassword = model.MustChangePassword
         //    };
-        //    return await _repo.SaveUser(user);
+        //    if (model.IdUser == 0)
+        //    {
+        //        user.PasswordHash = _passwordService.HashPassword(model.Password!);
+        //    }
+        //    var result = await _repo.SaveUser(user);
+        //    if (result.Result != 1 || result.Id == null)
+        //        return result;
+        //    var roleResult = await _repo.SaveUserRoles(result.Id.Value, model.SelectedRoles);
+        //    if (roleResult.Result != 1)
+        //        return roleResult;
+        //    return result;
         //}
         public async Task<SaveResultModel> SaveUser(UserViewModel model)
         {
@@ -57,9 +62,17 @@ namespace TransferApp.Services
                 IsActive = model.IsActive,
                 MustChangePassword = model.MustChangePassword
             };
-            if (model.IdUser == null)
+            if (model.IdUser == 0)
             {
-                user.PasswordHash = _passwordService.HashPassword(model.Password!);
+                if (string.IsNullOrWhiteSpace(model.Password))
+                {
+                    return new SaveResultModel
+                    {
+                        Result = -1,
+                        Message = "Password is required."
+                    };
+                }
+                user.PasswordHash = _passwordService.HashPassword(model.Password);
             }
             var result = await _repo.SaveUser(user);
             if (result.Result != 1 || result.Id == null)
@@ -111,6 +124,7 @@ namespace TransferApp.Services
                 };
             }
             user.Roles = await _roleService.GetUserRoles(user.IdUser);
+            user.Permissions = await _permissionService.GetUserPermissions(user.IdUser);
             var statusResult = ValidateAccountStatus(user);
             if (statusResult != null)
                 return statusResult;

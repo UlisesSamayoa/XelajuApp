@@ -20,6 +20,7 @@ namespace TransferApp.Controllers
             _password = password;
             _roleService = roleService;
         }
+        [Permission("Users.View")]
         public async Task<IActionResult> Index()
         {
             var users = await _service.GetUsers();
