@@ -1,0 +1,87 @@
+﻿@model TransferApp.ViewModels.RoleViewModel
+@{
+    ViewData["Title"] = "Role Permissions";
+}
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header">
+            <h4>
+                Permissions - @Model.Name
+            </h4>
+        </div>
+
+
+        <div class="card-body">
+
+            <form asp-action="Permissions" method="post">
+
+                <input asp-for="IdRole" type="hidden" />
+
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+
+                @foreach (var module in Model.AvailablePermissions
+                                .GroupBy(x => x.Module))
+                {
+
+                    <div class="card mb-3">
+
+                        <div class="card-header bg-light">
+                            <strong>
+                                @module.Key
+                            </strong>
+                        </div>
+
+
+                        <div class="card-body">
+
+                            @foreach (var permission in module)
+                            {
+                                <div class="form-check">
+
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="SelectedPermissions"
+                                           value="@permission.IdPermission"
+                                           @(Model.SelectedPermissions.Contains(permission.IdPermission)
+                                                                              ? "checked"
+                                                                              : "") />
+
+                            <label class="form-check-label">
+                                @permission.Action
+                            </label>
+
+                                </div>
+                                                }
+
+                        </div>
+
+                    </div>
+
+                }
+
+
+                <button type="submit"
+                        class="btn btn-primary">
+                    Save Permissions
+                </button>
+
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+                    Cancel
+                </a>
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TransferApp.Services;
+using TransferApp.ViewModels;
 
 namespace TransferApp.Controllers
 {
@@ -15,6 +16,38 @@ namespace TransferApp.Controllers
             var roles = await _service.GetRoles();
             return View(roles);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Permissions(int id)
+        {
+            var role = await _service.GetRoleById(id);
+            if (role == null)
+                return NotFound();
+            var availablePermissions = await _service.GetPermissions();
+            var rolePermissions = await _service.GetRolePermissions(id);
+            var model = new RoleViewModel
+            {
+                IdRole = role.IdRole,
+                Name = role.Name,
+                Description = role.Description,
+                AvailablePermissions = availablePermissions,
+                SelectedPermissions = rolePermissions.Select(x => x.IdPermission).ToList()
+            };
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Permissions(RoleViewModel model)
+        {
+            var result = await _service.SaveRolePermissions(model.IdRole, model.SelectedPermissions);
+            if (result.Result != 1)
+            {
+                ModelState.AddModelError("", result.Message);
+                model.AvailablePermissions = await _service.GetPermissions();
+                return View(model);
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
 
     }
 }

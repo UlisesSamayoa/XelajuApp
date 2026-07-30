@@ -9,5 +9,10 @@ namespace TransferApp.Repositories.Interfaces
         Task<SaveResultModel> SaveRole(RoleModel model);
         Task<SaveResultModel> DeleteRole(int idRole);
         Task<List<RoleModel>> GetUserRoles(int idUser);
+
+        Task<List<PermissionModel>> GetPermissions();
+        Task<List<PermissionModel>> GetRolePermissions(int idRole);
+        Task<SaveResultModel> SaveRolePermissions(int idRole, List<int> permissions);
+
     }
 }

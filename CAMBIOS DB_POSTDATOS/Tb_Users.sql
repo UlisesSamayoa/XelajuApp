@@ -416,7 +416,8 @@ BEGIN
         Description,
         IsActive,
         CreatedDate,
-        CreatedBy
+        CreatedBy,
+        IsSystem
     FROM Roles
     WHERE IdRole = @IdRole;
 END
@@ -698,12 +699,95 @@ END
 GO
 
 
+CREATE OR ALTER PROC sp_GetPermissions
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        IdPermission,
+        Module,
+        Action,
+        Description
+    FROM Permissions
+    ORDER BY Module, Action;
+END
+GO
+
+CREATE OR ALTER PROC sp_GetRolePermissions
+(
+    @IdRole INT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        p.IdPermission,
+        p.Module,
+        p.Action,
+        p.Description
+    FROM RolePermissions rp
+    INNER JOIN Permissions p
+        ON p.IdPermission = rp.IdPermission
+    WHERE rp.IdRole = @IdRole
+    ORDER BY p.Module, p.Action;
+END
+GO
+
+CREATE OR ALTER PROC sp_SaveRolePermissions
+(
+    @IdRole INT,
+    @Permissions NVARCHAR(MAX)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+
+    DELETE FROM RolePermissions
+    WHERE IdRole = @IdRole;
+
+
+    IF NULLIF(@Permissions,'') IS NULL
+    BEGIN
+        SELECT
+            1 AS Result,
+            'Permissions removed successfully.' AS Message;
+
+        RETURN;
+    END
+
+
+    INSERT INTO RolePermissions
+    (
+        IdRole,
+        IdPermission
+    )
+    SELECT
+        @IdRole,
+        TRY_CAST(value AS INT)
+    FROM STRING_SPLIT(@Permissions, ',')
+    WHERE TRY_CAST(value AS INT) IS NOT NULL;
+
+
+    SELECT
+        1 AS Result,
+        'Permissions saved successfully.' AS Message;
+
+END
+GO
+
+
+
+
 select * from users
 select * from userroles
 select * from roles
 select * from permissions
 select * from rolepermissions
 
-insert into Permissions (Module, Action, Description) values ('Users', 'View', 'Permission to view users');
+insert into Permissions (Module, Action, Description) values ('Clients', 'View', 'Permission to view clients');
+
 insert into rolepermissions (IdRole, IdPermission) values (1, 1);
 insert into rolepermissions (IdRole, IdPermission) values (3, 1);
