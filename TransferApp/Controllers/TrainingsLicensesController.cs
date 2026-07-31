@@ -23,9 +23,7 @@ public class TrainingsLicensesController : Controller
         => Json(await _service.GetById(id));
 
     [HttpPost]
-    public async Task<IActionResult> Create(
-        [FromForm] TrainingsLicensesModel model,
-        IFormFile File)
+    public async Task<IActionResult> Create([FromForm] TrainingsLicensesModel model, IFormFile File)
     {
         try
         {
@@ -40,9 +38,7 @@ public class TrainingsLicensesController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Update(
-        [FromForm] TrainingsLicensesModel model,
-        IFormFile File)
+    public async Task<IActionResult> Update([FromForm] TrainingsLicensesModel model, IFormFile File)
     {
         try
         {

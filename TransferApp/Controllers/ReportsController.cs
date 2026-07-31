@@ -74,21 +74,6 @@ namespace TransferApp.Controllers
             byte[] pdf = await _service.GenerateClientTransactionsReport(startDate, endDate, client_Id);
             return File(pdf, "application/pdf", $"Transactions_{DateTime.Now:yyyyMMddHHmmss}.pdf");
         }
-        //[HttpGet]
-        //public async Task<IActionResult> ClientTransactionsPdf(DateTime startDate, DateTime endDate, int client_Id)
-        //{
-        //    var transactions = await _service.GetClientTransactionsReport(startDate, endDate, client_Id);
-        //    var model = new ClientTransactionsReportViewModel
-        //    {
-        //        StartDate = startDate,
-        //        EndDate = endDate,
-        //        GeneratedDate = DateTime.Now,
-        //        TransactionTypeName = "TIPO TRANSACCION",
-        //        Transactions = transactions
-        //    };
-
-        //    return View("ClientsTransactionsReport", model);
-        //}
         [HttpGet]
         public async Task<IActionResult> ClientTransactionsPdf(DateTime startDate, DateTime endDate, int client_Id)
         {

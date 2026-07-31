@@ -4,7 +4,6 @@ using TransferApp.Models;
 public class TransactionsTypesController : Controller
 {
     private readonly TransactionsTypesService _service;
-
     public TransactionsTypesController(TransactionsTypesService service)
     {
         _service = service;

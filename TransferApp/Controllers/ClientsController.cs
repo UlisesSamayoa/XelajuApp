@@ -13,31 +13,22 @@ public class ClientsController : Controller
 
     [Permission("Clients.View")]
     public IActionResult Index() => View();
+
+    [Permission("Clients.View")]
     public IActionResult Update(int id) => View();
 
     [HttpGet]
+    [Permission("Clients.View")]
     public async Task<IActionResult> GetAll()
         => Json(await _service.GetAll());
 
     [HttpGet]
+    [Permission("Clients.View")]
     public async Task<IActionResult> GetById(int id)
         => Json(await _service.GetById(id));
 
-    //[HttpPost]
-    //public async Task<IActionResult> Create([FromForm] ClientsModel model, IFormFile File)
-    //{
-    //    try
-    //    {
-    //        await _service.Create(model, File);
-    //        return Ok(new { message = "Client created" });
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        return BadRequest(new { message = ex.Message });
-    //    }
-    //}
-
     [HttpPost]
+    [Permission("Clients.Create")]
     public async Task<IActionResult> Create([FromForm] ClientsModel model, IFormFile File)
     {
         try
@@ -60,6 +51,7 @@ public class ClientsController : Controller
     }
 
     [HttpPost]
+    [Permission("Clients.Edit")]
     public async Task<IActionResult> Update([FromForm] ClientsModel model, IFormFile File)
     {
         try
@@ -74,12 +66,15 @@ public class ClientsController : Controller
     }
 
     [HttpPost]
+    [Permission("Clients.Delete")]
     public async Task<IActionResult> Delete(int id)
     {
         await _service.Delete(id, "admin");
         return Ok(new { message = "Deleted" });
     }
+
     [HttpGet]
+    [Permission("Clients.View")]
     public async Task<IActionResult> Search(string term)
     {
         try
@@ -94,8 +89,8 @@ public class ClientsController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult>
-    ExistsClient(string documentNumber)
+    [Permission("Clients.View")]
+    public async Task<IActionResult> ExistsClient(string documentNumber)
     {
         try
         {
@@ -112,6 +107,7 @@ public class ClientsController : Controller
     }
 
     [HttpGet]
+    [Permission("Clients.View")]
     public async Task<IActionResult> ProfileImage(int id)
     {
         var client = await _service.GetById(id);

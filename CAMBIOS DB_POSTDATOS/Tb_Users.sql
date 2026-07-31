@@ -791,3 +791,6 @@ insert into Permissions (Module, Action, Description) values ('Clients', 'View',
 
 insert into rolepermissions (IdRole, IdPermission) values (1, 1);
 insert into rolepermissions (IdRole, IdPermission) values (3, 1);
+
+select * from roles
+delete from roles where idRole = 5

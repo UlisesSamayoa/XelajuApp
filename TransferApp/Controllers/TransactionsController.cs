@@ -255,37 +255,6 @@ public class TransactionsController : Controller
         }
     }
 
-    //[HttpGet]
-    //public async Task<IActionResult> ViewTransactionFile(int id)
-    //{
-    //    var tx = await _service.GetById(id);
-
-    //    if (tx == null)
-    //        return NotFound();
-
-    //    if (string.IsNullOrWhiteSpace(tx.TransactionFile))
-    //        return NotFound();
-
-    //    if (!System.IO.File.Exists(tx.TransactionFile))
-    //        return NotFound();
-
-    //    var ext = Path.GetExtension(tx.TransactionFile).ToLower();
-
-    //    string contentType = ext switch
-    //    {
-    //        ".jpg" => "image/jpeg",
-    //        ".jpeg" => "image/jpeg",
-    //        ".png" => "image/png",
-    //        ".pdf" => "application/pdf",
-    //        _ => "application/octet-stream"
-    //    };
-
-    //    var bytes = await System.IO.File.ReadAllBytesAsync(
-    //        tx.TransactionFile
-    //    );
-
-    //    return File(bytes, contentType);
-    //}
     [HttpGet]
     public async Task<IActionResult> ViewAttachment(long id)
     {
@@ -312,39 +281,6 @@ public class TransactionsController : Controller
             file.OriginalFileName
         );
     }
-    //[HttpGet]
-    //public async Task<IActionResult> DownloadTransactionFile(int id)
-    //{
-    //    var tx = await _service.GetById(id);
-
-    //    if (tx == null)
-    //        return NotFound();
-
-    //    if (string.IsNullOrWhiteSpace(tx.TransactionFile))
-    //        return NotFound();
-
-    //    if (!System.IO.File.Exists(tx.TransactionFile))
-    //        return NotFound();
-
-    //    var ext = Path.GetExtension(tx.TransactionFile).ToLower();
-
-    //    string contentType = ext switch
-    //    {
-    //        ".jpg" => "image/jpeg",
-    //        ".jpeg" => "image/jpeg",
-    //        ".png" => "image/png",
-    //        ".pdf" => "application/pdf",
-    //        _ => "application/octet-stream"
-    //    };
-
-    //    var bytes = await System.IO.File.ReadAllBytesAsync(
-    //        tx.TransactionFile
-    //    );
-
-    //    var fileName = Path.GetFileName(tx.TransactionFile);
-
-    //    return File(bytes, contentType, fileName);
-    //}
 
     [HttpPost]
     public async Task<IActionResult> ChangeStatus(int idTransaction, string status, string transactionsStatusComment)

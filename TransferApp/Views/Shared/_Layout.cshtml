@@ -182,19 +182,25 @@
                     <i class="bi bi-bank2" style="font-size:1.5rem;"></i> Companies
                 </a>
                 <a asp-controller="DocumentsTypes" asp-action="Index">
-                    <i class="bi bi-file-earmark-medical-fill"></i> Documents Types
+                    <i class="bi bi-file-earmark-medical-fill" style="font-size:1.5rem;"></i> Documents Types
                 </a>
                 <a asp-controller="Parameters" asp-action="Index">
-                    <i class="bi bi-sliders"></i> Parameters
+                    <i class="bi bi-sliders" style="font-size:1.5rem;"></i> Parameters
                 </a>
                 <a asp-controller="TransactionsTypes" asp-action="Index">
-                    <i class="bi bi-cash-stack"></i> Transactions Types
+                    <i class="bi bi-cash-stack" style="font-size:1.5rem;"></i> Transactions Types
+                </a>
+                <a asp-controller="Roles" asp-action="Index">
+                    <i class="bi bi-person-fill-gear" style="font-size:1.5rem;"></i> Roles
+                </a>
+                <a asp-controller="Users" asp-action="Index">
+                    <i class="bi bi-person-fill-add" style="font-size:1.5rem;"></i> User
                 </a>
             </div>
         </div>
-        <a asp-controller="Users" asp-action="Index">
-            <i class="bi bi-person-fill-gear" style="font-size:1.5rem;"></i> Users
-        </a>
+        @* <a asp-controller="Users" asp-action="Index">
+            <i class="bi bi-person-fill-add" style="font-size:1.5rem;"></i> Users
+        </a> *@
         <a asp-controller="Auth" asp-action="Login">
             <i class="bi bi-box-arrow-in-left" style="font-size:1.5rem;"></i> Log out
         </a>

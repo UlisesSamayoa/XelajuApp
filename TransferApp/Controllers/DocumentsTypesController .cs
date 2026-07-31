@@ -4,7 +4,6 @@ using TransferApp.Models;
 public class DocumentsTypesController : Controller
 {
     private readonly DocumentsTypesService _service;
-
     public DocumentsTypesController(DocumentsTypesService service)
     {
         _service = service;

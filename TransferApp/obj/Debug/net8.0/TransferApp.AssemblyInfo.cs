@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TransferApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+61773e69551dfa2746d811afb4acde25d8769db1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b92e08f3e755e6eada0c72d9f446b3e3de34d11a")]
 [assembly: System.Reflection.AssemblyProductAttribute("TransferApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TransferApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

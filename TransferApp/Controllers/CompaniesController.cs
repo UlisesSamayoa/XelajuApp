@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TransferApp.Models;
+using TransferApp.Security;
 
 public class CompaniesController : Controller
 {
@@ -8,17 +9,23 @@ public class CompaniesController : Controller
     {
         _service = service;
     }
+
+    [Permission("Companies.View")]
     public IActionResult Index()
     {
         return View();
     }
+
     [HttpGet]
+    [Permission("Companies.View")]
     public async Task<IActionResult> GetAll()
     {
         var data = await _service.GetAll();
         return Json(data);
     }
+
     [HttpPost]
+    [Permission("Companies.Create")]
     public async Task<IActionResult> Create([FromBody] CompaniesModel model)
     {
         try
@@ -31,19 +38,25 @@ public class CompaniesController : Controller
             return BadRequest(new { success = false, message = ex.Message });
         }
     }
+
     [HttpGet]
+    [Permission("Companies.Edit")]
     public IActionResult Update(int id)
     {
         ViewBag.IdCompany = id;
         return View();
     }
+
     [HttpGet]
+    [Permission("Companies.View")]
     public async Task<IActionResult> GetById(int id)
     {
         var data = await _service.GetById(id);
         return Json(data);
     }
+
     [HttpPost]
+    [Permission("Companies.Edit")]
     public async Task<IActionResult> Update([FromBody] CompaniesModel model)
     {
         try
@@ -56,7 +69,9 @@ public class CompaniesController : Controller
             return BadRequest(new { success = false, message = ex.Message });
         }
     }
+
     [HttpPost]
+    [Permission("Companies.Delete")]
     public async Task<IActionResult> Delete(int id)
     {
         try
@@ -71,18 +86,22 @@ public class CompaniesController : Controller
             return BadRequest(new { success = false, message = ex.Message });
         }
     }
+
     [HttpGet]
+    [Permission("Companies.View")]
     public async Task<IActionResult> GetByCountry(int countryId)
     => Json(await _service.GetByCountry(countryId));
 
-
     [HttpGet]
+    [Permission("Companies.View")]
     public async Task<IActionResult> GetByTransactionType(int transactionType)
     {
         var result = await _service.GetByTransactionType(transactionType);
         return Ok(result);
     }
+
     [HttpGet]
+    [Permission("Companies.View")]
     public async Task<IActionResult> GetByTransactionType_Service(int transactionType)
     {
         var result = await _service.GetByTransactionType_Service(transactionType);
@@ -90,6 +109,7 @@ public class CompaniesController : Controller
     }
 
     [HttpPost]
+    [Permission("Companies.Edit")]
     public async Task<IActionResult> ChangeStatus(int idCompany, string status, string StatusCompanyComment)
     {
         try
@@ -108,6 +128,7 @@ public class CompaniesController : Controller
     }
 
     [HttpGet]
+    [Permission("Companies.View")]
     public async Task<IActionResult> Search(string term)
     {
         try

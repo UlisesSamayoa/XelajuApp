@@ -3,7 +3,6 @@ using TransferApp.Models;
 public class ParametersController : Controller
 {
     private readonly ParametersService _service;
-
     public ParametersController(ParametersService service)
     {
         _service = service;

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TransferApp.Models;
+using TransferApp.Security;
 
 public class BeneficiariesController : Controller
 {
@@ -9,9 +10,10 @@ public class BeneficiariesController : Controller
     {
         _service = service;
     }
-
+    [Permission("Beneficiaries.View")]
     public IActionResult Index() => View();
 
+    [Permission("Beneficiaries.Edit")]
     public IActionResult Update(int id)
     {
         ViewBag.Id = id;
@@ -19,28 +21,17 @@ public class BeneficiariesController : Controller
     }
 
     [HttpGet]
+    [Permission("Beneficiaries.View")]
     public async Task<IActionResult> GetAll()
         => Json(await _service.GetAll());
 
     [HttpGet]
+    [Permission("Beneficiaries.View")]
     public async Task<IActionResult> GetById(int id)
         => Json(await _service.GetById(id));
 
-    //[HttpPost]
-    //public async Task<IActionResult> Create([FromBody] BeneficiariesModel m)
-    //{
-    //    try
-    //    {
-    //        m.UserC = "admin";
-    //        await _service.Create(m);
-    //        return Json(new { success = true, message = "Saved!" });
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        return BadRequest(new { message = ex.Message });
-    //    }
-    //}
     [HttpPost]
+    [Permission("Beneficiaries.Create")]
     public async Task<IActionResult> Create([FromBody] BeneficiariesModel m)
     {
         try
@@ -63,6 +54,7 @@ public class BeneficiariesController : Controller
     }
 
     [HttpPost]
+    [Permission("Beneficiaries.Edit")]
     public async Task<IActionResult> Update([FromBody] BeneficiariesModel m)
     {
         try
@@ -78,12 +70,15 @@ public class BeneficiariesController : Controller
     }
 
     [HttpPost]
+    [Permission("Beneficiaries.Delete")]
     public async Task<IActionResult> Delete(int id)
     {
         await _service.Delete(id, "admin");
         return Json(new { success = true });
     }
+
     [HttpGet]
+    [Permission("Beneficiaries.View")]
     public async Task<IActionResult> GetByClient(int id)
     {
         var data = await _service.GetByClient(id);

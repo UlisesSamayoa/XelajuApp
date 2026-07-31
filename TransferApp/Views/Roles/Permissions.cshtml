@@ -24,11 +24,11 @@
                      class="text-danger mb-3">
                 </div>
 
-
+                <div class="row">
                 @foreach (var module in Model.AvailablePermissions
                                 .GroupBy(x => x.Module))
                 {
-
+                    <div class="col-3">
                     <div class="card mb-3">
 
                         <div class="card-header bg-light">
@@ -62,9 +62,9 @@
                         </div>
 
                     </div>
-
+                    </div>
                 }
-
+                </div>
 
                 <button type="submit"
                         class="btn btn-primary">

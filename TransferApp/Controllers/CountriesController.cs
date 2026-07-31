@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TransferApp.Models;
+using TransferApp.Security;
 
 public class CountriesController : Controller
 {
@@ -10,19 +11,24 @@ public class CountriesController : Controller
         _service = service;
     }
 
+    [Permission("Countries.View")]
     public IActionResult Index() => View();
 
+    [Permission("Countries.Edit")]
     public IActionResult Update(int id) => View();
 
     [HttpGet]
+    [Permission("Countries.View")]
     public async Task<IActionResult> GetAll()
         => Json(await _service.GetAll());
 
     [HttpGet]
+    [Permission("Countries.View")]
     public async Task<IActionResult> GetById(int id)
         => Json(await _service.GetById(id));
 
     [HttpPost]
+    [Permission("Countries.Create")]
     public async Task<IActionResult> Create([FromBody] CountriesModel model)
     {
         try
@@ -37,6 +43,7 @@ public class CountriesController : Controller
     }
 
     [HttpPost]
+    [Permission("Countries.Edit")]
     public async Task<IActionResult> Update([FromBody] CountriesModel model)
     {
         try
@@ -51,6 +58,7 @@ public class CountriesController : Controller
     }
 
     [HttpPost]
+    [Permission("Countries.Delete")]
     public async Task<IActionResult> Delete(int id)
     {
         try
