@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using TransferApp.Models;
+using TransferApp.Security;
 
 namespace TransferApp.Controllers
 {
@@ -13,6 +14,7 @@ namespace TransferApp.Controllers
             _logger = logger;
         }
 
+        [Permission("Home.View")]
         public IActionResult Index()
         {
             return View();

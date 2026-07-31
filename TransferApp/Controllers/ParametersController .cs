@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TransferApp.Models;
+using TransferApp.Security;
 public class ParametersController : Controller
 {
     private readonly ParametersService _service;
@@ -8,11 +9,13 @@ public class ParametersController : Controller
         _service = service;
     }
 
+    [Permission("Parameters.View")]
     public IActionResult Index()
     {
         return View();
     }
 
+    [Permission("Parameters.Edit")]
     public IActionResult Update(int id)
     {
         ViewBag.Id = id;
@@ -20,18 +23,21 @@ public class ParametersController : Controller
     }
 
     [HttpGet]
+    [Permission("Parameters.View")]
     public async Task<IActionResult> GetAll()
     {
         return Json(await _service.GetAll());
     }
 
     [HttpGet]
+    [Permission("Parameters.View")]
     public async Task<IActionResult> GetById(int id)
     {
         return Json(await _service.GetById(id));
     }
 
     [HttpPost]
+    [Permission("Parameters.Create")]
     public async Task<IActionResult> Create([FromBody] ParametersModel m)
     {
         try
@@ -54,6 +60,7 @@ public class ParametersController : Controller
     }
 
     [HttpPut]
+    [Permission("Parameters.Edit")]
     public async Task<IActionResult> UpdateData([FromBody] ParametersModel m)
     {
         try
@@ -75,6 +82,7 @@ public class ParametersController : Controller
     }
 
     [HttpDelete]
+    [Permission("Parameters.Delete")]
     public async Task<IActionResult> Delete(int id)
     {
         try
@@ -95,8 +103,8 @@ public class ParametersController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult>
-    ValidateClientTransactions(string documentNumber, int TransactionType)
+    [Permission("Parameters.View")]
+    public async Task<IActionResult> ValidateClientTransactions(string documentNumber, int TransactionType)
     {
         try
         {

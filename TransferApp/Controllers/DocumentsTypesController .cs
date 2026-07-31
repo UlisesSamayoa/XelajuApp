@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TransferApp.Models;
+using TransferApp.Security;
 
 public class DocumentsTypesController : Controller
 {
@@ -9,8 +10,10 @@ public class DocumentsTypesController : Controller
         _service = service;
     }
 
+    [Permission("DocumentsTypes.View")]
     public IActionResult Index() => View();
 
+    [Permission("DocumentsTypes.Edit")]
     public IActionResult Update(int id)
     {
         ViewBag.Id = id;
@@ -18,14 +21,17 @@ public class DocumentsTypesController : Controller
     }
 
     [HttpGet]
+    [Permission("DocumentsTypes.View")]
     public async Task<IActionResult> GetAll()
         => Json(await _service.GetAll());
 
     [HttpGet]
+    [Permission("DocumentsTypes.View")]
     public async Task<IActionResult> GetById(int id)
         => Json(await _service.GetById(id));
 
     [HttpPost]
+    [Permission("DocumentsTypes.Create")]
     public async Task<IActionResult> Create([FromBody] DocumentsTypes m)
     {
         try
@@ -41,6 +47,7 @@ public class DocumentsTypesController : Controller
     }
 
     [HttpPost]
+    [Permission("DocumentsTypes.Edit")]
     public async Task<IActionResult> Update([FromBody] DocumentsTypes m)
     {
         try
@@ -56,6 +63,7 @@ public class DocumentsTypesController : Controller
     }
 
     [HttpPost]
+    [Permission("DocumentsTypes.Delete")]
     public async Task<IActionResult> Delete(int id)
     {
         await _service.Delete(id, "admin");
