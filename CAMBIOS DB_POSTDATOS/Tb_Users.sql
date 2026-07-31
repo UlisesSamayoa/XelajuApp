@@ -789,8 +789,11 @@ select * from rolepermissions
 
 insert into Permissions (Module, Action, Description) values ('Clients', 'View', 'Permission to view clients');
 
-insert into rolepermissions (IdRole, IdPermission) values (1, 1);
-insert into rolepermissions (IdRole, IdPermission) values (3, 1);
+insert into rolepermissions (IdRole, IdPermission) values (1, 54);
+insert into rolepermissions (IdRole, IdPermission) values (1, 55);
+insert into rolepermissions (IdRole, IdPermission) values (1, 56);
+insert into rolepermissions (IdRole, IdPermission) values (1, 57);
 
 select * from roles
 delete from roles where idRole = 5
+

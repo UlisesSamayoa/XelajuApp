@@ -95,7 +95,11 @@ namespace TransferApp.Services
                 IsActive = model.IsActive,
                 MustChangePassword = model.MustChangePassword
             };
-            return await _repo.SaveUser(user);
+            var result = await _repo.SaveUser(user);
+            if (result.Result != 1)
+                return result;
+
+            return await _repo.SaveUserRoles(model.IdUser, model.SelectedRoles);
         }
 
         public Task<bool> DeleteUser(int id)

@@ -1,8 +1,18 @@
-﻿@{
+﻿@using TransferApp.Extensions
+@{
     ViewData["Title"] = "Transactions";
     Layout = "_Layout";
+    @using TransferApp.Extensions
 }
-
+<script>
+    const permissions = {
+        canView: @User.HasPermission("Transactions.View").ToString().ToLower(),
+        canDelete: @User.HasPermission("Transactions.Delete").ToString().ToLower(),
+        canEdit: @User.HasPermission("Transactions.Edit").ToString().ToLower(),
+        canChangeStatus: @User.HasPermission("Transactions.Edit").ToString().ToLower(),
+        canUploadFiles: @User.HasPermission("Transactions.View").ToString().ToLower()
+    };
+</script>
 
 
 <style>
@@ -78,22 +88,28 @@
 
         <div class="d-flex justify-content-between mb-3">
             <h3><i class="bi bi-currency-exchange"></i> Transactions</h3>
-
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalTx" onclick="ObtenerTipoTransaccion(3,'TransactionType')">
+            @if (User.HasPermission("Users.Create"))
+            {
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalTx" onclick="ObtenerTipoTransaccion(3,'TransactionType')">
                 <i class="bi bi-currency-exchange"></i> Money Transfer
-            </button>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSimpleTx" onclick="ObtenerTipoTransaccion(1,'SimpleTx')">
-                <i class="bi bi-cash-coin"></i> Check Cashing
-            </button>
-            <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalOrderTx" onclick="ObtenerTipoTransaccion(2,'MOrder')">
-                <i class="bi bi-folder-plus"></i> Money Order
-            </button>
-            <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalPaidTx" onclick="ObtenerTipoTransaccion(4,'PService')">
-                <i class="bi bi-lightbulb-fill"></i> Paid Service
-            </button>
-            <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#Domestic_modalTx" onclick="ObtenerTipoTransaccion(5,'Domestic')">
-                <i class="bi bi-currency-exchange"></i> Domestic Transfer
-            </button>
+                </button>                
+            }
+            @if (User.HasPermission("Users.Create"))
+            {
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSimpleTx" onclick="ObtenerTipoTransaccion(1,'SimpleTx')">
+                    <i class="bi bi-cash-coin"></i> Check Cashing
+                </button>
+                <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalOrderTx" onclick="ObtenerTipoTransaccion(2,'MOrder')">
+                    <i class="bi bi-folder-plus"></i> Money Order
+                </button>
+                <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalPaidTx" onclick="ObtenerTipoTransaccion(4,'PService')">
+                    <i class="bi bi-lightbulb-fill"></i> Paid Service
+                </button>
+                <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#Domestic_modalTx" onclick="ObtenerTipoTransaccion(5,'Domestic')">
+                    <i class="bi bi-currency-exchange"></i> Domestic Transfer
+                </button>
+            }
+            
         </div>
         <div class="row mb-3">
             <div class="col-md-4">
@@ -2066,56 +2082,70 @@
                         render: d =>
                             `$ ${parseFloat(d).toFixed(2)}`
                     },
-                    // {
-                    //     data: 'idTransaction',
-                    //     orderable: false,
-                    //     render: id => `
-                    //         <div class="d-flex gap-2">
-
-                    //             <button class="btn btn-info btn-sm"
-                    //                 onclick="loadTransactionDetails(${id})">
-                    //                 <i class="bi bi-eye"></i>
-                    //             </button>
-                    //             <button
-                    //                 class="btn btn-danger btn-sm"
-                    //                 onclick="deleteTx(${id})">
-
-                    //                 <i class="bi bi-trash-fill"></i>
-
-                    //             </button>
-
-                    //         </div>
-                    //     `
-                    // }
                 {
                     className: 'tmin-w',
                 render: function (data, type, row) {
-                return `
-                    <button class="btn btn-secondary btn-sm"
-                        onclick="loadTransactionAddFiles(${row.idTransaction})">
-                        <i class="bi bi-images"></i>
-                    </button>
-                    ${row.transactionType == 1 ? `
-                        <button class="btn btn-warning btn-sm"
-                            onclick="openChangeStatusModal(
-                                ${row.idTransaction},
-                                '${row.transactionStatus}'
-                            )">
-                            <i class="bi bi-arrow-repeat"></i>
-                        </button>
-                    ` : ''}
+                            let buttons = "";
 
-                    <button class="btn btn-info btn-sm"
-                        onclick="loadTransactionDetails(${row.idTransaction})">
-                        <i class="bi bi-eye-fill"></i>
-                    </button>
+        if (permissions.canUploadFiles) {
+            buttons += `
+                <button class="btn btn-secondary btn-sm"
+                    onclick="loadTransactionAddFiles(${row.idTransaction})">
+                    <i class="bi bi-images"></i>
+                </button>`;
+        }
 
-                    <button class="btn btn-danger btn-sm"
-                        onclick="deleteTx(${row.idTransaction})">
-                        <i class="bi bi-trash-fill"></i>
-                    </button>
+        if (permissions.canChangeStatus && row.transactionType == 1) {
+            buttons += `
+                <button class="btn btn-warning btn-sm"
+                    onclick="openChangeStatusModal(${row.idTransaction}, '${row.transactionStatus}')">
+                    <i class="bi bi-arrow-repeat"></i>
+                </button>`;
+        }
 
-                `;
+        if (permissions.canView) {
+            buttons += `
+                <button class="btn btn-info btn-sm"
+                    onclick="loadTransactionDetails(${row.idTransaction})">
+                    <i class="bi bi-eye-fill"></i>
+                </button>`;
+        }
+
+        if (permissions.canDelete) {
+            buttons += `
+                <button class="btn btn-danger btn-sm"
+                    onclick="deleteTx(${row.idTransaction})">
+                    <i class="bi bi-trash-fill"></i>
+                </button>`;
+        }
+
+        return buttons;
+                // return `
+                //     <button class="btn btn-secondary btn-sm"
+                //         onclick="loadTransactionAddFiles(${row.idTransaction})">
+                //         <i class="bi bi-images"></i>
+                //     </button>
+                //     ${row.transactionType == 1 ? `
+                //         <button class="btn btn-warning btn-sm"
+                //             onclick="openChangeStatusModal(
+                //                 ${row.idTransaction},
+                //                 '${row.transactionStatus}'
+                //             )">
+                //             <i class="bi bi-arrow-repeat"></i>
+                //         </button>
+                //     ` : ''}
+
+                //     <button class="btn btn-info btn-sm"
+                //         onclick="loadTransactionDetails(${row.idTransaction})">
+                //         <i class="bi bi-eye-fill"></i>
+                //     </button>
+
+                //     <button class="btn btn-danger btn-sm"
+                //         onclick="deleteTx(${row.idTransaction})">
+                //         <i class="bi bi-trash-fill"></i>
+                //     </button>
+
+                // `;
             }
         }
 
