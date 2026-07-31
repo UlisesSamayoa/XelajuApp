@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TransferApp.Security;
 using TransferApp.Services;
 using TransferApp.ViewModels;
 
@@ -11,6 +12,8 @@ namespace TransferApp.Controllers
         {
             _service = service;
         }
+
+        [Permission("Roles.View")]
         public async Task<IActionResult> Index()
         {
             var roles = await _service.GetRoles();
@@ -18,6 +21,7 @@ namespace TransferApp.Controllers
         }
 
         [HttpGet]
+        [Permission("Roles.Create")]
         public async Task<IActionResult> Permissions(int id)
         {
             var role = await _service.GetRoleById(id);
@@ -35,7 +39,9 @@ namespace TransferApp.Controllers
             };
             return View(model);
         }
+
         [HttpPost]
+        [Permission("Roles.Create")]
         public async Task<IActionResult> Permissions(RoleViewModel model)
         {
             var result = await _service.SaveRolePermissions(model.IdRole, model.SelectedPermissions);

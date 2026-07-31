@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TransferApp.Models.Reports;
+using TransferApp.Security;
 using TransferApp.Services;
 
 namespace TransferApp.Controllers
@@ -11,18 +12,23 @@ namespace TransferApp.Controllers
         {
             _service = service;
         }
+
+        [Permission("Reports.View")]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
+        [Permission("Reports.View")]
         public async Task<IActionResult> TransactionsReport(DateTime startDate, DateTime endDate, int transactionType)
         {
             var data = await _service.GetTransactionsReport(startDate, endDate, transactionType);
             return Json(data);
         }
         //REPORTE DE TRANSACCIONES DEL DIA
+
+        [Permission("Reports.View")]
         public async Task<IActionResult> GenerateDayliTransactionsReport(DateTime startDate, DateTime endDate)
         {
             byte[] pdf = await _service.GenerateDayliTransactionsReport(startDate, endDate);
@@ -31,6 +37,7 @@ namespace TransferApp.Controllers
 
 
         [HttpGet]
+        [Permission("Reports.View")]
         public async Task<IActionResult> DayliTransactionsPdf(DateTime startDate, DateTime endDate, int transactionType)
         {
             var transactions = await _service.GetDayliTransactionsReport(startDate, endDate);
@@ -46,13 +53,17 @@ namespace TransferApp.Controllers
             return View("DayliTransactionsReport", model);
         }
         //REPORTE DE TRANSACCIONES POR TIPO DE TRANSACCION
+
         [HttpGet]
+        [Permission("Reports.View")]
         public async Task<IActionResult> GenerateTransactionsReport(DateTime startDate, DateTime endDate, int transactionType)
         {
             byte[] pdf = await _service.GenerateTransactionsReport(startDate, endDate, transactionType);
             return File(pdf, "application/pdf", $"Transactions_{DateTime.Now:yyyyMMddHHmmss}.pdf");
         }
+
         [HttpGet]
+        [Permission("Reports.View")]
         public async Task<IActionResult> TransactionsPdf(DateTime startDate, DateTime endDate, int transactionType)
         {
             var transactions = await _service.GetTransactionsReport(startDate, endDate, transactionType);
@@ -68,13 +79,17 @@ namespace TransferApp.Controllers
             return View("TransactionsReport", model);
         }
         //REPORTE DE TRANSACCIONES POR CLIENTE
+
         [HttpGet]
+        [Permission("Reports.View")]
         public async Task<IActionResult> GenerateClientTransactionsReport(DateTime startDate, DateTime endDate, int client_Id)
         {
             byte[] pdf = await _service.GenerateClientTransactionsReport(startDate, endDate, client_Id);
             return File(pdf, "application/pdf", $"Transactions_{DateTime.Now:yyyyMMddHHmmss}.pdf");
         }
+
         [HttpGet]
+        [Permission("Reports.View")]
         public async Task<IActionResult> ClientTransactionsPdf(DateTime startDate, DateTime endDate, int client_Id)
         {
             var model = await _service.GetClientTransactionsReport(
@@ -86,6 +101,7 @@ namespace TransferApp.Controllers
         }
 
         //REPORTE DE CLIENTES NUEVOS 
+        [Permission("Reports.View")]
         public async Task<IActionResult> GenerateNewClientsReport(DateTime startDate, DateTime endDate)
         {
             byte[] pdf = await _service.GenerateNewClientsReport(startDate, endDate);
@@ -93,12 +109,12 @@ namespace TransferApp.Controllers
         }
 
         [HttpGet]
+        [Permission("Reports.View")]
         public async Task<IActionResult> GenerateNewClientsPdf(DateTime startDate, DateTime endDate)
         {
             var model = await _service.GetGenerateNewClientsReport(startDate, endDate);
             return View("NewClientsReport", model);
         }
-
 
     }
 }
