@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 using TransferApp.Models;
 using TransferApp.Repositories;
+using TransferApp.Security;
 
 public class TransactionsController : Controller
 {
@@ -20,8 +21,11 @@ public class TransactionsController : Controller
         _AttachRepo = AttachRepo;
     }
 
+    [Permission("Transactions.View")]
     public IActionResult Index() => View();
+
     [HttpGet]
+    [Permission("Transactions.View")]
     public async Task<IActionResult> GetAttachments(int idTransaction)
     {
         try
@@ -37,10 +41,14 @@ public class TransactionsController : Controller
             });
         }
     }
+
     [HttpGet]
+    [Permission("Transactions.View")]
     public async Task<IActionResult> GetAll()
         => Json(await _service.GetAll());
+
     [HttpGet]
+    [Permission("Transactions.View")]
     public async Task<IActionResult> GetById(int id)
     {
         try
@@ -65,7 +73,9 @@ public class TransactionsController : Controller
             });
         }
     }
+
     [HttpPost]
+    [Permission("Transactions.Create")]
     public async Task<IActionResult> Create([FromForm] TransactionsModel m, List<IFormFile> ImgJustify)
     {
         try
@@ -135,7 +145,9 @@ public class TransactionsController : Controller
             });
         }
     }
+
     [HttpPost]
+    [Permission("Transactions.Create")]
     public async Task<IActionResult> CreateDomestic([FromForm] TransactionsModel m, List<IFormFile> Domestic_ImgJustify)
     {
         try
@@ -171,7 +183,9 @@ public class TransactionsController : Controller
             });
         }
     }
+
     [HttpPost]
+    [Permission("Transactions.Delete")]
     public async Task<IActionResult> Delete(int id)
     {
         await _service.Delete(id, "admin");
@@ -180,6 +194,7 @@ public class TransactionsController : Controller
 
     //TRANSACCION SIMPLE
     [HttpPost]
+    [Permission("Transactions.Create")]
     public async Task<IActionResult> CreateMorder(SimpleTransactionsModel m, List<IFormFile> Morder_ImgJustify)
     {
         try
@@ -205,7 +220,9 @@ public class TransactionsController : Controller
             });
         }
     }
+
     [HttpPost]
+    [Permission("Transactions.Create")]
     public async Task<IActionResult> CreatePService(SimpleTransactionsModel m, List<IFormFile> PService_ImgJustify)
     {
         try
@@ -231,7 +248,9 @@ public class TransactionsController : Controller
             });
         }
     }
+
     [HttpPost]
+    [Permission("Transactions.Create")]
     public async Task<IActionResult> CreateSimpleTx([FromForm] SimpleTransactionsBatchModel m, [FromForm] string Checks, List<IFormFile> SimpleTx_ImgJustify)
     {
         try
@@ -256,6 +275,7 @@ public class TransactionsController : Controller
     }
 
     [HttpGet]
+    [Permission("Transactions.View")]
     public async Task<IActionResult> ViewAttachment(long id)
     {
         var file = await _AttachRepo.GetAttachmentById(id);
@@ -266,7 +286,9 @@ public class TransactionsController : Controller
         var bytes = await System.IO.File.ReadAllBytesAsync(file.FilePath);
         return File(bytes, file.ContentType);
     }
+
     [HttpGet]
+    [Permission("Transactions.View")]
     public async Task<IActionResult> DownloadAttachment(long id)
     {
         var file = await _AttachRepo.GetAttachmentById(id);
@@ -283,6 +305,7 @@ public class TransactionsController : Controller
     }
 
     [HttpPost]
+    [Permission("Transactions.Edit")]
     public async Task<IActionResult> ChangeStatus(int idTransaction, string status, string transactionsStatusComment)
     {
         try
@@ -301,6 +324,7 @@ public class TransactionsController : Controller
     }
 
     [HttpPost]
+    [Permission("Transactions.Create")]
     public async Task<IActionResult> AddEvidence(int idTransaction, List<IFormFile> files, string user, int transactionType, string clientName, string clientDocument, string referenceNumber)
     {
         try

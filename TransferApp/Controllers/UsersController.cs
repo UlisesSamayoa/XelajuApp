@@ -20,6 +20,7 @@ namespace TransferApp.Controllers
             _password = password;
             _roleService = roleService;
         }
+
         [Permission("Users.View")]
         public async Task<IActionResult> Index()
         {
@@ -27,6 +28,8 @@ namespace TransferApp.Controllers
 
             return View(users);
         }
+
+        [Permission("Users.Create")]
         public async Task<IActionResult> Create()
         {
             var model = new UserViewModel
@@ -36,7 +39,9 @@ namespace TransferApp.Controllers
 
             return View(model);
         }
+
         [HttpPost]
+        [Permission("Users.Create")]
         public async Task<IActionResult> Create(UserViewModel model)
         {
             if (!ModelState.IsValid)
@@ -55,12 +60,8 @@ namespace TransferApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        //public async Task<IActionResult> Update(int id)
-        //{
-        //    var user = await _service.GetUserById(id);
-        //    return Json(user);
-        //}
         [HttpGet]
+        [Permission("Users.Edit")]
         public async Task<IActionResult> Edit(int id)
         {
             var user = await _service.GetUserById(id);
@@ -96,6 +97,7 @@ namespace TransferApp.Controllers
         }
 
         [HttpPost]
+        [Permission("Users.Edit")]
         public async Task<IActionResult> Edit(UserEditViewModel model)
         {
             if (!ModelState.IsValid)

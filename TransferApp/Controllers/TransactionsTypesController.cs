@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TransferApp.Models;
+using TransferApp.Security;
 
 public class TransactionsTypesController : Controller
 {
@@ -9,8 +10,10 @@ public class TransactionsTypesController : Controller
         _service = service;
     }
 
+    [Permission("TransactionsTypes.View")]
     public IActionResult Index() => View();
 
+    [Permission("TransactionsTypes.Edit")]
     public IActionResult Update(int id)
     {
         ViewBag.Id = id;
@@ -18,16 +21,21 @@ public class TransactionsTypesController : Controller
     }
 
     [HttpGet]
+    [Permission("TransactionsTypes.View")]
     public async Task<IActionResult> GetAll()
         => Json(await _service.GetAll());
 
     [HttpGet]
+    [Permission("TransactionsTypes.View")]
     public async Task<IActionResult> GetById(int id)
         => Json(await _service.GetById(id));
+
+    [Permission("TransactionsTypes.View")]
     public async Task<IActionResult> GetByNumber(int id)
        => Json(await _service.GetByNumber(id));
 
     [HttpPost]
+    [Permission("TransactionsTypes.Create")]
     public async Task<IActionResult> Create([FromBody] TransactionsTypesModel m)
     {
         try
@@ -43,6 +51,7 @@ public class TransactionsTypesController : Controller
     }
 
     [HttpPost]
+    [Permission("TransactionsTypes.Edit")]
     public async Task<IActionResult> Update([FromBody] TransactionsTypesModel m)
     {
         try
@@ -58,12 +67,15 @@ public class TransactionsTypesController : Controller
     }
 
     [HttpPost]
+    [Permission("TransactionsTypes.Delete")]
     public async Task<IActionResult> Delete(int id)
     {
         await _service.Delete(id, "admin");
         return Json(new { success = true });
     }
+
     [HttpGet]
+    [Permission("TransactionsTypes.View")]
     public async Task<IActionResult> GetAllTypes()
     {
         try
