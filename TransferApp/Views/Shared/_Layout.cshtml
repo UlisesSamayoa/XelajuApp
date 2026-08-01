@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using TransferApp.Extensions
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -6,7 +7,6 @@
     <title>@ViewData["Title"] - TransferApp</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    
     <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="~/TransferApp.styles.css" asp-append-version="true" />
@@ -109,58 +109,58 @@
     }
 </style>
 <body>
-    @* <div class="sidebar">
-        <h2>Xelaju Water</h2>
-
-        <a asp-controller="Home" asp-action="Index"><i class="bi bi-house-fill" style="font-size:1.5rem;"></i> Home</a>
-        <a asp-controller="Transactions" asp-action="Index"><i class="bi bi-currency-exchange" style="font-size:1.5rem;"></i> Transactions</a>
-        <a asp-controller="Clients" asp-action="Index"><i class="bi bi-people-fill" style="font-size:1.5rem;"></i> Clients</a>
-        <a asp-controller="Beneficiaries" asp-action="Index"><i class="bi bi-person-heart" style="font-size:1.5rem;"></i> Beneficiaries</a>
-        <a asp-controller="Companies" asp-action="Index"><i class="bi bi-bank2" style="font-size:1.5rem;"></i> Companies</a>
-        <a asp-controller="Reviews" asp-action="Index"><i class="bi bi-journal-text" style="font-size:1.5rem;"></i> Independent Review</a>
-        <a asp-controller="TrainingsLicenses" asp-action="Index"><i class="bi bi-award" style="font-size:1.5rem;"></i> Trainings & Licenses</a>
-        <a asp-controller="Countries" asp-action="Index"><i class="bi bi-flag" style="font-size:1.5rem;"></i> Countries</a>
-        <a asp-controller="DocumentsTypes" asp-action="Index"><i class="bi bi-file-earmark-medical-fill" style="font-size:1.5rem;"></i> Documents Types</a>
-        <a asp-controller="TransactionsTypes" asp-action="Index"><i class="bi bi-cash-stack" style="font-size:1.5rem;"></i> TransactionsTypes</a>
-        <a asp-controller="Users" asp-action="Index"><i class="bi bi-person-fill-gear" style="font-size:1.5rem;"></i> Users</a>
-        <a asp-controller="Parameters" asp-action="Index"><i class="bi bi-sliders" style="font-size:1.5rem;"></i> Parameters</a>
-        <a asp-controller="Auth" asp-action="Login"><i class="bi bi-box-arrow-in-left" style="font-size:1.5rem;"></i> Log out</a>
-    </div> *@
     <div class="sidebar">
         <div class="text-center" style="margin-top:30px; margin-bottom:30px;">
             <h2>Xelaju Water</h2>
         </div>
+        @if (User.HasPermission("Home.View"))
+        {
         <a asp-controller="Home" asp-action="Index">
             <i class="bi bi-house-fill" style="font-size:1.5rem;"></i> Home
         </a>
-
+        }
+        @if (User.HasPermission("Transactions.View"))
+        {
         <a asp-controller="Transactions" asp-action="Index">
-            <i class="bi bi-currency-exchange" style="font-size:1.5rem;"></i> Transactions
+                <i class="bi bi-currency-exchange" style="font-size:1.5rem;"></i> Transactions
         </a>
-
-        <a asp-controller="Clients" asp-action="Index">
-            <i class="bi bi-people-fill" style="font-size:1.5rem;"></i> Clients
+        }
+        @if (User.HasPermission("Clients.View"))
+        {
+         <a asp-controller="Clients" asp-action="Index">
+                <i class="bi bi-people-fill" style="font-size:1.5rem;"></i> Clients
         </a>
-        <a asp-controller="ClientCompanies" asp-action="Index">
-            <i class="bi bi-people-fill" style="font-size:1.5rem;"></i> Client Companies
+        }
+        @if (User.HasPermission("ClientCompanies.View"))
+        {
+         <a asp-controller="ClientCompanies" asp-action="Index">
+                <i class="bi bi-people-fill" style="font-size:1.5rem;"></i> Client Companies
         </a>
-        <a asp-controller="Beneficiaries" asp-action="Index">
-            <i class="bi bi-person-heart" style="font-size:1.5rem;"></i> Beneficiaries
+        }
+        @if (User.HasPermission("Beneficiaries.View"))
+        {
+         <a asp-controller="Beneficiaries" asp-action="Index">
+                <i class="bi bi-person-heart" style="font-size:1.5rem;"></i> Beneficiaries
         </a>
-        <a asp-controller="Reports" asp-action="Index">
-            <i class="bi bi-file-earmark-bar-graph-fill" style="font-size:1.5rem;"></i> Reports
+        }
+        @if (User.HasPermission("Reports.View"))
+        {
+            <a asp-controller="Reports" asp-action="Index">
+                <i class="bi bi-file-earmark-bar-graph-fill" style="font-size:1.5rem;"></i> Reports
         </a>
-
-        
-
-        <a asp-controller="Reviews" asp-action="Index">
-            <i class="bi bi-journal-text" style="font-size:1.5rem;"></i> Independent Review
-        </a>
-
-        <a asp-controller="TrainingsLicenses" asp-action="Index">
-            <i class="bi bi-award" style="font-size:1.5rem;"></i> Trainings & Licenses
-        </a>
-        
+        }
+        @if (User.HasPermission("Reviews.View"))
+        {
+            <a asp-controller="Reviews" asp-action="Index">
+                <i class="bi bi-journal-text" style="font-size:1.5rem;"></i> Independent Review
+            </a>
+        }
+        @if (User.HasPermission("TrainingsLicenses.View"))
+        {
+            <a asp-controller="TrainingsLicenses" asp-action="Index">
+                <i class="bi bi-award" style="font-size:1.5rem;"></i> Trainings & Licenses
+            </a>
+        }
         <div class="mt-2">
             <a class="d-flex justify-content-between align-items-center text-white"
                data-bs-toggle="collapse"
@@ -175,27 +175,48 @@
                 <i class="bi bi-chevron-down"></i>
             </a>
             <div class="collapse ms-3 mt-2" id="configMenu">
-                <a asp-controller="Countries" asp-action="Index">
-                    <i class="bi bi-flag" style="font-size:1.5rem;"></i> Countries
-                </a>
-                <a asp-controller="Companies" asp-action="Index">
-                    <i class="bi bi-bank2" style="font-size:1.5rem;"></i> Companies
-                </a>
-                <a asp-controller="DocumentsTypes" asp-action="Index">
-                    <i class="bi bi-file-earmark-medical-fill" style="font-size:1.5rem;"></i> Documents Types
-                </a>
-                <a asp-controller="Parameters" asp-action="Index">
-                    <i class="bi bi-sliders" style="font-size:1.5rem;"></i> Parameters
-                </a>
-                <a asp-controller="TransactionsTypes" asp-action="Index">
-                    <i class="bi bi-cash-stack" style="font-size:1.5rem;"></i> Transactions Types
-                </a>
-                <a asp-controller="Roles" asp-action="Index">
-                    <i class="bi bi-person-fill-gear" style="font-size:1.5rem;"></i> Roles
-                </a>
-                <a asp-controller="Users" asp-action="Index">
-                    <i class="bi bi-person-fill-add" style="font-size:1.5rem;"></i> User
-                </a>
+                @if (User.HasPermission("Countries.View"))
+                {
+                    <a asp-controller="Countries" asp-action="Index">
+                        <i class="bi bi-flag" style="font-size:1.5rem;"></i> Countries
+                    </a>
+                }
+                @if (User.HasPermission("Companies.View"))
+                {
+                    <a asp-controller="Companies" asp-action="Index">
+                        <i class="bi bi-bank2" style="font-size:1.5rem;"></i> Companies
+                    </a>
+                }
+                @if (User.HasPermission("DocumentsTypes.View"))
+                {
+                    <a asp-controller="DocumentsTypes" asp-action="Index">
+                        <i class="bi bi-file-earmark-medical-fill" style="font-size:1.5rem;"></i> Documents Types
+                    </a>
+                }
+                @if (User.HasPermission("Parameters.View"))
+                {
+                    <a asp-controller="Parameters" asp-action="Index">
+                        <i class="bi bi-sliders" style="font-size:1.5rem;"></i> Parameters
+                    </a>
+                }
+                @if (User.HasPermission("TransactionsTypes.View"))
+                {
+                    <a asp-controller="TransactionsTypes" asp-action="Index">
+                        <i class="bi bi-cash-stack" style="font-size:1.5rem;"></i> Transactions Types
+                    </a>
+                }
+                @if (User.HasPermission("Roles.View"))
+                {
+                    <a asp-controller="Roles" asp-action="Index">
+                        <i class="bi bi-person-fill-gear" style="font-size:1.5rem;"></i> Roles
+                    </a>
+                }
+                @if (User.HasPermission("Users.View"))
+                {
+                    <a asp-controller="Users" asp-action="Index">
+                        <i class="bi bi-person-fill-add" style="font-size:1.5rem;"></i> User
+                    </a>
+                }
             </div>
         </div>
         @* <a asp-controller="Users" asp-action="Index">

@@ -1,4 +1,5 @@
-﻿@{
+﻿@using TransferApp.Extensions
+@{
     ViewData["Title"] = "Trainings&Licenses";
 }
 
@@ -45,10 +46,12 @@
 
         <div class="d-flex justify-content-between mb-3">
             <h3><i class="bi bi-award-fill"></i> Trainings & Licenses</h3>
-
-            <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalTraining">
-                <i class="bi bi-plus"></i> Add
-            </button>
+            @if (User.HasPermission("TrainingsLicenses.View"))
+            {
+                <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalTraining">
+                    <i class="bi bi-plus"></i> Add
+                </button>
+            }
         </div>
 
         <table id="tblTraining" class="table table-hover w-100">
