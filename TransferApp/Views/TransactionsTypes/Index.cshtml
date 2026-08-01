@@ -1,4 +1,5 @@
-﻿@{
+﻿@using TransferApp.Extensions
+@{
     ViewData["Title"] = "TransactionsTypes";
 }
 <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
@@ -55,10 +56,12 @@
 
         <div class="d-flex justify-content-between mb-3">
             <h3><i class="bi bi-cash-stack"></i> Transactions Types</h3>
-
-            <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalTT">
-                <i class="bi bi-plus"></i> Add Type
+            @if (User.HasPermission("TransactionsTypes.Create"))
+            {
+                <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalTT">
+                    <i class="bi bi-plus"></i> Add Type
             </button>
+            }
         </div>
 
         <table id="tblTT" class="table table-hover w-100">

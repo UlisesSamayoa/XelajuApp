@@ -1,23 +1,15 @@
-﻿@model List<RoleModel>
-
+﻿@using TransferApp.Extensions
+@model List<RoleModel>
 @{
     ViewData["Title"] = "Roles";
 }
-
-
 <div class="container mt-4">
-
     <div class="card">
-
         <div class="card-header">
             <h4>Roles</h4>
         </div>
-
-
         <div class="card-body">
-
             <table class="table table-bordered">
-
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -26,43 +18,29 @@
                         <th></th>
                     </tr>
                 </thead>
-
-
                 <tbody>
-
                     @foreach (var role in Model)
                     {
                         <tr>
                             <td>
                                 @role.Name
                             </td>
-
                             <td>
                                 @role.Description
                             </td>
-
                             <td>
                                 @(role.IsSystem ? "Yes" : "No")
                             </td>
-
-                            <td>
-
-                                <a asp-action="Permissions"
-                                   asp-route-id="@role.IdRole"
-                                   class="btn btn-primary btn-sm">
-                                    Permissions
-                                </a>
-
-                            </td>
+                            @if (User.HasPermission("Roles.Create"))
+                            {
+                                <td>
+                                    <a asp-action="Permissions" asp-route-id="@role.IdRole" class="btn btn-primary btn-sm"> Permissions</a>
+                                </td>
+                            }
                         </tr>
                     }
-
                 </tbody>
-
             </table>
-
         </div>
-
     </div>
-
 </div>

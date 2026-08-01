@@ -1,4 +1,5 @@
-﻿@{
+﻿@using TransferApp.Extensions
+@{
     ViewData["Title"] = "Parameters";
 }
 
@@ -42,11 +43,13 @@
                 <i class="bi bi-sliders"></i>
                 Parameters
             </h3>
-
-            <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalParameters">
-                <i class="bi bi-plus"></i>
+            @if (User.HasPermission("Parameters.Create"))
+            {
+                <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalParameters">
+                    <i class="bi bi-plus"></i>
                 Add Parameter
             </button>
+            }
         </div>
 
         <table id="tblParameters" class="table table-hover w-100">

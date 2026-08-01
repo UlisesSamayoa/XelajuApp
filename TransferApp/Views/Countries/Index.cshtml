@@ -1,4 +1,5 @@
-﻿@{
+﻿@using TransferApp.Extensions
+@{
     ViewData["Title"] = "Countries";
 }
 
@@ -50,10 +51,12 @@
 
         <div class="d-flex justify-content-between mb-3">
             <h3><i class="bi bi-flag-fill"></i> Countries</h3>
-
-            <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalCountry">
-                <i class="bi bi-plus"></i> Add Country
+            @if (User.HasPermission("Countries.Create"))
+            {
+                <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalCountry">
+                    <i class="bi bi-plus"></i> Add Country
             </button>
+            }
         </div>
 
         <table id="tblCountries" class="table table-hover w-100">

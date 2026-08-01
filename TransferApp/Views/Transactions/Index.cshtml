@@ -13,8 +13,6 @@
         canUploadFiles: @User.HasPermission("Transactions.View").ToString().ToLower()
     };
 </script>
-
-
 <style>
     :root {
         --primary: #4f46e5;
@@ -88,13 +86,13 @@
 
         <div class="d-flex justify-content-between mb-3">
             <h3><i class="bi bi-currency-exchange"></i> Transactions</h3>
-            @if (User.HasPermission("Users.Create"))
+            @if (User.HasPermission("Transactions.Create"))
             {
                 <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalTx" onclick="ObtenerTipoTransaccion(3,'TransactionType')">
                 <i class="bi bi-currency-exchange"></i> Money Transfer
                 </button>                
             }
-            @if (User.HasPermission("Users.Create"))
+            @if (User.HasPermission("Transactions.Create"))
             {
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSimpleTx" onclick="ObtenerTipoTransaccion(1,'SimpleTx')">
                     <i class="bi bi-cash-coin"></i> Check Cashing

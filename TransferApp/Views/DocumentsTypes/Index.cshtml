@@ -1,4 +1,5 @@
-﻿@{
+﻿@using TransferApp.Extensions
+@{
     ViewData["Title"] = "DocumentsType";
 }
 
@@ -56,10 +57,12 @@
 
         <div class="d-flex justify-content-between mb-3">
             <h3>Document Types</h3>
-
-            <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalDoc">
-                <i class="bi bi-plus"></i> Add DocumentType
+            @if (User.HasPermission("DocumentsType.Create"))
+            {
+                <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalDoc">
+                    <i class="bi bi-plus"></i> Add DocumentType
             </button>
+            }
         </div>
 
         <table id="tblDoc" class="table table-hover w-100">

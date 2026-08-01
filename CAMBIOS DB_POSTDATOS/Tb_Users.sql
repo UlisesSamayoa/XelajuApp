@@ -784,8 +784,11 @@ GO
 select * from users
 select * from userroles
 select * from roles
-select * from permissions
-select * from rolepermissions
+select * from permissions where module = 'Transactions'
+select * from permissions where module = 'TransactionsTypes'
+select * from rolepermissions where idrole = 2
+
+@using TransferApp.Extensions
 
 insert into Permissions (Module, Action, Description) values ('Clients', 'View', 'Permission to view clients');
 
