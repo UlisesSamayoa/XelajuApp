@@ -5,7 +5,13 @@
 
 <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<script>
+    const permissions = {
+        canView: @User.HasPermission("Parameters.View").ToString().ToLower(),
+        canDelete: @User.HasPermission("Parameters.Delete").ToString().ToLower(),
+        canEdit: @User.HasPermission("Parameters.Edit").ToString().ToLower(),
+    };
+</script>
 <style>
     :root {
         --primary: #4f46e5;
@@ -176,17 +182,40 @@
                 },
                 {data: 'transactiontypeName'},
                 {
+                    // data: 'idParameters',
+                    // render: d => `
+                    //     <a href="/Parameters/Update?id=${d}" class="btn btn-warning btn-sm">
+                    //         <i class="bi bi-pencil-fill"></i>
+                    //     </a>
+                    //     <button class="btn btn-danger btn-sm" onclick="deleteParameter(${d})">
+                    //         <i class="bi bi-trash-fill"></i>
+                    //     </button>
+                    // `
                     data: 'idParameters',
-                    render: d => `
-                        <a href="/Parameters/Update?id=${d}"
-                           class="btn btn-warning btn-sm">
-                            <i class="bi bi-pencil-fill"></i>
-                        </a>
-                        <button class="btn btn-danger btn-sm"
-                                onclick="deleteParameter(${d})">
-                            <i class="bi bi-trash-fill"></i>
-                        </button>
-                    `
+                        render: function (d) {
+
+                            let buttons = '';
+
+                            if (permissions.canEdit) {
+                                buttons += `
+                                <a href="/Parameters/Update?id=${d}" class="btn btn-warning btn-sm">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                                `;
+                            }
+
+                            if (permissions.canDelete) {
+                                buttons += `
+                                <button class="btn btn-danger btn-sm" onclick="deleteParameter(${d})">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                                `;
+                            }
+
+                            return buttons;
+                        }
+
+
                 }
             ]
         });

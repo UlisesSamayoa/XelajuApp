@@ -4,10 +4,14 @@
     Layout = "_Layout";
 }
 
-<!-- LIBS -->
-@* <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> *@
-
+<script>
+    const permissions = {
+        canView: @User.HasPermission("Companies.View").ToString().ToLower(),
+        canDelete: @User.HasPermission("Companies.Delete").ToString().ToLower(),
+        canEdit: @User.HasPermission("Companies.Edit").ToString().ToLower(),
+        canChangeStatus: @User.HasPermission("Companies.Edit").ToString().ToLower()
+    };
+</script>
 <style>
     :root {
         --primary: #4f46e5;
@@ -360,29 +364,63 @@
                         }
                     },
                     {
-                     className: 'tmin-w',
-                      render: function (data, type, row) {
-                             return `
-                                <div class="d-flex gap-2">
+                     // className: 'tmin-w',
+                     //  render: function (data, type, row) {
+                     //         return `
+                     //            <div class="d-flex gap-2">
 
-                                    <button class="btn btn-warning btn-sm"
-                                        onclick="openChangeStatusModal(${row.idCompany}, '${row.statusCompany}')">
-                                        <i class="bi bi-arrow-repeat"></i>
-                                    </button>
+                     //                <button class="btn btn-warning btn-sm"
+                     //                    onclick="openChangeStatusModal(${row.idCompany}, '${row.statusCompany}')">
+                     //                    <i class="bi bi-arrow-repeat"></i>
+                     //                </button>
 
-                                    <a href="/Companies/Update/${row.idCompany}"
-                                        class="btn btn-sm btn-warning">
-                                        <i class="bi bi-pencil-fill"></i>
-                                    </a>
+                     //                <a href="/Companies/Update/${row.idCompany}"
+                     //                    class="btn btn-sm btn-warning">
+                     //                    <i class="bi bi-pencil-fill"></i>
+                     //                </a>
 
-                                    <button class="btn btn-sm btn-danger"
-                                        onclick="deleteItem(${row.idCompany})">
-                                        <i class="bi bi-trash-fill"></i>
-                                    </button>
+                     //                <button class="btn btn-sm btn-danger"
+                     //                    onclick="deleteItem(${row.idCompany})">
+                     //                    <i class="bi bi-trash-fill"></i>
+                     //                </button>
 
-                                </div>
-                                `;
+                     //            </div>
+                     //            `;
+                     //    }
+                    className: 'tmin-w',
+                    render: function (data, type, row) {
+
+                        let buttons = '';
+
+                        if (permissions.canChangeStatus) {
+                            buttons += `
+                                <button class="btn btn-warning btn-sm"
+                                    onclick="openChangeStatusModal(${row.idCompany}, '${row.statusCompany}')">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                </button>
+                            `;
                         }
+
+                        if (permissions.canEdit) {
+                            buttons += `
+                                <a href="/Companies/Update/${row.idCompany}"
+                                   class="btn btn-warning btn-sm">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                            `;
+                        }
+
+                        if (permissions.canDelete) {
+                            buttons += `
+                                <button class="btn btn-danger btn-sm"
+                                    onclick="deleteItem(${row.idCompany})">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                            `;
+                        }
+
+                        return `<div class="d-flex gap-2">${buttons}</div>`;
+                    }
                       }
                 ],
                 language: {

@@ -5,7 +5,13 @@
 
 <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<script>
+    const permissions = {
+        canView: @User.HasPermission("TrainingsLicenses.View").ToString().ToLower(),
+        canDelete: @User.HasPermission("TrainingsLicenses.Delete").ToString().ToLower(),
+        canEdit: @User.HasPermission("TrainingsLicenses.Edit").ToString().ToLower(),
+    };
+</script>
 <style>
     :root {
         --primary: #4f46e5;
@@ -46,7 +52,7 @@
 
         <div class="d-flex justify-content-between mb-3">
             <h3><i class="bi bi-award-fill"></i> Trainings & Licenses</h3>
-            @if (User.HasPermission("TrainingsLicenses.View"))
+            @if (User.HasPermission("TrainingsLicenses.Create"))
             {
                 <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalTraining">
                     <i class="bi bi-plus"></i> Add
@@ -166,15 +172,40 @@
                 }
                 },
                 {
-                    data: 'idTrainingsLicenses',
-                    render: id => `
-                        <a href="/TrainingsLicenses/Update/${id}" class="btn btn-warning btn-sm">
-                            <i class="bi bi-pencil-fill"></i>
-                        </a>
-                        <button class="btn btn-danger btn-sm" onclick="deleteTraining(${id})">
-                            <i class="bi bi-trash-fill"></i>
-                        </button>
-                    `
+                    // data: 'idTrainingsLicenses',
+                    // render: id => `
+                    //     <a href="/TrainingsLicenses/Update/${id}" class="btn btn-warning btn-sm">
+                    //         <i class="bi bi-pencil-fill"></i>
+                    //     </a>
+                    //     <button class="btn btn-danger btn-sm" onclick="deleteTraining(${id})">
+                    //         <i class="bi bi-trash-fill"></i>
+                    //     </button>
+                    // `
+                            data: 'idTrainingsLicenses',
+                            render: function (id) {
+
+                                let buttons = '';
+
+                                if (permissions.canEdit) {
+                                    buttons += `
+                                    <a href="/TrainingsLicenses/Update/${id}" class="btn btn-warning btn-sm">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                    `;
+                                }
+
+                                if (permissions.canDelete) {
+                                    buttons += `
+                                    <button class="btn btn-danger btn-sm" onclick="deleteTraining(${id})">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                    `;
+                                }
+
+                                return buttons;
+                            }
+
+
                 }
             ]
         });

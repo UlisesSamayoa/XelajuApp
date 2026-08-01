@@ -236,7 +236,7 @@
                 @if (User.Identity!.IsAuthenticated)
                 {
                     <span>
-                        @User.FindFirst("FirstName")?.Value
+                        @User.FindFirst("FirstName")?.Value @User.FindFirst("LastName")?.Value
                     </span>
                     <a asp-controller="Auth" class="btn btn-secondary" asp-action="Logout">Logout</a>
                 }

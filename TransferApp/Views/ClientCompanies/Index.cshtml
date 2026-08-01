@@ -3,8 +3,13 @@
     ViewData["Title"] = "ClientCompanies";
     Layout = "_Layout";
 }
-@* <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> *@
+<script>
+    const permissions = {
+        canView: @User.HasPermission("ClientCompanies.View").ToString().ToLower(),
+        canDelete: @User.HasPermission("ClientCompanies.Delete").ToString().ToLower(),
+        canEdit: @User.HasPermission("ClientCompanies.Edit").ToString().ToLower(),
+    };
+</script>
 
 <style>
     :root {
@@ -169,16 +174,25 @@
                     { data: 'companyName' },
                     { data: 'accountNumber' },
                     {
+                        // data: 'idClientCompany',
+                        // render: id => `
+                        //     <button
+                        //         class="btn btn-danger btn-sm"
+                        //         onclick="deleteItem(${id})">
+                        //         <i class="bi bi-trash-fill"></i>
+                        //     </button>
+                        // `
                         data: 'idClientCompany',
-                        render: id => `
-                            <button
-                                class="btn btn-danger btn-sm"
-                                onclick="deleteItem(${id})">
-
-                                <i class="bi bi-trash-fill"></i>
-
-                            </button>
-                        `
+                        render: function (id) {
+                            let buttons = '';
+                            if (permissions.canDelete) {
+                                buttons += `
+                                    <button class="btn btn-danger btn-sm" onclick="deleteItem(${id})"> <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                `;
+                            }
+                            return buttons;
+                        }
                     }
                 ]
             });

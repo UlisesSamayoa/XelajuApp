@@ -1,11 +1,17 @@
 ﻿@using TransferApp.Extensions
 @{
-    ViewData["Title"] = "DocumentsType";
+    ViewData["Title"] = "DocumentsTypes";
 }
 
 <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<script>
+    const permissions = {
+        canView: @User.HasPermission("DocumentsTypes.View").ToString().ToLower(),
+        canDelete: @User.HasPermission("DocumentsTypes.Delete").ToString().ToLower(),
+        canEdit: @User.HasPermission("DocumentsTypes.Edit").ToString().ToLower(),
+    };
+</script>
 <style>
     :root {
         --primary: #4f46e5;
@@ -57,7 +63,7 @@
 
         <div class="d-flex justify-content-between mb-3">
             <h3>Document Types</h3>
-            @if (User.HasPermission("DocumentsType.Create"))
+            @if (User.HasPermission("DocumentsTypes.Create"))
             {
                 <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#modalDoc">
                     <i class="bi bi-plus"></i> Add DocumentType
@@ -126,15 +132,39 @@
                     { data: 'description' },
                     { data: 'maskPattern' },
                     {
+                        // data: 'idDocumentType',
+                        // render: id => `
+                        //     <a href="/DocumentsTypes/Update/${id}" class="btn btn-warning btn-sm">
+                        //         <i class="bi bi-pencil-fill"></i>
+                        //     </a>
+                        //     <button class="btn btn-danger btn-sm" onclick="deleteDoc(${id})">
+                        //         <i class="bi bi-trash-fill"></i>
+                        //     </button>
+                        // `
                         data: 'idDocumentType',
-                        render: id => `
-                            <a href="/DocumentsTypes/Update/${id}" class="btn btn-warning btn-sm">
-                                <i class="bi bi-pencil-fill"></i>
-                            </a>
-                            <button class="btn btn-danger btn-sm" onclick="deleteDoc(${id})">
-                                <i class="bi bi-trash-fill"></i>
-                            </button>
-                        `
+                        render: function (id) {
+
+                            let buttons = '';
+
+                            if (permissions.canEdit) {
+                                buttons += `
+                                <a href="/DocumentsTypes/Update/${id}" class="btn btn-warning btn-sm">
+                                 <i class="bi bi-pencil-fill"></i>
+                                </a>
+                                `;
+                            }
+
+                            if (permissions.canDelete) {
+                                buttons += `
+                                <button class="btn btn-danger btn-sm" onclick="deleteDoc(${id})">
+                                  <i class="bi bi-trash-fill"></i>
+                                 </button>
+                                `;
+                            }
+
+                            return buttons;
+                        }
+
                     }
                 ]
             });

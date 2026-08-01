@@ -49,7 +49,13 @@
         }
     }
 </style>
-
+<script>
+    const permissions = {
+        canView: @User.HasPermission("TransactionsTypes.View").ToString().ToLower(),
+        canDelete: @User.HasPermission("TransactionsTypes.Delete").ToString().ToLower(),
+        canEdit: @User.HasPermission("TransactionsTypes.Edit").ToString().ToLower(),
+    };
+</script>
 <div class="container-fluid mt-4 px-4">
 
     <div class="card card-custom p-4">
@@ -182,15 +188,40 @@
                 { data:'name'},
                 { data:'description' },
                 {
-                    data:'idTypeTransaction',
-                    render:id=>`
-                        <a href="/TransactionsTypes/Update/${id}" class="btn btn-warning btn-sm">
-                            <i class="bi bi-pencil-fill"></i>
-                        </a>
-                        <button class="btn btn-danger btn-sm" onclick="deleteTT(${id})">
-                            <i class="bi bi-trash-fill"></i>
-                        </button>
-                    `
+                    // data:'idTypeTransaction',
+                    // render:id=>`
+                    //     <a href="/TransactionsTypes/Update/${id}" class="btn btn-warning btn-sm">
+                    //         <i class="bi bi-pencil-fill"></i>
+                    //     </a>
+                    //     <button class="btn btn-danger btn-sm" onclick="deleteTT(${id})">
+                    //         <i class="bi bi-trash-fill"></i>
+                    //     </button>
+                    // `
+
+                            data: 'idTypeTransaction',
+                            render: function (id) {
+
+                                let buttons = '';
+
+                                if (permissions.canEdit) {
+                                    buttons += `
+                                    <a href="/TransactionsTypes/Update/${id}" class="btn btn-warning btn-sm">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                    `;
+                                }
+
+                                if (permissions.canDelete) {
+                                    buttons += `
+                                    <button class="btn btn-danger btn-sm" onclick="deleteTT(${id})">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                    `;
+                                }
+
+                                return buttons;
+                            }
+
                 }
             ],
             drawCallback:()=>$('#tblTT tbody tr').addClass('fade-in')

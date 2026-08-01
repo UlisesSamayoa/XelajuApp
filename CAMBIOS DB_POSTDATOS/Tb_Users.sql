@@ -785,7 +785,7 @@ select * from users
 select * from userroles
 select * from roles
 select * from permissions where module = 'Transactions'
-select * from permissions where module = 'TrainingsLicenses'
+select * from permissions where module = 'DocumentsTypes'
 select * from rolepermissions where idrole = 2
 
 @using TransferApp.Extensions

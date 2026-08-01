@@ -256,32 +256,32 @@
                     //             <i class="bi bi-trash-fill"></i>
                     //         </button>`
                     // }
-                            {
-            data: 'idClient',
-            render: function (id) {
+                {
+                    data: 'idClient',
+                    render: function (id) {
 
-                let buttons = '';
+                        let buttons = '';
 
-                if (permissions.canEdit) {
-                    buttons += `
-                        <a href="/Clients/Update/${id}" class="btn btn-warning btn-sm">
-                            <i class="bi bi-pencil-fill"></i>
-                        </a>
-                    `;
+                        if (permissions.canEdit) {
+                            buttons += `
+                                <a href="/Clients/Update/${id}" class="btn btn-warning btn-sm">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                            `;
+                        }
+
+                        if (permissions.canDelete) {
+                            buttons += `
+                                <button class="btn btn-danger btn-sm"
+                                        onclick="deleteClient(${id})">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                            `;
+                        }
+
+                        return buttons;
+                    }
                 }
-
-                if (permissions.canDelete) {
-                    buttons += `
-                        <button class="btn btn-danger btn-sm"
-                                onclick="deleteClient(${id})">
-                            <i class="bi bi-trash-fill"></i>
-                        </button>
-                    `;
-                }
-
-                return buttons;
-            }
-        }
                 ],
                 drawCallback: () => $('#tblClients tbody tr').addClass('fade-in')
             });

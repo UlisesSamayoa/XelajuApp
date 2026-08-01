@@ -2085,65 +2085,40 @@
                 render: function (data, type, row) {
                             let buttons = "";
 
-        if (permissions.canUploadFiles) {
-            buttons += `
-                <button class="btn btn-secondary btn-sm"
-                    onclick="loadTransactionAddFiles(${row.idTransaction})">
-                    <i class="bi bi-images"></i>
-                </button>`;
-        }
+                if (permissions.canUploadFiles) {
+                    buttons += `
+                        <button class="btn btn-secondary btn-sm"
+                            onclick="loadTransactionAddFiles(${row.idTransaction})">
+                            <i class="bi bi-images"></i>
+                        </button>`;
+                }
 
-        if (permissions.canChangeStatus && row.transactionType == 1) {
-            buttons += `
-                <button class="btn btn-warning btn-sm"
-                    onclick="openChangeStatusModal(${row.idTransaction}, '${row.transactionStatus}')">
-                    <i class="bi bi-arrow-repeat"></i>
-                </button>`;
-        }
+                if (permissions.canChangeStatus && row.transactionType == 1) {
+                    buttons += `
+                        <button class="btn btn-warning btn-sm"
+                            onclick="openChangeStatusModal(${row.idTransaction}, '${row.transactionStatus}')">
+                            <i class="bi bi-arrow-repeat"></i>
+                        </button>`;
+                }
 
-        if (permissions.canView) {
-            buttons += `
-                <button class="btn btn-info btn-sm"
-                    onclick="loadTransactionDetails(${row.idTransaction})">
-                    <i class="bi bi-eye-fill"></i>
-                </button>`;
-        }
+                if (permissions.canView) {
+                    buttons += `
+                        <button class="btn btn-info btn-sm"
+                            onclick="loadTransactionDetails(${row.idTransaction})">
+                            <i class="bi bi-eye-fill"></i>
+                        </button>`;
+                }
 
-        if (permissions.canDelete) {
-            buttons += `
-                <button class="btn btn-danger btn-sm"
-                    onclick="deleteTx(${row.idTransaction})">
-                    <i class="bi bi-trash-fill"></i>
-                </button>`;
-        }
+                if (permissions.canDelete) {
+                    buttons += `
+                        <button class="btn btn-danger btn-sm"
+                            onclick="deleteTx(${row.idTransaction})">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>`;
+                }
 
-        return buttons;
-                // return `
-                //     <button class="btn btn-secondary btn-sm"
-                //         onclick="loadTransactionAddFiles(${row.idTransaction})">
-                //         <i class="bi bi-images"></i>
-                //     </button>
-                //     ${row.transactionType == 1 ? `
-                //         <button class="btn btn-warning btn-sm"
-                //             onclick="openChangeStatusModal(
-                //                 ${row.idTransaction},
-                //                 '${row.transactionStatus}'
-                //             )">
-                //             <i class="bi bi-arrow-repeat"></i>
-                //         </button>
-                //     ` : ''}
+                return buttons;
 
-                //     <button class="btn btn-info btn-sm"
-                //         onclick="loadTransactionDetails(${row.idTransaction})">
-                //         <i class="bi bi-eye-fill"></i>
-                //     </button>
-
-                //     <button class="btn btn-danger btn-sm"
-                //         onclick="deleteTx(${row.idTransaction})">
-                //         <i class="bi bi-trash-fill"></i>
-                //     </button>
-
-                // `;
             }
         }
 

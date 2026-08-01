@@ -3,9 +3,13 @@
     ViewData["Title"] = "Beneficiaries";
     Layout = "_Layout";
 }
-@* <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> *@
-
+<script>
+    const permissions = {
+        canView: @User.HasPermission("Beneficiaries.View").ToString().ToLower(),
+        canDelete: @User.HasPermission("Beneficiaries.Delete").ToString().ToLower(),
+        canEdit: @User.HasPermission("Beneficiaries.Edit").ToString().ToLower(),
+    };
+</script>
 <style>
     :root {
         --primary: #4f46e5;
@@ -186,15 +190,38 @@
                 { data: 'countryName' },
                 { data: 'parentClientName' },
                 {
-                    data: 'idBeneficiarie',
-                    render: id => `
-                        <a href="/Beneficiaries/Update/${id}" class="btn btn-warning btn-sm">
-                            <i class="bi bi-pencil-fill"></i>
-                        </a>
-                        <button class="btn btn-danger btn-sm" onclick="deleteItem(${id})">
-                            <i class="bi bi-trash-fill"></i>
-                        </button>
-                    `
+                    // data: 'idBeneficiarie',
+                    // render: id => `
+                    //     <a href="/Beneficiaries/Update/${id}" class="btn btn-warning btn-sm">
+                    //         <i class="bi bi-pencil-fill"></i>
+                    //     </a>
+                    //     <button class="btn btn-danger btn-sm" onclick="deleteItem(${id})">
+                    //         <i class="bi bi-trash-fill"></i>
+                    //     </button>
+                    // `
+                        data: 'idBeneficiarie',
+                        render: function (id) {
+
+                            let buttons = '';
+
+                            if (permissions.canEdit) {
+                                buttons += `
+                                <a href="/Beneficiaries/Update/${id}" class="btn btn-warning btn-sm">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                                `;
+                            }
+
+                            if (permissions.canDelete) {
+                                buttons += `
+                                <button class="btn btn-danger btn-sm" onclick="deleteItem(${id})">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                                `;
+                            }
+
+                            return buttons;
+                        }
                 }
             ],
             drawCallback: () => $('#tblBeneficiaries tbody tr').addClass('fade-in')
