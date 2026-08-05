@@ -1,0 +1,35 @@
+﻿@using TransferApp.ViewModels
+@model TransactionPreviewViewModel
+
+@{
+    var tx = Model.Transaction;
+}
+
+<div class="card shadow-sm mt-4">
+
+    <div class="card-header">
+
+        <i class="bi bi-chat-left-text"></i>
+
+        Notes / Justification
+
+    </div>
+
+    <div class="card-body">
+
+        @if (!string.IsNullOrWhiteSpace(tx.JustifyDetails))
+        {
+            <p class="mb-0">
+                @tx.JustifyDetails
+            </p>
+        }
+        else
+        {
+            <span class="text-muted">
+                No notes available.
+            </span>
+        }
+
+    </div>
+
+</div>

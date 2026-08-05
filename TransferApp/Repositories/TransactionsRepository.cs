@@ -41,7 +41,10 @@ public class TransactionsRepository
                 TransactionStatus = rd["TransactionStatus"] != DBNull.Value ? rd["TransactionStatus"].ToString() : string.Empty,
                 Amount = rd["Amount"] != DBNull.Value ? Convert.ToDecimal(rd["Amount"]) : 0,
                 Status = rd["Status"] != DBNull.Value ? Convert.ToInt32(rd["Status"]) : 0,
-                CalculationMode = rd["CalculationMode"] != DBNull.Value ? Convert.ToInt32(rd["CalculationMode"]) : 1
+                CalculationMode = rd["CalculationMode"] != DBNull.Value ? Convert.ToInt32(rd["CalculationMode"]) : 1,
+                NumberT = rd["NumberT"] != DBNull.Value ? rd["NumberT"].ToString() : string.Empty,
+                TransactionDate = rd["TransactionDate"] != DBNull.Value ? Convert.ToDateTime(rd["TransactionDate"]) : DateTime.MinValue
+
             });
         }
         await conn.CloseAsync();
@@ -197,7 +200,12 @@ public class TransactionsRepository
                 TransactionTypeName = rd["TransactionTypeName"] != DBNull.Value ? rd["TransactionTypeName"].ToString() : string.Empty,
                 SenderCountryName = rd["SenderCountryName"] != DBNull.Value ? rd["SenderCountryName"].ToString() : string.Empty,
                 TransactionStatus = rd["TransactionStatus"] != DBNull.Value ? rd["TransactionStatus"].ToString() : string.Empty,
-                CalculationMode = rd["CalculationMode"] != DBNull.Value ? Convert.ToInt32(rd["CalculationMode"]) : 1
+                CalculationMode = rd["CalculationMode"] != DBNull.Value ? Convert.ToInt32(rd["CalculationMode"]) : 1,
+                IdClient_fk = rd["IdClient"] != DBNull.Value ? Convert.ToInt32(rd["IdClient"]) : 1,
+                NumberT = rd["NumberT"] != DBNull.Value ? rd["NumberT"].ToString() : string.Empty,
+                TransactionDate = rd["TransactionDate"] != DBNull.Value ? Convert.ToDateTime(rd["TransactionDate"]) : DateTime.MinValue,
+                ServiceCompanyPS = rd["ServiceCompanyPS"] != DBNull.Value ? rd["ServiceCompanyPS"].ToString() : string.Empty,
+                ServiceCompanyPSName = rd["ServiceCompanyPSName"] != DBNull.Value ? rd["ServiceCompanyPSName"].ToString() : string.Empty
             };
         }
         await conn.CloseAsync();

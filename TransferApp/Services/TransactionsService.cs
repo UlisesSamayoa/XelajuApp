@@ -1,5 +1,6 @@
 ﻿using TransferApp.Models;
 using TransferApp.Repositories;
+using TransferApp.ViewModels;
 
 public class TransactionsService
 {
@@ -764,5 +765,26 @@ public class TransactionsService
                 });
         }
     }
+
+
+
+    public async Task<TransactionPreviewViewModel> GetTransactionPreview(int id)
+    {
+        var tx = await _repo.GetById(id);
+
+        if (tx == null)
+            return null;
+        string URL = $"/Clients/ProfileImage/{tx.IdClient_fk}";
+        var model = new TransactionPreviewViewModel
+        {
+            TransactionType = tx.TransactionType,
+            Transaction = tx,
+            SenderPictureUrl = tx.IdClient_fk > 0 ? URL : null,
+        };
+        model.Attachments = await GetAttachments(id);
+        return model;
+    }
+
+
 
 }

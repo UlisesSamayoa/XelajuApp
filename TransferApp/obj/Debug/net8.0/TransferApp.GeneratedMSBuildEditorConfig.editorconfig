@@ -164,6 +164,62 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNhY3Rpb25zXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Transactions/Preview/Shared/_Attachments.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNhY3Rpb25zXFByZXZpZXdcU2hhcmVkXF9BdHRhY2htZW50cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Transactions/Preview/Shared/_FinancialSummary.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNhY3Rpb25zXFByZXZpZXdcU2hhcmVkXF9GaW5hbmNpYWxTdW1tYXJ5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Transactions/Preview/Shared/_Header.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNhY3Rpb25zXFByZXZpZXdcU2hhcmVkXF9IZWFkZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Transactions/Preview/Shared/_Notes.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNhY3Rpb25zXFByZXZpZXdcU2hhcmVkXF9Ob3Rlcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Transactions/Preview/Shared/_ParticipantsCheck.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNhY3Rpb25zXFByZXZpZXdcU2hhcmVkXF9QYXJ0aWNpcGFudHNDaGVjay5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Transactions/Preview/Shared/_ParticipantsDT.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNhY3Rpb25zXFByZXZpZXdcU2hhcmVkXF9QYXJ0aWNpcGFudHNEVC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Transactions/Preview/Shared/_ParticipantsMT.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNhY3Rpb25zXFByZXZpZXdcU2hhcmVkXF9QYXJ0aWNpcGFudHNNVC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Transactions/Preview/Shared/_ParticipantsOrder.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNhY3Rpb25zXFByZXZpZXdcU2hhcmVkXF9QYXJ0aWNpcGFudHNPcmRlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Transactions/Preview/Shared/_ParticipantsPS.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNhY3Rpb25zXFByZXZpZXdcU2hhcmVkXF9QYXJ0aWNpcGFudHNQUy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Transactions/Preview/_CheckCashing.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNhY3Rpb25zXFByZXZpZXdcX0NoZWNrQ2FzaGluZy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Transactions/Preview/_DomesticTransfer.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNhY3Rpb25zXFByZXZpZXdcX0RvbWVzdGljVHJhbnNmZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Transactions/Preview/_MoneyOrder.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNhY3Rpb25zXFByZXZpZXdcX01vbmV5T3JkZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Transactions/Preview/_MoneyTransfer.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNhY3Rpb25zXFByZXZpZXdcX01vbmV5VHJhbnNmZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Transactions/Preview/_PaidService.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNhY3Rpb25zXFByZXZpZXdcX1BhaWRTZXJ2aWNlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/GIT/XelajuApp/XelajuApp/TransferApp/Views/Transactions/Update.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNhY3Rpb25zXFVwZGF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

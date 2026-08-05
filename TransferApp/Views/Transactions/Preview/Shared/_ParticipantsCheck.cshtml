@@ -1,0 +1,173 @@
+﻿@using TransferApp.ViewModels
+@model TransactionPreviewViewModel
+
+
+<div class="preview-section">
+
+    <div class="row g-4">
+
+        <!-- ========================= -->
+        <!-- CUSTOMER -->
+        <!-- ========================= -->
+
+        <div class="col-lg-6">
+
+            <div class="preview-card">
+
+                <div class="preview-card-header text-center">
+
+                    <div class="preview-card-title">
+
+                        <i class="bi bi-person-fill"></i>
+                        Customer
+
+                    </div>
+
+                </div>
+                <div class="preview-card-body">
+                    <div class="text-center">
+                        <div class="participant-avatar">
+
+                            @if (!string.IsNullOrWhiteSpace(Model.SenderPictureUrl))
+                            {
+                                <img src="@Model.SenderPictureUrl"
+                                     class="participant-photo"
+                                     alt="Customer" />
+                            }
+                            else
+                            {
+                                <i class="bi bi-person-circle participant-icon text-primary"></i>
+                            }
+
+                        </div>
+                        <div class="preview-name">
+
+                            @(Model.Transaction?.SenderName ?? "-")
+
+                        </div>
+                    </div>
+                    <div class="preview-field">
+
+                        <div class="preview-icon">
+                            <i class="bi bi-credit-card"></i>
+                        </div>
+
+                        <div class="preview-label">
+                            Document
+                        </div>
+
+                        <div class="preview-value">
+                            @(Model.Transaction?.SenderDocumentNumber ?? "-")
+                        </div>
+
+                    </div>
+                    <div class="preview-field">
+
+                        <div class="preview-icon">
+                            <i class="bi bi-telephone"></i>
+                        </div>
+
+                        <div class="preview-label">
+                            Phone
+                        </div>
+
+                        <div class="preview-value">
+                            @(Model.Transaction?.SenderPhone ?? "-")
+                        </div>
+
+                    </div>
+                    <div class="preview-field">
+
+                        <div class="preview-icon">
+                            <i class="bi bi-geo-alt"></i>
+                        </div>
+
+                        <div class="preview-label">
+                            Address
+                        </div>
+
+                        <div class="preview-value">
+                            @(Model.Transaction?.SenderAddress ?? "-")
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+        </div>
+        <!-- ========================= -->
+        <!-- CHECK INFO -->
+        <!-- ========================= -->
+
+        <div class="col-lg-6">
+            <div class="preview-card">
+                <div class="preview-card-header text-center">
+
+                    <div class="preview-card-title">
+
+                        <i class="bi bi-receipt"></i>
+                        Check Information
+
+                    </div>
+
+                </div>
+                <div class="preview-card-body">
+                    <div class="preview-field">
+
+                        <div class="preview-icon">
+                            <i class="bi bi-hash"></i>
+                        </div>
+
+                        <div class="preview-label">
+                            Reference
+                        </div>
+
+                        <div class="preview-value">
+                            @(Model.Transaction?.ReferenceNumber ?? "-")
+                        </div>
+
+                    </div>
+                    <div class="preview-field">
+
+                        <div class="preview-icon">
+                            <i class="bi bi-calendar-event"></i>
+                        </div>
+
+                        <div class="preview-label">
+                            Issue Date
+                        </div>
+
+                        <div class="preview-value">
+                            @(Model.Transaction?.IssueDateCheck?.ToString("dd/MM/yyyy") ?? "-")
+                        </div>
+
+                    </div>
+                    <div class="preview-field">
+                        <div class="preview-icon">
+                            <i class="bi bi-building"></i>
+                        </div>
+                        <div class="preview-label">
+                            Company
+                        </div>
+                        <div class="preview-value">
+                            @(Model.Transaction?.SenderCompanyName ?? "-")
+                        </div>
+                    </div>
+                    <div class="preview-field">
+                        <div class="preview-icon">
+                            <i class="bi bi-cash"></i>
+                        </div>
+                        <div class="preview-label">
+                            Amount
+                        </div>
+                        <div class="preview-value">
+                            $ @(Model.Transaction?.Amount.ToString("N2") ?? "0.00")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

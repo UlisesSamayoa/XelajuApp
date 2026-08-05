@@ -107,7 +107,7 @@ public class ClientsController : Controller
     }
 
     [HttpGet]
-    [Permission("Clients.View")]
+    //[Permission("Clients.View")]
     public async Task<IActionResult> ProfileImage(int id)
     {
         var client = await _service.GetById(id);

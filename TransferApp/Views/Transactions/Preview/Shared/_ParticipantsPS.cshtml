@@ -1,0 +1,329 @@
+﻿@using TransferApp.ViewModels
+@model TransactionPreviewViewModel
+
+
+<div class="preview-section">
+
+    <div class="row g-4">
+
+
+        <!-- ========================= -->
+        <!-- CUSTOMER -->
+        <!-- ========================= -->
+
+        <div class="col-lg-6">
+
+
+            <div class="preview-card">
+
+
+                <div class="preview-card-header text-center">
+
+                    <div class="preview-card-title">
+
+                        <i class="bi bi-person-fill"></i>
+                        Customer
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="preview-card-body">
+
+
+                    <div class="text-center mb-4">
+
+
+                        <div class="participant-avatar">
+
+
+                            @if (!string.IsNullOrWhiteSpace(Model.SenderPictureUrl))
+                            {
+                                <img src="@Model.SenderPictureUrl"
+                                     class="participant-photo"
+                                     alt="Customer" />
+                            }
+                            else
+                            {
+                                <i class="bi bi-person-circle participant-icon text-primary"></i>
+                            }
+
+
+                        </div>
+
+
+
+                        <div class="preview-name mt-2">
+
+                            @(Model.Transaction?.SenderName ?? "-")
+
+                        </div>
+
+
+                    </div>
+
+
+
+
+
+                    <div class="preview-field">
+
+
+                        <div class="preview-icon">
+                            <i class="bi bi-credit-card"></i>
+                        </div>
+
+
+                        <div class="preview-label">
+                            Document
+                        </div>
+
+
+                        <div class="preview-value">
+
+                            @(Model.Transaction?.SenderDocumentNumber ?? "-")
+
+                        </div>
+
+
+                    </div>
+
+
+
+
+
+                    <div class="preview-field">
+
+
+                        <div class="preview-icon">
+                            <i class="bi bi-telephone"></i>
+                        </div>
+
+
+                        <div class="preview-label">
+                            Phone
+                        </div>
+
+
+                        <div class="preview-value">
+
+                            @(Model.Transaction?.SenderPhone ?? "-")
+
+                        </div>
+
+
+                    </div>
+
+
+
+
+
+                    <div class="preview-field">
+
+
+                        <div class="preview-icon">
+                            <i class="bi bi-geo-alt"></i>
+                        </div>
+
+
+                        <div class="preview-label">
+                            Address
+                        </div>
+
+
+                        <div class="preview-value">
+
+                            @(Model.Transaction?.SenderAddress ?? "-")
+
+                        </div>
+
+
+                    </div>
+
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+
+        <!-- ========================= -->
+        <!-- PAYMENT INFORMATION -->
+        <!-- ========================= -->
+
+        <div class="col-lg-6">
+
+
+            <div class="preview-card">
+
+
+                <div class="preview-card-header text-center">
+
+
+                    <div class="preview-card-title">
+
+                        <i class="bi bi-receipt-cutoff"></i>
+                        Payment Information
+
+                    </div>
+
+
+                </div>
+
+
+
+
+                <div class="preview-card-body">
+
+
+
+
+
+                    <!-- TRANSACTION COMPANY -->
+
+                    <div class="preview-field">
+
+
+                        <div class="preview-icon">
+                            <i class="bi bi-building"></i>
+                        </div>
+
+
+                        <div class="preview-label">
+                            Transaction
+                        </div>
+
+
+                        <div class="preview-value">
+
+                            @(Model.Transaction?.SenderCompanyName ?? "-")
+
+                        </div>
+
+
+                    </div>
+
+
+
+
+
+
+
+                    <!-- SERVICE COMPANY -->
+
+
+                    <div class="preview-field">
+
+
+                        <div class="preview-icon">
+                            <i class="bi bi-building-check"></i>
+                        </div>
+
+
+                        <div class="preview-label">
+                            Service
+                        </div>
+
+
+                        <div class="preview-value">
+
+                            @(Model.Transaction?.ServiceCompanyPSName ?? "-")
+
+                        </div>
+
+
+                    </div>
+
+
+
+
+
+
+
+                    <!-- REFERENCE -->
+
+
+                    <div class="preview-field">
+
+
+                        <div class="preview-icon">
+                            <i class="bi bi-hash"></i>
+                        </div>
+
+
+                        <div class="preview-label">
+                            Reference
+                        </div>
+
+
+                        <div class="preview-value">
+
+                            @(Model.Transaction?.ReferenceNumber ?? "-")
+
+                        </div>
+
+
+                    </div>
+
+
+
+
+
+
+
+
+                    <!-- STATUS -->
+
+
+                    <div class="preview-field">
+
+
+                        <div class="preview-icon">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+
+
+                        <div class="preview-label">
+                            Status
+                        </div>
+
+
+                        <div class="preview-value">
+
+                            @(Model.Transaction?.TransactionStatus ?? "-")
+
+                        </div>
+
+
+                    </div>
+
+
+
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+    </div>
+
+
+</div>

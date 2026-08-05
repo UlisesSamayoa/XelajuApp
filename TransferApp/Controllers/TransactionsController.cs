@@ -345,4 +345,49 @@ public class TransactionsController : Controller
         }
     }
 
+
+    public async Task<IActionResult> Preview2(int id)
+    {
+        var model = await _service.GetTransactionPreview(id);
+
+        switch (model.Transaction.NumberT)
+        {
+            case "1":
+                return PartialView("Preview/_CheckCashing", model);
+            case "2":
+                return PartialView("Preview/_MoneyOrder", model);
+            case "3":
+                return PartialView("Preview/_MoneyTransfer", model);
+            case "4":
+                return PartialView("Preview/_PaidService", model);
+            case "5":
+                return PartialView("Preview/_DomesticTransfer", model);
+            default: return BadRequest();
+        }
+    }
+    [HttpGet]
+    [Permission("Transactions.View")]
+    public async Task<IActionResult> Preview(int id)
+    {
+        var model = await _service.GetTransactionPreview(id);
+
+        if (model == null)
+            return NotFound();
+
+        string view = model.Transaction.NumberT switch
+        {
+            "1" => "Preview/_CheckCashing",
+            "2" => "Preview/_MoneyOrder",
+            "3" => "Preview/_MoneyTransfer",
+            "4" => "Preview/_PaidService",
+            "5" => "Preview/_DomesticTransfer",
+            _ => "Preview/_MoneyTransfer"
+        };
+
+        return PartialView(view, model);
+    }
+
+
+
+
 }

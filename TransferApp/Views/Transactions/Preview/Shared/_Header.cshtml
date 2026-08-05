@@ -1,0 +1,91 @@
+﻿@using TransferApp.ViewModels
+@model TransactionPreviewViewModel
+
+
+<div class="preview-header">
+    <div class="preview-header-top">
+        <div class="preview-title">
+            <div class="preview-icon-box">
+                @switch (Model.TransactionType)
+                {
+                    case 1:
+                        <i class="bi bi-cash-coin"></i>
+                        break;
+                    case 2:
+                        <i class="bi bi-envelope-paper"></i>
+                        break;
+                    case 3:
+                        <i class="bi bi-arrow-left-right"></i>
+                        break;
+                    case 4:
+                        <i class="bi bi-receipt"></i>
+                        break;
+                    default:
+                        <i class="bi bi-file-earmark-text"></i>
+                        break;
+                }
+            </div>
+            <div>
+                <h3>
+                    @(Model.Transaction?.TransactionTypeName ?? "Transaction")
+                </h3>
+                <small>
+                    Transaction Preview
+                </small>
+            </div>
+        </div>
+        <div>
+
+            @if (Model.Transaction?.TransactionStatus == "Completed")
+            {
+                <span class="preview-status success">
+                    <i class="bi bi-check-circle-fill"></i>
+                    Completed
+                </span>
+            }
+            else if (Model.Transaction?.TransactionStatus == "Pending")
+            {
+                <span class="preview-status warning">
+                    <i class="bi bi-clock-fill"></i>
+                    Pending
+                </span>
+            }
+            else
+            {
+                <span class="preview-status danger">
+                    <i class="bi bi-x-circle-fill"></i>
+                    Rejected
+                </span>
+            }
+        </div>
+    </div>
+    <div class="preview-header-info">
+        <div class="header-item">
+            <span>
+                <i class="bi bi-hash"></i>
+                Reference
+            </span>
+            <strong>
+                @(Model.Transaction?.ReferenceNumber ?? "-")
+            </strong>
+        </div>
+        <div class="header-item">
+            <span>
+                <i class="bi bi-building"></i>
+                Company
+            </span>
+            <strong>
+                @(Model.Transaction?.SenderCompanyName ?? "-")
+            </strong>
+        </div>
+        <div class="header-item">
+            <span>
+                <i class="bi bi-calendar-event"></i>
+                Date
+            </span>
+            <strong>
+                @(Model.Transaction?.TransactionDate?.ToString("dd/MM/yyyy HH:mm") ?? "-")
+            </strong>
+        </div>
+    </div>
+</div>

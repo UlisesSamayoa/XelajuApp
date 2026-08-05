@@ -1,0 +1,52 @@
+﻿@using TransferApp.ViewModels
+@model TransactionPreviewViewModel
+
+<div class="card shadow-sm mt-4">
+
+    <div class="card-header bg-light">
+        <strong>
+            <i class="bi bi-cash-stack"></i>
+            Financial Summary
+        </strong>
+    </div>
+
+    <div class="card-body">
+
+        <div class="row text-center">
+
+            <div class="col-md-2">
+                <small class="text-muted">Amount</small>
+                <h5>$@Model.Transaction.Amount.ToString("N2")</h5>
+            </div>
+
+            <div class="col-md-2">
+                <small class="text-muted">Rate</small>
+                <h5>
+                    @(Model.Transaction.CalculationMode == 1
+                                        ? $"{Model.Transaction.FixedCommission:N2}"
+                                        : "-")
+                </h5>
+            </div>
+
+            <div class="col-md-2">
+                <small class="text-muted">Fixed Fee</small>
+                <h5>$@Model.Transaction.FixedCommission.ToString("N2")</h5>
+            </div>
+
+            <div class="col-md-2">
+                <small class="text-muted">Commission</small>
+                <h5>$@Model.Transaction.Commission.ToString("N2")</h5>
+            </div>
+
+            <div class="col-md-2">
+                <small class="text-muted">Total</small>
+                <h4 class="text-success">
+                    $@Model.Transaction.TotalAmount.ToString("N2")
+                </h4>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

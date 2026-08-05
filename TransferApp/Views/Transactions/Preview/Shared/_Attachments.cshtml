@@ -1,0 +1,43 @@
+﻿@using TransferApp.ViewModels
+@model TransactionPreviewViewModel
+
+@if (Model.Attachments.Any())
+{
+    <div class="row">
+
+        @foreach (var file in Model.Attachments)
+        {
+            <div class="col-md-3 mb-3">
+
+                <div class="card h-100">
+
+                    <img src="@Url.Action("ViewAttachment", "Transactions", new { id = file.IdTransactionAttachment })"
+                         class="card-img-top">
+
+                    <div class="card-body text-center">
+
+                        <a class="btn btn-primary btn-sm"
+                           target="_blank"
+                           href="@Url.Action("ViewAttachment", "Transactions", new { id = file.IdTransactionAttachment })">
+
+                            View
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+}
+else
+{
+    <div class="alert alert-light mb-0">
+
+        No evidence attached.
+
+    </div>
+}

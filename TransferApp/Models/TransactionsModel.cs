@@ -60,5 +60,7 @@
         public string? UserC { get; set; }
         public DateTime? DateU { get; set; }
         public string? UserU { get; set; }
+        public string? NumberT { get; set; }
+        public string? ServiceCompanyPSName { get; set; }
     }
 }
