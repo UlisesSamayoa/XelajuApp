@@ -79,6 +79,8 @@ builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
 builder.Services.AddScoped<PermissionService>();
 builder.Services.AddSingleton<PasswordService>();
+
+builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

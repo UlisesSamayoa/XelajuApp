@@ -9,16 +9,18 @@ namespace TransferApp.Services
         private readonly ReportsRepository _repo;
         private readonly ClientsRepository _clientRepo;
         private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         //public ReportsService(IConfiguration configuration)
         //{
         //    _configuration = configuration;
         //}
-        public ReportsService(ReportsRepository repo, ClientsRepository clientRepo, IConfiguration configuration)
+        public ReportsService(ReportsRepository repo, ClientsRepository clientRepo, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _repo = repo;
             _clientRepo = clientRepo;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         //REPORTE DE TRANSACCIONES DEL DIA
