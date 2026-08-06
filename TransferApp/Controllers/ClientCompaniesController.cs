@@ -24,7 +24,7 @@ public class ClientCompaniesController : Controller
     {
         try
         {
-            m.UserC = "admin";
+            m.UserC = User.Identity!.Name!;
 
             var id = await _service.Create(m);
 
@@ -48,7 +48,7 @@ public class ClientCompaniesController : Controller
     [Permission("ClientCompanies.Delete")]
     public async Task<IActionResult> Delete(int id)
     {
-        await _service.Delete(id, "admin");
+        await _service.Delete(id, User.Identity!.Name!);
         return Json(new { success = true });
     }
 

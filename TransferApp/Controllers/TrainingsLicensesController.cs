@@ -33,6 +33,7 @@ public class TrainingsLicensesController : Controller
     {
         try
         {
+            model.UserC = User.Identity!.Name!;
             await _service.Create(model, File);
 
             return Ok(new { success = true, message = "Saved successfully" });
@@ -49,6 +50,7 @@ public class TrainingsLicensesController : Controller
     {
         try
         {
+            model.UserU = User.Identity!.Name!;
             await _service.Update(model, File);
 
             return Ok(new { success = true, message = "Updated successfully" });
@@ -63,7 +65,7 @@ public class TrainingsLicensesController : Controller
     [Permission("TrainingsLicenses.Delete")]
     public async Task<IActionResult> Delete(int id)
     {
-        await _service.Delete(id, "admin");
+        await _service.Delete(id, User.Identity!.Name!);
 
         return Ok(new { success = true, message = "Deleted successfully" });
     }

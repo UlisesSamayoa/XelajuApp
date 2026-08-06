@@ -36,7 +36,7 @@ public class BeneficiariesController : Controller
     {
         try
         {
-            m.UserC = "admin";
+            m.UserC = User.Identity!.Name!;
 
             var id = await _service.Create(m);
 
@@ -59,7 +59,7 @@ public class BeneficiariesController : Controller
     {
         try
         {
-            m.UserU = "admin";
+            m.UserU = User.Identity!.Name!;
             await _service.Update(m);
             return Json(new { success = true, message = "Updated!" });
         }
@@ -73,7 +73,7 @@ public class BeneficiariesController : Controller
     [Permission("Beneficiaries.Delete")]
     public async Task<IActionResult> Delete(int id)
     {
-        await _service.Delete(id, "admin");
+        await _service.Delete(id, User.Identity!.Name!);
         return Json(new { success = true });
     }
 

@@ -1,4 +1,5 @@
 wwwroot\css\site.css
+wwwroot\css\transaction-preview.css
 wwwroot\favicon.ico
 wwwroot\js\site.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
@@ -97,4 +98,3 @@ wwwroot\uploads\trainings\Prueba_24444_5_20260422231250.pdf
 wwwroot\uploads\trainings\Prueba_2_20260422230008.png
 wwwroot\uploads\trainings\Prueba_2_20260422230950.png
 wwwroot\uploads\trainings\Training_1_20260422231322.png
-wwwroot\css\transaction-preview.css

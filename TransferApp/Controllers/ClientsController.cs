@@ -33,7 +33,7 @@ public class ClientsController : Controller
     {
         try
         {
-            model.UserC = "admin";
+            model.UserC = User.Identity!.Name!;
 
             var id = await _service.Create(model, File);
 
@@ -56,6 +56,7 @@ public class ClientsController : Controller
     {
         try
         {
+            model.UserU = User.Identity!.Name!;
             await _service.Update(model, File);
             return Ok(new { message = "Client updated" });
         }
@@ -69,7 +70,7 @@ public class ClientsController : Controller
     [Permission("Clients.Delete")]
     public async Task<IActionResult> Delete(int id)
     {
-        await _service.Delete(id, "admin");
+        await _service.Delete(id, User.Identity!.Name!);
         return Ok(new { message = "Deleted" });
     }
 

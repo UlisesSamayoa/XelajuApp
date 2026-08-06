@@ -33,6 +33,7 @@ public class CountriesController : Controller
     {
         try
         {
+            model.UserC = User.Identity!.Name!;
             await _service.Create(model);
             return Ok(new { success = true, message = "Country created" });
         }
@@ -48,6 +49,7 @@ public class CountriesController : Controller
     {
         try
         {
+            model.UserU = User.Identity!.Name!;
             await _service.Update(model);
             return Ok(new { success = true, message = "Country updated" });
         }
@@ -63,7 +65,7 @@ public class CountriesController : Controller
     {
         try
         {
-            await _service.Delete(id, "admin");
+            await _service.Delete(id, User.Identity!.Name!);
             return Ok(new { success = true, message = "Country deleted" });
         }
         catch (Exception ex)

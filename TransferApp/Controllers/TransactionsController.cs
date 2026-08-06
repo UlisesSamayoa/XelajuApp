@@ -80,7 +80,7 @@ public class TransactionsController : Controller
     {
         try
         {
-            m.UserC = "admin";
+            m.UserC = User.Identity!.Name!;
 
             // CLIENTE
             var client = await _clientes.GetById(m.IdClient_fk);
@@ -152,7 +152,7 @@ public class TransactionsController : Controller
     {
         try
         {
-            m.UserC = "admin";
+            m.UserC = User.Identity!.Name!;
 
             // CLIENTE
             var client = await _clientes.GetById(m.IdClient_fk);
@@ -188,7 +188,7 @@ public class TransactionsController : Controller
     [Permission("Transactions.Delete")]
     public async Task<IActionResult> Delete(int id)
     {
-        await _service.Delete(id, "admin");
+        await _service.Delete(id, User.Identity!.Name!);
         return Json(new { success = true });
     }
 
@@ -199,7 +199,7 @@ public class TransactionsController : Controller
     {
         try
         {
-            m.UserC = "admin";
+            m.UserC = User.Identity!.Name!;
             await _service.CreateMorder(m, Morder_ImgJustify);
             return Json(new { success = true });
         }
@@ -227,7 +227,7 @@ public class TransactionsController : Controller
     {
         try
         {
-            m.UserC = "admin";
+            m.UserC = User.Identity!.Name!;
             await _service.CreatePService(m, PService_ImgJustify);
             return Json(new { success = true });
         }
@@ -255,7 +255,7 @@ public class TransactionsController : Controller
     {
         try
         {
-            m.UserC = "admin";
+            m.UserC = User.Identity!.Name!;
             if (Checks != null)
             {
                 m.Checks = JsonConvert.DeserializeObject<List<SimpleTransactionDetailModel>>(Checks);

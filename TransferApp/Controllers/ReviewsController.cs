@@ -33,6 +33,7 @@ public class ReviewsController : Controller
     {
         try
         {
+            model.UserC = User.Identity!.Name!;
             await _service.Create(model, File);
             return Ok(new { message = "Saved successfully!" });
         }
@@ -48,6 +49,7 @@ public class ReviewsController : Controller
     {
         try
         {
+            model.UserU = User.Identity!.Name!;
             await _service.Update(model, File);
             return Ok(new { message = "Updated successfully!" });
         }
@@ -61,7 +63,7 @@ public class ReviewsController : Controller
     [Permission("Reviews.Delete")]
     public async Task<IActionResult> Delete(int id)
     {
-        await _service.Delete(id, "admin");
+        await _service.Delete(id, User.Identity!.Name!);
         return Ok(new { message = "Deleted successfully!" });
     }
 }

@@ -30,6 +30,7 @@ public class CompaniesController : Controller
     {
         try
         {
+            model.UserC = User.Identity!.Name!;
             await _service.Create(model);
             return Ok(new { success = true, message = "Company created successfully" });
         }
@@ -61,6 +62,7 @@ public class CompaniesController : Controller
     {
         try
         {
+            model.UserU = User.Identity!.Name!;
             await _service.Update(model);
             return Ok(new { success = true, message = "Company updated successfully" });
         }
@@ -76,7 +78,7 @@ public class CompaniesController : Controller
     {
         try
         {
-            string user = "admin";
+            string user = User.Identity!.Name!;
             await _service.Delete(id, user);
 
             return Ok(new { success = true, message = "Company deleted" });

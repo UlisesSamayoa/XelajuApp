@@ -36,7 +36,7 @@ public class DocumentsTypesController : Controller
     {
         try
         {
-            m.UserC = "admin";
+            m.UserC = User.Identity!.Name!;
             await _service.Create(m);
             return Json(new { success = true, message = "Saved!" });
         }
@@ -52,7 +52,7 @@ public class DocumentsTypesController : Controller
     {
         try
         {
-            m.UserU = "admin";
+            m.UserU = User.Identity!.Name!;
             await _service.Update(m);
             return Json(new { success = true, message = "Updated!" });
         }
@@ -66,7 +66,7 @@ public class DocumentsTypesController : Controller
     [Permission("DocumentsTypes.Delete")]
     public async Task<IActionResult> Delete(int id)
     {
-        await _service.Delete(id, "admin");
+        await _service.Delete(id, User.Identity!.Name!);
         return Json(new { success = true });
     }
 }
