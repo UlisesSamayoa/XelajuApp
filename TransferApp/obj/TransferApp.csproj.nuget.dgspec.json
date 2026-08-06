@@ -70,6 +70,10 @@
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.4, )"
+            },
+            "PDFsharp": {
+              "target": "Package",
+              "version": "[6.2.4, )"
             }
           },
           "imports": [

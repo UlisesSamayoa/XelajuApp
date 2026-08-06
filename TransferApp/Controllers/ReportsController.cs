@@ -115,5 +115,122 @@ namespace TransferApp.Controllers
             return View("NewClientsReport", model);
         }
 
+        //orquestador de reportes pot transaccion
+        [HttpGet]
+        public async Task<IActionResult> GenerateTransactionPreview(int id, int type)
+        {
+            return type switch
+            {
+                1 => await GenerateCheckPreview(id),
+                2 => await GenerateMoneyOrderPreview(id),
+                3 => await GenerateMoneyTransferPreview(id),
+                4 => await GeneratePaidServicePreview(id),
+                5 => await GenerateDomesticPreview(id),
+
+                _ => BadRequest("Invalid transaction type.")
+            };
+        }
+
+        //REPORTE DE MONEY TRANSFER
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> MoneyTransferPreviewPdf(int id)
+        {
+            var model = await _service.GetTransactionPreview(id);
+
+            return View("Preview/_MoneyTransfer", model);
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> GenerateMoneyTransferPreview(int id)
+        {
+            byte[] pdf = await _service.GenerateMoneyTransferPreview(id);
+
+            return File(
+                pdf,
+                "application/pdf",
+                $"MoneyTransfer_{id}.pdf");
+        }
+
+        //REPORTE DE CHEQUES 
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> CheckPreviewPdf(int id)
+        {
+            var model = await _service.GetTransactionPreview(id);
+
+            return View("Preview/_CheckCashing", model);
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> GenerateCheckPreview(int id)
+        {
+            byte[] pdf = await _service.GenerateCheckPreview(id);
+
+            return File(
+                pdf,
+                "application/pdf",
+                $"Check_{id}.pdf");
+        }
+
+        //REPORTE DE DOMESTIC
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> DomesticPreviewPdf(int id)
+        {
+            var model = await _service.GetTransactionPreview(id);
+
+            return View("Preview/_DomesticTransfer", model);
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> GenerateDomesticPreview(int id)
+        {
+            byte[] pdf = await _service.GenerateDomesticPreview(id);
+
+            return File(
+                pdf,
+                "application/pdf",
+                $"Domestic_{id}.pdf");
+        }
+
+        //REPORTE DE MONEY ORDER
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> MoneyOrderPreviewPdf(int id)
+        {
+            var model = await _service.GetTransactionPreview(id);
+
+            return View("Preview/_MoneyOrder", model);
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> GenerateMoneyOrderPreview(int id)
+        {
+            byte[] pdf = await _service.GenerateMoneyOrderPreview(id);
+
+            return File(
+                pdf,
+                "application/pdf",
+                $"MoneyOrder_{id}.pdf");
+        }
+
+        //REPORTE DE PAID SERVICE
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> PaidServicePreviewPdf(int id)
+        {
+            var model = await _service.GetTransactionPreview(id);
+
+            return View("Preview/_PaidService", model);
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> GeneratePaidServicePreview(int id)
+        {
+            byte[] pdf = await _service.GeneratePaidServicePreview(id);
+
+            return File(
+                pdf,
+                "application/pdf",
+                $"PaidService_{id}.pdf");
+        }
+
     }
 }

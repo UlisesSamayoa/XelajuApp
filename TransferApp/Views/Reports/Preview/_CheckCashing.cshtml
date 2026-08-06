@@ -1,0 +1,18 @@
+﻿@using TransferApp.ViewModels
+@model TransactionPreviewViewModel
+@{
+    Layout = "_PrintLayout";
+}
+@await Html.PartialAsync("Preview/Shared/_Header", Model)
+
+<div class="modal-body">
+
+    @await Html.PartialAsync("Preview/Shared/_FinancialSummary", Model)
+
+    @await Html.PartialAsync("Preview/Shared/_ParticipantsCheck", Model)
+
+    @await Html.PartialAsync("Preview/Shared/_Notes", Model)
+
+    @await Html.PartialAsync("Preview/Shared/_Attachments", Model)
+
+</div>

@@ -57,9 +57,15 @@
                     Rejected
                 </span>
             }
+            <button class="btn btn-outline-primary" onclick="printTransaction()">
+                <i class="bi bi-printer"></i>
+                Print PDF
+            </button>
         </div>
     </div>
     <div class="preview-header-info">
+        <input type="hidden" id="R_TransactionId" value="@Model.Transaction.IdTransaction" />
+        <input type="hidden" id="R_TransactionType" value="@Model.Transaction.NumberT" />
         <div class="header-item">
             <span>
                 <i class="bi bi-hash"></i>

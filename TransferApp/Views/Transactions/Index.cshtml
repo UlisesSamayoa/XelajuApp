@@ -6217,5 +6217,45 @@
           $('#Domestic_Commission').on('input', function () {$(this).data('auto', false);});
            $('#Domestic_FixedCommission').on('input', function () {$(this).data('auto', false);});
 
+
+
+
+           //PRINTER DE REPORTES
+                   function printTransaction() {
+
+            const id = $("#R_TransactionId").val();
+            const type = $("#R_TransactionType").val();
+
+            $.ajax({
+                url: "/Reports/GenerateTransactionPreview",
+                type: "GET",
+                data: {
+                    id: id,
+                    type: type
+                },
+                xhrFields: {
+                    responseType: "blob"
+                },
+                success: function (data) {
+
+                    const blob = new Blob([data], { type: "application/pdf" });
+
+                    const url = window.URL.createObjectURL(blob);
+
+                    window.open(url, "_blank");
+
+                },
+                error: function () {
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "Unable to generate the PDF report."
+                    });
+
+                }
+            });
+
+        }
     </script>
 }

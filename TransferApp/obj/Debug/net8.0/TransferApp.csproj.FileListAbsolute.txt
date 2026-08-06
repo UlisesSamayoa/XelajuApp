@@ -889,3 +889,12 @@ C:\GIT\XelajuApp\XelajuApp\TransferApp\bin\Debug\net8.0\playwright.ps1
 C:\GIT\XelajuApp\XelajuApp\TransferApp\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
 C:\GIT\XelajuApp\XelajuApp\TransferApp\bin\Debug\net8.0\Microsoft.Playwright.dll
 C:\GIT\XelajuApp\XelajuApp\TransferApp\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\GIT\XelajuApp\XelajuApp\TransferApp\bin\Debug\net8.0\PdfSharp.BarCodes.dll
+C:\GIT\XelajuApp\XelajuApp\TransferApp\bin\Debug\net8.0\PdfSharp.Charting.dll
+C:\GIT\XelajuApp\XelajuApp\TransferApp\bin\Debug\net8.0\PdfSharp.Cryptography.dll
+C:\GIT\XelajuApp\XelajuApp\TransferApp\bin\Debug\net8.0\PdfSharp.Quality.dll
+C:\GIT\XelajuApp\XelajuApp\TransferApp\bin\Debug\net8.0\PdfSharp.Shared.dll
+C:\GIT\XelajuApp\XelajuApp\TransferApp\bin\Debug\net8.0\PdfSharp.Snippets.dll
+C:\GIT\XelajuApp\XelajuApp\TransferApp\bin\Debug\net8.0\PdfSharp.System.dll
+C:\GIT\XelajuApp\XelajuApp\TransferApp\bin\Debug\net8.0\PdfSharp.WPFonts.dll
+C:\GIT\XelajuApp\XelajuApp\TransferApp\bin\Debug\net8.0\PdfSharp.dll

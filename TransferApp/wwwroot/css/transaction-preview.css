@@ -230,3 +230,24 @@
     color:#212529;
 
 }
+
+@media print {
+
+    body {
+        background: white !important;
+    }
+
+    .preview-card {
+        box-shadow: none !important;
+        border: 1px solid #d9d9d9;
+        page-break-inside: avoid;
+    }
+
+    .preview-section {
+        page-break-inside: avoid;
+    }
+
+    img {
+        page-break-inside: avoid;
+    }
+}

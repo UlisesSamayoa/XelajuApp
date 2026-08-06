@@ -1,0 +1,341 @@
+﻿@using TransferApp.ViewModels
+@model TransactionPreviewViewModel
+
+
+<div class="preview-section">
+
+    <div class="row g-4">
+
+
+        <!-- ========================= -->
+        <!-- CUSTOMER / BENEFICIARY -->
+        <!-- ========================= -->
+
+        <div class="col-lg-6">
+
+            <div class="preview-card">
+
+
+                <div class="preview-card-header text-center">
+
+                    <div class="preview-card-title">
+
+                        <i class="bi bi-person-check-fill"></i>
+                        Customer / Beneficiary
+
+                    </div>
+
+                </div>
+
+
+                <div class="preview-card-body">
+
+
+                    <div class="text-center mb-4">
+
+
+                        <div class="participant-avatar">
+
+                            @if (!string.IsNullOrWhiteSpace(Model.SenderPictureUrl))
+                            {
+                                <img src="@Model.SenderPictureBase64"
+                                     class="participant-photo"
+                                     alt="Sender" />
+                            }
+                            else
+                            {
+                                <i class="bi bi-person-circle participant-icon text-success"></i>
+                            }
+
+                        </div>
+
+
+                        <div class="preview-name mt-2">
+
+                            @(Model.Transaction?.ReceiverName ?? "-")
+
+                        </div>
+
+
+                    </div>
+
+
+
+
+                    <div class="preview-field">
+
+                        <div class="preview-icon">
+                            <i class="bi bi-credit-card"></i>
+                        </div>
+
+                        <div class="preview-label">
+                            Document
+                        </div>
+
+                        <div class="preview-value">
+
+                            @(Model.Transaction?.ReceiverDocumentNumber ?? "-")
+
+                        </div>
+
+                    </div>
+
+
+
+
+                    <div class="preview-field">
+
+                        <div class="preview-icon">
+                            <i class="bi bi-telephone"></i>
+                        </div>
+
+                        <div class="preview-label">
+                            Phone
+                        </div>
+
+                        <div class="preview-value">
+
+                            @(Model.Transaction?.ReceiverPhone ?? "-")
+
+                        </div>
+
+                    </div>
+
+
+
+
+                    <div class="preview-field">
+
+                        <div class="preview-icon">
+                            <i class="bi bi-globe-americas"></i>
+                        </div>
+
+                        <div class="preview-label">
+                            Country
+                        </div>
+
+                        <div class="preview-value">
+
+                            @(Model.Transaction?.ReceiverCountryName ?? "-")
+
+                        </div>
+
+                    </div>
+
+
+
+
+                    <div class="preview-field">
+
+                        <div class="preview-icon">
+                            <i class="bi bi-building"></i>
+                        </div>
+
+                        <div class="preview-label">
+                            Company
+                        </div>
+
+                        <div class="preview-value">
+
+                            @(Model.Transaction?.ReceiverCompanyName ?? "-")
+
+                        </div>
+
+                    </div>
+
+
+
+
+                    <div class="preview-field">
+
+                        <div class="preview-icon">
+                            <i class="bi bi-currency-dollar"></i>
+                        </div>
+
+                        <div class="preview-label">
+                            Currency
+                        </div>
+
+                        <div class="preview-value">
+
+                            @(Model.Transaction?.ReceiverCurrencyName ?? "-")
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+
+
+
+        <!-- ========================= -->
+        <!-- SENDER INFORMATION -->
+        <!-- ========================= -->
+
+        <div class="col-lg-6">
+
+
+            <div class="preview-card">
+
+
+                <div class="preview-card-header text-center">
+
+                    <div class="preview-card-title">
+
+                        <i class="bi bi-person-fill"></i>
+                        Sender Information
+
+                    </div>
+
+                </div>
+
+
+
+
+                <div class="preview-card-body">
+
+
+                    <div class="text-center mb-4">
+
+
+                        <i class="bi bi-person-circle participant-icon text-primary"></i>
+
+
+                        <div class="preview-name mt-2">
+
+                            @(Model.Transaction?.SenderName ?? "-")
+
+                        </div>
+
+
+                    </div>
+
+
+
+
+
+                    <div class="preview-field">
+
+                        <div class="preview-icon">
+                            <i class="bi bi-credit-card"></i>
+                        </div>
+
+                        <div class="preview-label">
+                            Document
+                        </div>
+
+                        <div class="preview-value">
+
+                            @(Model.Transaction?.SenderDocumentNumber ?? "-")
+
+                        </div>
+
+                    </div>
+
+
+
+
+                    <div class="preview-field">
+
+                        <div class="preview-icon">
+                            <i class="bi bi-telephone"></i>
+                        </div>
+
+                        <div class="preview-label">
+                            Phone
+                        </div>
+
+                        <div class="preview-value">
+
+                            @(Model.Transaction?.SenderPhone ?? "-")
+
+                        </div>
+
+                    </div>
+
+
+
+
+                    <div class="preview-field">
+
+                        <div class="preview-icon">
+                            <i class="bi bi-globe-americas"></i>
+                        </div>
+
+                        <div class="preview-label">
+                            Country
+                        </div>
+
+                        <div class="preview-value">
+
+                            @(Model.Transaction?.SenderCountryName ?? "-")
+
+                        </div>
+
+                    </div>
+
+
+
+
+                    <div class="preview-field">
+
+                        <div class="preview-icon">
+                            <i class="bi bi-building"></i>
+                        </div>
+
+                        <div class="preview-label">
+                            Company
+                        </div>
+
+                        <div class="preview-value">
+
+                            @(Model.Transaction?.SenderCompanyName ?? "-")
+
+                        </div>
+
+                    </div>
+
+
+
+
+                    <div class="preview-field">
+
+                        <div class="preview-icon">
+                            <i class="bi bi-currency-dollar"></i>
+                        </div>
+
+                        <div class="preview-label">
+                            Currency
+                        </div>
+
+                        <div class="preview-value">
+
+                            @(Model.Transaction?.SenderCurrencyName ?? "-")
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>

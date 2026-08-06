@@ -698,6 +698,71 @@
           }
         }
       },
+      "PDFsharp/6.2.4": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.3",
+          "System.Security.Cryptography.Pkcs": "8.0.1"
+        },
+        "compile": {
+          "lib/net8.0/PdfSharp.BarCodes.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net8.0/PdfSharp.Charting.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net8.0/PdfSharp.Cryptography.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net8.0/PdfSharp.Quality.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net8.0/PdfSharp.Shared.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net8.0/PdfSharp.Snippets.dll": {
+            "related": ".pdb"
+          },
+          "lib/net8.0/PdfSharp.System.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net8.0/PdfSharp.WPFonts.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net8.0/PdfSharp.dll": {
+            "related": ".BarCodes.pdb;.BarCodes.xml;.Charting.pdb;.Charting.xml;.Cryptography.pdb;.Cryptography.xml;.pdb;.Quality.pdb;.Quality.xml;.Shared.pdb;.Shared.xml;.Snippets.pdb;.System.pdb;.System.xml;.WPFonts.pdb;.WPFonts.xml;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/PdfSharp.BarCodes.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net8.0/PdfSharp.Charting.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net8.0/PdfSharp.Cryptography.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net8.0/PdfSharp.Quality.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net8.0/PdfSharp.Shared.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net8.0/PdfSharp.Snippets.dll": {
+            "related": ".pdb"
+          },
+          "lib/net8.0/PdfSharp.System.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net8.0/PdfSharp.WPFonts.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net8.0/PdfSharp.dll": {
+            "related": ".BarCodes.pdb;.BarCodes.xml;.Charting.pdb;.Charting.xml;.Cryptography.pdb;.Cryptography.xml;.pdb;.Quality.pdb;.Quality.xml;.Shared.pdb;.Shared.xml;.Snippets.pdb;.System.pdb;.System.xml;.WPFonts.pdb;.WPFonts.xml;.xml"
+          }
+        }
+      },
       "System.Collections.Immutable/5.0.0": {
         "type": "package",
         "compile": {
@@ -2104,6 +2169,123 @@
         "packageIcon.png"
       ]
     },
+    "PDFsharp/6.2.4": {
+      "sha512": "GhTr9F1uOYXHCIEOB5PXIgqn5a8WLsJL2m0eewTA0IvY1j6N4HGXHKKmEyB90/N6vrjmYamf41V9zbmdW2HY3g==",
+      "type": "package",
+      "path": "pdfsharp/6.2.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "images/PDFsharp-128x128.png",
+        "lib/net10.0/PdfSharp.BarCodes.dll",
+        "lib/net10.0/PdfSharp.BarCodes.pdb",
+        "lib/net10.0/PdfSharp.BarCodes.xml",
+        "lib/net10.0/PdfSharp.Charting.dll",
+        "lib/net10.0/PdfSharp.Charting.pdb",
+        "lib/net10.0/PdfSharp.Charting.xml",
+        "lib/net10.0/PdfSharp.Cryptography.dll",
+        "lib/net10.0/PdfSharp.Cryptography.pdb",
+        "lib/net10.0/PdfSharp.Cryptography.xml",
+        "lib/net10.0/PdfSharp.Quality.dll",
+        "lib/net10.0/PdfSharp.Quality.pdb",
+        "lib/net10.0/PdfSharp.Quality.xml",
+        "lib/net10.0/PdfSharp.Shared.dll",
+        "lib/net10.0/PdfSharp.Shared.pdb",
+        "lib/net10.0/PdfSharp.Shared.xml",
+        "lib/net10.0/PdfSharp.Snippets.dll",
+        "lib/net10.0/PdfSharp.Snippets.pdb",
+        "lib/net10.0/PdfSharp.System.dll",
+        "lib/net10.0/PdfSharp.System.pdb",
+        "lib/net10.0/PdfSharp.System.xml",
+        "lib/net10.0/PdfSharp.WPFonts.dll",
+        "lib/net10.0/PdfSharp.WPFonts.pdb",
+        "lib/net10.0/PdfSharp.WPFonts.xml",
+        "lib/net10.0/PdfSharp.dll",
+        "lib/net10.0/PdfSharp.pdb",
+        "lib/net10.0/PdfSharp.xml",
+        "lib/net8.0/PdfSharp.BarCodes.dll",
+        "lib/net8.0/PdfSharp.BarCodes.pdb",
+        "lib/net8.0/PdfSharp.BarCodes.xml",
+        "lib/net8.0/PdfSharp.Charting.dll",
+        "lib/net8.0/PdfSharp.Charting.pdb",
+        "lib/net8.0/PdfSharp.Charting.xml",
+        "lib/net8.0/PdfSharp.Cryptography.dll",
+        "lib/net8.0/PdfSharp.Cryptography.pdb",
+        "lib/net8.0/PdfSharp.Cryptography.xml",
+        "lib/net8.0/PdfSharp.Quality.dll",
+        "lib/net8.0/PdfSharp.Quality.pdb",
+        "lib/net8.0/PdfSharp.Quality.xml",
+        "lib/net8.0/PdfSharp.Shared.dll",
+        "lib/net8.0/PdfSharp.Shared.pdb",
+        "lib/net8.0/PdfSharp.Shared.xml",
+        "lib/net8.0/PdfSharp.Snippets.dll",
+        "lib/net8.0/PdfSharp.Snippets.pdb",
+        "lib/net8.0/PdfSharp.System.dll",
+        "lib/net8.0/PdfSharp.System.pdb",
+        "lib/net8.0/PdfSharp.System.xml",
+        "lib/net8.0/PdfSharp.WPFonts.dll",
+        "lib/net8.0/PdfSharp.WPFonts.pdb",
+        "lib/net8.0/PdfSharp.WPFonts.xml",
+        "lib/net8.0/PdfSharp.dll",
+        "lib/net8.0/PdfSharp.pdb",
+        "lib/net8.0/PdfSharp.xml",
+        "lib/net9.0/PdfSharp.BarCodes.dll",
+        "lib/net9.0/PdfSharp.BarCodes.pdb",
+        "lib/net9.0/PdfSharp.BarCodes.xml",
+        "lib/net9.0/PdfSharp.Charting.dll",
+        "lib/net9.0/PdfSharp.Charting.pdb",
+        "lib/net9.0/PdfSharp.Charting.xml",
+        "lib/net9.0/PdfSharp.Cryptography.dll",
+        "lib/net9.0/PdfSharp.Cryptography.pdb",
+        "lib/net9.0/PdfSharp.Cryptography.xml",
+        "lib/net9.0/PdfSharp.Quality.dll",
+        "lib/net9.0/PdfSharp.Quality.pdb",
+        "lib/net9.0/PdfSharp.Quality.xml",
+        "lib/net9.0/PdfSharp.Shared.dll",
+        "lib/net9.0/PdfSharp.Shared.pdb",
+        "lib/net9.0/PdfSharp.Shared.xml",
+        "lib/net9.0/PdfSharp.Snippets.dll",
+        "lib/net9.0/PdfSharp.Snippets.pdb",
+        "lib/net9.0/PdfSharp.System.dll",
+        "lib/net9.0/PdfSharp.System.pdb",
+        "lib/net9.0/PdfSharp.System.xml",
+        "lib/net9.0/PdfSharp.WPFonts.dll",
+        "lib/net9.0/PdfSharp.WPFonts.pdb",
+        "lib/net9.0/PdfSharp.WPFonts.xml",
+        "lib/net9.0/PdfSharp.dll",
+        "lib/net9.0/PdfSharp.pdb",
+        "lib/net9.0/PdfSharp.xml",
+        "lib/netstandard2.0/PdfSharp.BarCodes.dll",
+        "lib/netstandard2.0/PdfSharp.BarCodes.pdb",
+        "lib/netstandard2.0/PdfSharp.BarCodes.xml",
+        "lib/netstandard2.0/PdfSharp.Charting.dll",
+        "lib/netstandard2.0/PdfSharp.Charting.pdb",
+        "lib/netstandard2.0/PdfSharp.Charting.xml",
+        "lib/netstandard2.0/PdfSharp.Cryptography.dll",
+        "lib/netstandard2.0/PdfSharp.Cryptography.pdb",
+        "lib/netstandard2.0/PdfSharp.Cryptography.xml",
+        "lib/netstandard2.0/PdfSharp.Quality.dll",
+        "lib/netstandard2.0/PdfSharp.Quality.pdb",
+        "lib/netstandard2.0/PdfSharp.Quality.xml",
+        "lib/netstandard2.0/PdfSharp.Shared.dll",
+        "lib/netstandard2.0/PdfSharp.Shared.pdb",
+        "lib/netstandard2.0/PdfSharp.Shared.xml",
+        "lib/netstandard2.0/PdfSharp.Snippets.dll",
+        "lib/netstandard2.0/PdfSharp.Snippets.pdb",
+        "lib/netstandard2.0/PdfSharp.System.dll",
+        "lib/netstandard2.0/PdfSharp.System.pdb",
+        "lib/netstandard2.0/PdfSharp.System.xml",
+        "lib/netstandard2.0/PdfSharp.WPFonts.dll",
+        "lib/netstandard2.0/PdfSharp.WPFonts.pdb",
+        "lib/netstandard2.0/PdfSharp.WPFonts.xml",
+        "lib/netstandard2.0/PdfSharp.dll",
+        "lib/netstandard2.0/PdfSharp.pdb",
+        "lib/netstandard2.0/PdfSharp.xml",
+        "pdfsharp.6.2.4.nupkg.sha512",
+        "pdfsharp.nuspec"
+      ]
+    },
     "System.Collections.Immutable/5.0.0": {
       "sha512": "FXkLXiK0sVVewcso0imKQoOxjoPAj42R8HtjjbSjVPAzwDfzoyoznWxgA3c38LDbN9SJux1xXoXYAhz98j7r2g==",
       "type": "package",
@@ -2652,7 +2834,8 @@
       "Microsoft.Data.SqlClient >= 7.0.0",
       "Microsoft.EntityFrameworkCore >= 9.0.0",
       "Microsoft.Playwright >= 1.61.0",
-      "Newtonsoft.Json >= 13.0.4"
+      "Newtonsoft.Json >= 13.0.4",
+      "PDFsharp >= 6.2.4"
     ]
   },
   "packageFolders": {
@@ -2726,6 +2909,10 @@
           "Newtonsoft.Json": {
             "target": "Package",
             "version": "[13.0.4, )"
+          },
+          "PDFsharp": {
+            "target": "Package",
+            "version": "[6.2.4, )"
           }
         },
         "imports": [

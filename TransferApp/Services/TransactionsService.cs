@@ -8,13 +8,15 @@ public class TransactionsService
     private readonly TransactionAttachmentRepository _repoAttach;
     private readonly ReferenceNumberRepository _repoRefe;
     private readonly CompanyRepository _repoCompany;
+    private readonly ClientsRepository _repoClient;
 
-    public TransactionsService(TransactionsRepository repo, TransactionAttachmentRepository repoAttach, ReferenceNumberRepository repoRefe, CompanyRepository repoCompany)
+    public TransactionsService(TransactionsRepository repo, TransactionAttachmentRepository repoAttach, ReferenceNumberRepository repoRefe, CompanyRepository repoCompany, ClientsRepository repoClient)
     {
         _repo = repo;
         _repoAttach = repoAttach;
         _repoRefe = repoRefe;
         _repoCompany = repoCompany;
+        _repoClient = repoClient;
     }
 
     public async Task<List<TransactionsModel>> GetAll() => await _repo.GetAll();
@@ -774,15 +776,112 @@ public class TransactionsService
 
         if (tx == null)
             return null;
+
         string URL = $"/Clients/ProfileImage/{tx.IdClient_fk}";
+
         var model = new TransactionPreviewViewModel
         {
             TransactionType = tx.TransactionType,
             Transaction = tx,
             SenderPictureUrl = tx.IdClient_fk > 0 ? URL : null,
+            SenderPictureBase64 = await GetClientPictureBase64(tx.IdClient_fk)
         };
-        model.Attachments = await GetAttachments(id);
+        var attachments = await GetAttachments(id);
+        model.Attachments = attachments;
+        model.AttachmentImages = await ConvertImagesToBase64(attachments);
+        model.AttachmentPdfs = GetPdfAttachments(attachments);
         return model;
+    }
+    private async Task<string?> GetClientPictureBase64(int clientId)
+    {
+        if (clientId <= 0)
+            return null;
+        var client = await _repoClient.GetById(clientId);
+        if (client == null ||
+            string.IsNullOrEmpty(client.Picture))
+            return null;
+        if (!File.Exists(client.Picture))
+            return null;
+        var bytes = await File.ReadAllBytesAsync(client.Picture);
+        var extension = Path.GetExtension(client.Picture).ToLower();
+        var contentType = extension switch
+        {
+            ".png" => "image/png",
+            ".jpg" => "image/jpeg",
+            ".jpeg" => "image/jpeg",
+            _ => "image/jpeg"
+        };
+        return $"data:{contentType};base64,{Convert.ToBase64String(bytes)}";
+    }
+    private async Task<List<TransactionAttachmentPreviewModel>> GetAttachmentImagesBase64(int idTransaction)
+    {
+        var attachments = await GetAttachments(idTransaction);
+
+        var images = new List<TransactionAttachmentPreviewModel>();
+
+        foreach (var file in attachments)
+        {
+            if (!File.Exists(file.FilePath))
+                continue;
+            var extension = file.FileExtension.ToLower();
+            if (extension != ".jpg" &&
+                extension != ".jpeg" &&
+                extension != ".png")
+            {
+                continue;
+            }
+            var bytes = await File.ReadAllBytesAsync(file.FilePath);
+            images.Add(new TransactionAttachmentPreviewModel
+            {
+                FileName = file.OriginalFileName,
+                ContentType = file.ContentType,
+                Base64 =
+                    $"data:{file.ContentType};base64,{Convert.ToBase64String(bytes)}"
+            });
+        }
+        return images;
+    }
+
+    private List<TransactionAttachmentModel> GetPdfAttachments(List<TransactionAttachmentModel> attachments)
+    {
+        return attachments
+            .Where(x =>
+                x.FileExtension.ToLower() == ".pdf")
+            .ToList();
+    }
+
+    private async Task<List<TransactionAttachmentPreviewModel>> ConvertImagesToBase64(
+    List<TransactionAttachmentModel> attachments)
+    {
+        var result = new List<TransactionAttachmentPreviewModel>();
+
+        foreach (var file in attachments)
+        {
+            var ext = file.FileExtension.ToLower();
+
+            if (ext != ".jpg" &&
+                ext != ".jpeg" &&
+                ext != ".png")
+                continue;
+            if (!File.Exists(file.FilePath))
+                continue;
+            var bytes = await File.ReadAllBytesAsync(file.FilePath);
+            var contentType = ext switch
+            {
+                ".png" => "image/png",
+                ".jpg" => "image/jpeg",
+                ".jpeg" => "image/jpeg",
+                _ => "image/jpeg"
+            };
+            result.Add(new TransactionAttachmentPreviewModel
+            {
+                FileName = file.OriginalFileName,
+                ContentType = contentType,
+                Base64 =
+                    $"data:{contentType};base64,{Convert.ToBase64String(bytes)}"
+            });
+        }
+        return result;
     }
 
 
